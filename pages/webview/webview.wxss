@@ -1,0 +1,12 @@
+.container { width: 100%; height: 100vh; background: #fef9ed; }
+.loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+.loading-spinner { width: 60rpx; height: 60rpx; border: 6rpx solid #d2c5ad; border-top-color: #775a00; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { margin-top: 30rpx; font-size: 28rpx; color: #807661; }
+.error-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60rpx; height: 100vh; }
+.error-icon { font-size: 80rpx; margin-bottom: 30rpx; }
+.error-text { font-size: 28rpx; color: #885120; text-align: center; margin-bottom: 40rpx; line-height: 1.6; }
+.error-actions { display: flex; gap: 30rpx; }
+.action-btn { padding: 20rpx 40rpx; border-radius: 16rpx; font-size: 28rpx; border: none; }
+.retry-btn { background: #775a00; color: #fef9ed; }
+.copy-btn { background: #e6b325; color: #775a00; }

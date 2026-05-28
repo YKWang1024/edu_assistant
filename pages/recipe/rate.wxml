@@ -1,0 +1,61 @@
+<view class="container" wx:if="{{recipe}}">
+  <view class="rate-header card">
+    <view class="rate-name">{{recipe.name}}</view>
+    <view class="rate-current" wx:if="{{recipe.avgScore > 0}}">
+      综合评分: ⭐ {{recipe.avgScore}}
+    </view>
+  </view>
+
+  <view class="member-card card">
+    <view class="card-title">
+      <text class="icon">👨‍👩‍👧</text>
+      <text>谁在打分？</text>
+    </view>
+    <view class="member-list">
+      <view
+        class="member-item {{selectedMemberIndex === index ? 'active' : ''}}"
+        wx:for="{{familyMembers}}"
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="onSwitchMember"
+      >
+        <text class="member-item-name">{{item}}</text>
+        <text class="member-rated-badge" wx:if="{{memberRated[item]}}">⭐{{memberRated[item]}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="rate-card card">
+    <view class="card-title">
+      <text class="icon">⭐</text>
+      <text>{{selectedMember}}的评分</text>
+    </view>
+    <view class="stars-row">
+      <view
+        class="star {{item <= score ? 'active' : ''}}"
+        wx:for="{{stars}}"
+        wx:key="*this"
+        data-score="{{item}}"
+        bindtap="onSelectScore"
+      >
+        {{item <= score ? '★' : '☆'}}
+      </view>
+    </view>
+    <view class="score-display">{{score}} 分 · {{score >= 5 ? '超级爱吃' : score >= 4 ? '爱吃' : score >= 3 ? '一般' : score >= 2 ? '不太喜欢' : '不爱吃'}}</view>
+  </view>
+
+  <view class="comment-card card">
+    <view class="card-title">
+      <text class="icon">💬</text>
+      <text>评价（选填）</text>
+    </view>
+    <textarea
+      class="textarea-field"
+      placeholder="{{selectedMember}}觉得这道菜怎么样？"
+      value="{{comment}}"
+      bindinput="onCommentInput"
+    />
+  </view>
+
+  <button class="btn-primary submit-btn" bindtap="onSubmit">提交{{selectedMember}}的评分</button>
+</view>

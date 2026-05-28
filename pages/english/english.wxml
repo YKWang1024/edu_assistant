@@ -1,0 +1,61 @@
+<view class="container" wx:if="{{mode === 'select'}}">
+  <view class="select-header">
+    <view class="select-title">🔤 英语测试</view>
+    <view class="select-desc">深圳沪教版一年级下册</view>
+  </view>
+
+  <view class="section-label">练习模式</view>
+  <view class="mode-list">
+    <view
+      class="mode-item {{selectedMode === item.key ? 'active' : ''}}"
+      wx:for="{{practiceModes}}"
+      wx:key="key"
+      data-mode="{{item.key}}"
+      bindtap="onSelectMode"
+    >
+      <view class="mode-icon">{{item.icon}}</view>
+      <view class="mode-info">
+        <view class="mode-name">{{item.name}}</view>
+        <view class="mode-desc">{{item.desc}}</view>
+      </view>
+      <view class="mode-check" wx:if="{{selectedMode === item.key}}">✓</view>
+    </view>
+  </view>
+
+  <button class="btn-primary start-btn" bindtap="onStartPractice">开始练习</button>
+</view>
+
+<view class="container" wx:if="{{mode === 'practice'}}">
+  <view class="progress-bar">
+    <view class="progress-fill" style="width: {{(currentIndex + 1) / totalQuestions * 100}}%"></view>
+  </view>
+  <view class="progress-text">第 {{currentIndex + 1}} / {{totalQuestions}} 题</view>
+
+  <view class="question-card english-card">
+    <view class="prompt-label" wx:if="{{questions[currentIndex].type === 'en2cn'}}">请选出这个英文的中文意思</view>
+    <view class="prompt-label" wx:if="{{questions[currentIndex].type === 'cn2en'}}">请选出这个中文的英文</view>
+    <view class="prompt-label" wx:if="{{questions[currentIndex].type === 'sentence'}}">请选择正确的答案完成句子</view>
+    <view class="prompt-label" wx:if="{{questions[currentIndex].type === 'confusion'}}">易混词辨析</view>
+    <view class="prompt-text {{questions[currentIndex].type === 'en2cn' ? 'en-prompt' : questions[currentIndex].type === 'cn2en' ? 'cn-prompt' : 'sentence-prompt'}}">
+      {{questions[currentIndex].prompt}}
+    </view>
+  </view>
+
+  <view class="options-grid {{questions[currentIndex].options.length <= 2 ? 'options-2col' : ''}}">
+    <view
+      class="option-btn {{selectedOption === index ? (currentCorrect ? 'correct' : 'wrong') : ''}} {{showResult && questions[currentIndex].options[index] === questions[currentIndex].answer ? 'show-correct' : ''}}"
+      wx:for="{{questions[currentIndex].options}}"
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="onSelectOption"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <view class="result-tip" wx:if="{{showResult}}">
+    <text class="tip-text {{currentCorrect ? 'tip-correct' : 'tip-wrong'}}">
+      {{currentCorrect ? '回答正确!' : '正确答案是: ' + questions[currentIndex].answer}}
+    </text>
+  </view>
+</view>

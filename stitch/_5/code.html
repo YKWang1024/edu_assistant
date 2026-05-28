@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TinyBlocks - Recipe Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#f3ab72",
+                        "surface-tint": "#775a00",
+                        "surface-container-highest": "#e7e2d6",
+                        "secondary": "#47672c",
+                        "background": "#fef9ed",
+                        "on-tertiary-fixed": "#2f1500",
+                        "on-surface-variant": "#4e4634",
+                        "tertiary-fixed": "#ffdcc3",
+                        "outline": "#807661",
+                        "inverse-surface": "#323029",
+                        "inverse-primary": "#f3bf32",
+                        "on-tertiary-fixed-variant": "#6c3a0a",
+                        "tertiary": "#885120",
+                        "outline-variant": "#d2c5ad",
+                        "secondary-fixed-dim": "#acd28a",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb77f",
+                        "on-primary-fixed-variant": "#5a4300",
+                        "on-primary-container": "#5e4700",
+                        "surface": "#fef9ed",
+                        "primary-fixed-dim": "#f3bf32",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-container": "#e6b325",
+                        "on-primary-fixed": "#251a00",
+                        "on-tertiary-container": "#703e0d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#f2ede2",
+                        "error-container": "#ffdad6",
+                        "on-background": "#1d1c15",
+                        "secondary-container": "#c7efa4",
+                        "surface-container-high": "#ede8dc",
+                        "on-secondary-fixed-variant": "#304f16",
+                        "surface-bright": "#fef9ed",
+                        "surface-variant": "#e7e2d6",
+                        "inverse-on-surface": "#f5f0e4",
+                        "on-secondary-fixed": "#0c2000",
+                        "on-surface": "#1d1c15",
+                        "surface-container-low": "#f8f3e7",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#ffdf99",
+                        "secondary-fixed": "#c7efa4",
+                        "on-secondary-container": "#4c6d31",
+                        "primary": "#775a00",
+                        "surface-dim": "#dedace",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "margin-desktop": "32px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Space Mono"],
+                        "label-md": ["Space Mono"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Space Mono"],
+                        "headline-md": ["Space Mono"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1.0", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pixel-shadow {
+            box-shadow: 4px 4px 0px 0px rgba(136, 81, 32, 0.2);
+        }
+        .pixel-shadow-active:active {
+            box-shadow: none;
+            transform: translate(2px, 2px);
+        }
+        .double-border {
+            border: 2px solid theme('colors.tertiary');
+            box-shadow: inset 2px 2px 0px 0px rgba(255, 255, 255, 0.5);
+        }
+        .inset-shadow {
+            box-shadow: inset 2px 2px 0px 0px #D9D2C2;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pt-16 pb-24 md:pb-8">
+<!-- TopAppBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-background border-b-4 border-outline-variant shadow-[4px_4px_0px_0px_rgba(136,81,32,0.2)]">
+<div class="flex items-center gap-unit">
+<img alt="Avatar" class="w-10 h-10 rounded-full border-2 border-outline pixel-shadow" data-alt="A pixel-art style avatar of a young child wearing a colorful, blocky hat. The style is 16-bit retro, with warm earthy tones and bright primary accents, consistent with a child's playroom aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTgm3tJfE7SB-qZXUpEXc8NE4DRIg9fGMMXTEmdSsz3A8Xifdc-3XS5gaEFaNCxNEEhGHQExMI4vZ1Upo0kDapy_Lzt1toM4ORe0aimwHK9A9zefo-dl3CsDbiNNu5KTQZqrxDFasNUju7Oxt0TUwmBP8hpd43dUnGTypcaeDGOeqESWh7uLgtK2TwUdhL2tMnykE0lGMqAzAM7y7X2CLJVxCtwDuBZaAGZRS5U36Y5qsh4WiPmPtLG0oYndFNt9IKfUrnujoSioD4"/>
+<span class="font-headline-md text-headline-md text-primary">TinyBlocks</span>
+</div>
+<!-- Desktop Nav -->
+<div class="hidden md:flex items-center gap-gutter">
+<a class="flex items-center gap-2 p-2 hover:bg-surface-container-high transition-colors rounded-DEFAULT text-on-surface-variant text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+                Home
+            </a>
+<a class="flex items-center gap-2 p-2 hover:bg-surface-container-high transition-colors rounded-DEFAULT text-on-surface-variant text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">school</span>
+                Study
+            </a>
+<a class="flex items-center gap-2 p-2 hover:bg-surface-container-high transition-colors rounded-DEFAULT text-on-surface-variant text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">event_repeat</span>
+                Habits
+            </a>
+<a class="flex items-center gap-2 p-2 bg-secondary-container text-on-secondary-container rounded-DEFAULT pixel-shadow text-primary font-bold text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+                Menu
+            </a>
+</div>
+<div class="flex items-center gap-unit">
+<button class="px-3 py-2 bg-tertiary-container text-on-tertiary-container font-label-md text-label-md rounded-DEFAULT double-border pixel-shadow pixel-shadow-active flex items-center gap-1">
+                7 <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</button>
+</div>
+</nav>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-gutter">
+<div class="mb-gutter">
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md hover:underline" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+                Back to Menu
+            </a>
+</div>
+<!-- Recipe Header -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-margin-desktop mb-margin-desktop">
+<!-- Large Dish Image -->
+<div class="w-full aspect-square md:aspect-[4/3] rounded-xl overflow-hidden border-2 border-tertiary pixel-shadow bg-surface-container">
+<img alt="Pixel Art Dish" class="w-full h-full object-cover" data-alt="A large, vibrant 16-bit pixel art illustration of a bowl of macaroni and cheese with broccoli. The colors are warm and appetizing, using the earthy retro palette of the UI. The food looks blocky and playful, reminiscent of classic video game items." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6LXEgF7a5bCVy4iC10O_4G7V7GrR9CCIcYYzf6FjklRp0ZgeDHbBTdcYnQWjryNbqngeo1EKNlLtZGirEgRXTazHSPwj4771tVD4jjQ6NUV9rUHSQVVhFxcgBS7NZ25ev4QDTw88SCxomHFhpZKjymDVZc184WKC9UVDT-fpN9KOwzT64DXa3oGQ_5suZcSw95NfGaTUVQVRfaNvOFtNRWrupQz6fI5MwsZpkNPeeqgHLwiTrXsq8BEB_5KZwEIepGMn7YQoEIlAy"/>
+</div>
+<div class="flex flex-col justify-center gap-gutter">
+<h1 class="font-headline-lg text-headline-lg text-on-background">Broccoli Mac &amp; Cheese</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">A sneaky way to get those greens in. Creamy, cheesy, and full of little trees.</p>
+<div class="flex flex-wrap gap-unit">
+<span class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-DEFAULT border-2 border-secondary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 25 mins
+                    </span>
+<span class="inline-flex items-center gap-1 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-DEFAULT border-2 border-tertiary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">group</span> Serves 4
+                    </span>
+</div>
+<!-- Action Buttons -->
+<div class="flex gap-gutter mt-unit">
+<button class="flex-1 py-3 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-DEFAULT double-border pixel-shadow pixel-shadow-active text-center">
+                        Start Cooking
+                    </button>
+<button class="w-12 h-12 flex items-center justify-center bg-surface text-primary border-2 border-outline rounded-DEFAULT pixel-shadow pixel-shadow-active">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Ingredients List -->
+<div class="md:col-span-1 bg-surface border-2 border-outline rounded-xl p-gutter pixel-shadow h-fit">
+<h2 class="font-headline-md text-headline-md text-on-background mb-gutter flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">grocery</span>
+                    Ingredients
+                </h2>
+<ul class="space-y-3">
+<li class="flex items-center justify-between p-2 bg-surface-container rounded-DEFAULT border-2 border-outline-variant">
+<div class="flex items-center gap-2">
+<img alt="Pasta Icon" class="w-6 h-6" data-alt="A small 24x24 pixel art icon of a piece of macaroni pasta. Simple 2px outline, warm yellow color." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD78FtjuOhpvrruHxOJx3xjbv3gxNCfPDh7Wu2joyBrzMEWd1sHxxQo7WWY4Pm5CtvsjqNZFm2D_TawquwcuiJeIA_xKrWK9tFhcXzG622Ql1psYxwUimyiq1keezd7Y6ZXLJWjw2KW10OpPSV_TEJTcPn8XhJf8b1L1qdAapMdNOQmAhYuaikWpZJ8JXo0gFSjyPu_RrYRmGFsJVQb91tSlPX11mCzR7-uC4c--56PWCYiLxRrCdKZtbNygysQYXqKoX7Dbz4KJHcm"/>
+<span class="font-body-md text-body-md">Macaroni</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">2 cups</span>
+</li>
+<li class="flex items-center justify-between p-2 bg-surface-container rounded-DEFAULT border-2 border-outline-variant">
+<div class="flex items-center gap-2">
+<img alt="Broccoli Icon" class="w-6 h-6" data-alt="A small 24x24 pixel art icon of a broccoli floret. Simple 2px outline, green color." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBI6qzWjGvPxrNE8ku2TJmuXpMC-vYzQLlMg5Ouf8XXtVZTKrvIwgQbccAy9ZEMhC7wJ9EPn8wuiSLhDFMjoXKM58veIwo7wu17ft6VXPqERDd0-Cus306boq3QeEbkVxe9V_C_kFxcazyoOv53WM35aKmb5aWNTW3xT-PDoYzSxghmupLHovmkhDKj7STwy0ZQECdaBnfNQtVP5Tn2U8iOR4UfooPABqZv40vtgKqxBjVv1hqrWYYECndwUw1yj_4d_kPddLdAt3Ut"/>
+<span class="font-body-md text-body-md">Broccoli</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">1 head</span>
+</li>
+<li class="flex items-center justify-between p-2 bg-surface-container rounded-DEFAULT border-2 border-outline-variant">
+<div class="flex items-center gap-2">
+<img alt="Cheese Icon" class="w-6 h-6" data-alt="A small 24x24 pixel art icon of a wedge of cheese. Simple 2px outline, bright yellow color." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYDVWnG85po2mk_C2J-4owuqt8UroZjBAzv7JUYR5LEdzMvV3yCei6cXy_MuTXGV2dou40q78QeN20giIPcu8helzH786Kmyf7YbApNHBmbJNRpjT__moDjN2zGZtvWqwc2hFoNV1g-dsYnWiK1q5OpMSTUYjJyKK95fq4GjlMRvORa8w0vCylnqKKs4PRvy7q5Fg91D39tkU2FcqqwVYSyQKICk5NbEr0us7acL6X8RO321bSvNuEerbQS7nDlqpxN9ksTxI2Grq0"/>
+<span class="font-body-md text-body-md">Cheddar</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">1.5 cups</span>
+</li>
+<li class="flex items-center justify-between p-2 bg-surface-container rounded-DEFAULT border-2 border-outline-variant">
+<div class="flex items-center gap-2">
+<img alt="Milk Icon" class="w-6 h-6" data-alt="A small 24x24 pixel art icon of a milk carton. Simple 2px outline, white and blue color." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPcWlVSkraeZvWDQqO5mqPVjRQy7MriExcF6Ucq3Aw-SVz7u4f9KBGOyP0Ymprm290R95reQDxPT_kFrbfAQ83CCKSfvZCJIZrac7QshvGdJ3hsdnUAhTKfLRho2cVyfNjRdUbxHWgRLYDC1Ka50F02TqmRdyRFGKs54Lq0fjPttu2MtFw-nCWZTqbCxry_rrLyxWqvda0EJ0ueLY5RSPBFs1QNLYCNvvCogksS0miQRPjgWxHHwCGuYqcVxttNwBOEKeZjm85N5__"/>
+<span class="font-body-md text-body-md">Milk</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">1 cup</span>
+</li>
+</ul>
+</div>
+<!-- Steps -->
+<div class="md:col-span-2 space-y-gutter">
+<div class="bg-surface border-2 border-outline rounded-xl p-gutter pixel-shadow">
+<h2 class="font-headline-md text-headline-md text-on-background mb-gutter flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">list_alt</span>
+                        Steps
+                    </h2>
+<div class="space-y-4">
+<div class="flex gap-gutter">
+<div class="w-8 h-8 shrink-0 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center rounded-DEFAULT border-2 border-outline">1</div>
+<div>
+<p class="font-body-md text-body-md text-on-background">Boil water in a large pot. Add macaroni and cook according to package instructions. In the last 3 minutes, add the chopped broccoli florets.</p>
+</div>
+</div>
+<div class="flex gap-gutter">
+<div class="w-8 h-8 shrink-0 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center rounded-DEFAULT border-2 border-outline">2</div>
+<div>
+<p class="font-body-md text-body-md text-on-background">Drain the pasta and broccoli well and return to the warm pot off the heat.</p>
+</div>
+</div>
+<div class="flex gap-gutter">
+<div class="w-8 h-8 shrink-0 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center rounded-DEFAULT border-2 border-outline">3</div>
+<div>
+<p class="font-body-md text-body-md text-on-background">Stir in milk and shredded cheddar cheese until completely melted and creamy. Season to taste.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Insight -->
+<div class="bg-secondary-fixed border-2 border-secondary rounded-xl p-gutter pixel-shadow relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[100px]">auto_awesome</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-secondary-container mb-2 flex items-center gap-2 relative z-10">
+<span class="material-symbols-outlined">lightbulb</span>
+                        AI Insight
+                    </h3>
+<p class="font-label-md text-label-md text-on-secondary-container relative z-10 leading-relaxed">
+                        This meal provides an excellent balance of carbohydrates for energy and calcium for bone growth. The added broccoli introduces essential vitamins like Vitamin C and K. To boost protein, consider stirring in some finely diced cooked chicken!
+                    </p>
+</div>
+</div>
+</div>
+<!-- Rating Section -->
+<div class="mt-gutter bg-surface border-2 border-outline rounded-xl p-gutter pixel-shadow">
+<h2 class="font-headline-md text-headline-md text-on-background mb-unit flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">reviews</span>
+                Family Rating
+            </h2>
+<div class="flex items-center gap-4 mb-gutter">
+<div class="flex text-primary-container">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">4 out of 5 blocks</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-DEFAULT border-2 border-outline-variant inset-shadow">
+<p class="font-body-md text-body-md italic text-on-surface">"Loved the cheesy sauce, but picked around the green trees!" - Leo (Age 6)</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container border-t-4 border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-unit active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-md text-label-md mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-unit active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">school</span>
+<span class="font-label-md text-label-md mt-1">Study</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-unit active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">event_repeat</span>
+<span class="font-label-md text-label-md mt-1">Habits</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl p-unit active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+<span class="font-label-md text-label-md mt-1">Menu</span>
+</a>
+</nav>
+</body></html>

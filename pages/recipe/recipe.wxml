@@ -1,0 +1,83 @@
+<view class="container">
+  <view class="nutrition-card card" wx:if="{{nutritionAnalysis}}">
+    <view class="card-title">
+      <text class="icon">🥗</text>
+      <text>营养分析</text>
+    </view>
+    <view class="nutrition-bar">
+      <view class="nutrition-progress" style="width: {{nutritionAnalysis.balanceScore}}%"></view>
+    </view>
+    <view class="nutrition-score">营养均衡度: {{nutritionAnalysis.balanceScore}}%</view>
+    <view class="nutrition-tags">
+      <view class="tag covered" wx:for="{{nutritionAnalysis.coveredCategories}}" wx:key="*this">
+        ✓ {{item}}
+      </view>
+      <view class="tag missing" wx:for="{{nutritionAnalysis.missingCategories}}" wx:key="*this">
+        ✗ {{item}}
+      </view>
+    </view>
+    <view class="nutrition-tip" wx:if="{{nutritionAnalysis.missingCategories.length > 0}}">
+      建议补充: {{nutritionAnalysis.missingCategories.join('、')}} 类食物
+    </view>
+  </view>
+
+  <view class="section-title">推荐菜谱</view>
+  <scroll-view class="recommend-scroll" scroll-x="{{true}}" wx:if="{{recommendations.length > 0}}">
+    <view class="recommend-list">
+      <view class="recommend-item" wx:for="{{recommendations}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
+        <view class="recommend-name">{{item.name}}</view>
+        <view class="recommend-score">⭐ {{item.avgScore}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="section-title flex-between">
+    <text>全部菜谱</text>
+    <view class="add-btn" bindtap="onAddRecipe">+ 添加菜谱</view>
+  </view>
+
+  <view class="filter-bar">
+    <view
+      class="filter-item {{activeFilter === item ? 'active' : ''}}"
+      wx:for="{{filterOptions}}"
+      wx:key="*this"
+      data-filter="{{item}}"
+      bindtap="onFilterChange"
+    >
+      {{item === 'all' ? '全部' : item}}
+    </view>
+  </view>
+
+  <view class="empty-tip" wx:if="{{recipes.length === 0}}">
+    还没有菜谱，快去添加吧！
+  </view>
+
+  <view class="recipe-list">
+    <view class="recipe-item card" wx:for="{{recipes}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
+      <view class="recipe-thumb" wx:if="{{item.images[0] || item.imageUrl}}">
+        <image class="recipe-thumb-img" src="{{item.images[0] || item.imageUrl}}" mode="aspectFill" />
+      </view>
+      <view class="recipe-body">
+        <view class="recipe-header flex-between">
+          <view class="flex-row">
+            <text class="recipe-name">{{item.name}}</text>
+            <text class="link-indicator" wx:if="{{item.referenceLink}}">{{item.referenceType === 'xiaohongshu' ? '📕' : item.referenceType === 'bilibili' ? '📺' : '🔗'}}</text>
+          </view>
+          <view class="recipe-score">
+            {{item.avgScore > 0 ? '⭐ ' + item.avgScore : '未评分'}}
+          </view>
+        </view>
+        <view class="recipe-meta">
+          <text class="recipe-ingredients">{{item.ingredients}}</text>
+        </view>
+        <view class="recipe-actions">
+          <view class="action-btn rate-btn" catchtap="onRateRecipe" data-id="{{item.id}}">
+            打分
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="fab-btn" bindtap="onAddRecipe">+</view>
+</view>

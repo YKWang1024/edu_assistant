@@ -1,0 +1,15 @@
+<view class="container">
+  <web-view wx:if="{{url && !error}}" src="{{url}}" bindload="onWebViewLoad" binderror="onWebViewError"></web-view>
+  <view wx:if="{{loading && !error}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在加载...</text>
+  </view>
+  <view wx:if="{{error}}" class="error-container">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{error}}</text>
+    <view class="error-actions">
+      <button class="action-btn retry-btn" bindtap="onRetry">重试</button>
+      <button class="action-btn copy-btn" bindtap="onCopyLink">复制链接</button>
+    </view>
+  </view>
+</view>

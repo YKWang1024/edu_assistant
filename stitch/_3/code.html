@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TinyBlocks - Family Menu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#f3ab72",
+                        "surface-tint": "#775a00",
+                        "surface-container-highest": "#e7e2d6",
+                        "secondary": "#47672c",
+                        "background": "#fef9ed",
+                        "on-tertiary-fixed": "#2f1500",
+                        "on-surface-variant": "#4e4634",
+                        "tertiary-fixed": "#ffdcc3",
+                        "outline": "#807661",
+                        "inverse-surface": "#323029",
+                        "inverse-primary": "#f3bf32",
+                        "on-tertiary-fixed-variant": "#6c3a0a",
+                        "tertiary": "#885120",
+                        "outline-variant": "#d2c5ad",
+                        "secondary-fixed-dim": "#acd28a",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb77f",
+                        "on-primary-fixed-variant": "#5a4300",
+                        "on-primary-container": "#5e4700",
+                        "surface": "#fef9ed",
+                        "primary-fixed-dim": "#f3bf32",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-container": "#e6b325",
+                        "on-primary-fixed": "#251a00",
+                        "on-tertiary-container": "#703e0d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#f2ede2",
+                        "error-container": "#ffdad6",
+                        "on-background": "#1d1c15",
+                        "secondary-container": "#c7efa4",
+                        "surface-container-high": "#ede8dc",
+                        "on-secondary-fixed-variant": "#304f16",
+                        "surface-bright": "#fef9ed",
+                        "surface-variant": "#e7e2d6",
+                        "inverse-on-surface": "#f5f0e4",
+                        "on-secondary-fixed": "#0c2000",
+                        "on-surface": "#1d1c15",
+                        "surface-container-low": "#f8f3e7",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#ffdf99",
+                        "secondary-fixed": "#c7efa4",
+                        "on-secondary-container": "#4c6d31",
+                        "primary": "#775a00",
+                        "surface-dim": "#dedace",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "margin-desktop": "32px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Space Mono"],
+                        "label-md": ["Space Mono"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Space Mono"],
+                        "headline-md": ["Space Mono"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1.0", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md pb-[88px] md:pb-8 selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-background border-b-4 border-outline-variant shadow-[4px_4px_0px_0px_rgba(136,81,32,0.2)]">
+<div class="flex items-center gap-unit">
+<div class="w-8 h-8 rounded-lg overflow-hidden border-2 border-outline shadow-[2px_2px_0px_0px_rgba(136,81,32,0.2)]">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A 16-bit pixel art portrait of a young child wearing a colorful, blocky hat. The color palette features warm earthy tones, soft oranges, and vibrant secondary accents. The style is strictly low-fidelity, reminiscent of classic 90s video games, set against a solid cream-colored background to match the 'Digital Organicism' UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLyFpEbXTpbfGS-5BVsV3vgzUP9BcRp8U_STMWJIXicMCqIqECK-2H0CJ1MSe-3F3rPOcFYeKnmzDPa8ZMgh2uhSSsLn45JCup1tDPPK1P79YfQpnz6sEvL0ptbuDO57R2fMp6Ja56iWEu9XdeizSHDPuSitT66xZJ_L-LQQNZPWYSRhizLoyOYDY6n8ZlE2X8HVPjLJ0IzRRP0WsQoDi7jEcIKWdbY_BhdugC4NijjvRRezS-Yzg9CUGiZ0l4EWk2QUkDG73EOVaP"/>
+</div>
+<span class="font-headline-md text-headline-md text-primary">TinyBlocks</span>
+</div>
+<!-- Desktop Nav Cluster (Hidden on Mobile) -->
+<nav class="hidden md:flex gap-gutter">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2 p-2" href="#"><span class="material-symbols-outlined">home</span>Home</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2 p-2" href="#"><span class="material-symbols-outlined">school</span>Study</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2 p-2" href="#"><span class="material-symbols-outlined">event_repeat</span>Habits</a>
+<a class="font-label-md text-label-md text-primary font-bold flex items-center gap-2 p-2 border-b-4 border-primary" href="#"><span class="material-symbols-outlined">restaurant_menu</span>Menu</a>
+</nav>
+<div class="flex items-center">
+<span class="font-label-md text-label-md text-on-surface bg-surface-container-highest border-2 border-outline rounded-lg px-2 py-1 shadow-[2px_2px_0px_0px_rgba(136,81,32,0.2)]">7 🔥</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-[container-max] mx-auto px-margin-mobile md:px-margin-desktop pt-24 space-y-6">
+<!-- Header Section -->
+<div class="flex flex-col gap-unit">
+<h1 class="font-headline-lg text-headline-lg text-on-background">Family Menu</h1>
+<p class="text-on-surface-variant">Collect and share your favorite pixel-perfect recipes.</p>
+</div>
+<!-- Search & Filter Bar -->
+<div class="flex flex-col sm:flex-row gap-gutter">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface border-2 border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant shadow-[inset_2px_2px_0px_0px_#d2c5ad] focus:outline-none focus:border-primary focus:ring-0 transition-colors" placeholder="Search recipes..." type="text"/>
+</div>
+<div class="flex gap-unit overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
+<button class="shrink-0 bg-primary-container text-on-primary-container font-label-md text-label-md border-2 border-primary rounded-lg px-4 py-2 shadow-[2px_2px_0px_0px_rgba(136,81,32,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">All</button>
+<button class="shrink-0 bg-surface-container text-on-surface font-label-md text-label-md border-2 border-outline-variant rounded-lg px-4 py-2 hover:bg-surface-container-high transition-colors">Dinner</button>
+<button class="shrink-0 bg-surface-container text-on-surface font-label-md text-label-md border-2 border-outline-variant rounded-lg px-4 py-2 hover:bg-surface-container-high transition-colors">Snacks</button>
+</div>
+</div>
+<!-- Recipe Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Recipe Card 1 -->
+<article class="bg-surface-container border-2 border-tertiary rounded-xl p-unit shadow-[4px_4px_0px_0px_rgba(136,81,32,0.2)] flex flex-col hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="h-40 bg-surface-variant border-2 border-outline-variant rounded-lg mb-unit overflow-hidden relative">
+<img alt="Mom's Dumplings" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A 16-bit pixel art illustration of a steaming bamboo steamer basket filled with plump dumplings. The scene is rendered in warm kitchen tones, primarily soft oranges, creams, and earthy browns, adhering to the 'Digital Organicism' style. The artwork features clear, blocky outlines and a nostalgic, tactile aesthetic reminiscent of classic retro gaming items." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWNEJNTlFwrVCyCC8z6TDGe6idVrItLNzJVMGggiKCuyFK8XhCG-k6RAfLjdX6m9iBhc54XNe-tU_Hhk691E85Qh-vZK4DEiBX6WepWrk5mTL2RNjlvbLHe-I7X5Q2UOlsj1EFmWWHFT_Dy2_VebJUaAxNEnBZP3CmxGGzaWxYQcI4-3QC3AY8Ws4yEBFuaPlp4SeqWQCFXYSRoY1Si9Cfkzz3KdW5cXOLeTKPAA_MT2MQvrNLv_riowwcrVZ9wmQzMLjGy_Y9QCH3"/>
+<div class="absolute top-2 right-2 bg-secondary-container text-on-secondary-container border-2 border-secondary rounded px-2 py-1 font-label-md text-label-md shadow-[2px_2px_0px_0px_rgba(71,103,44,0.3)]">
+                        Family Secret
+                    </div>
+</div>
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate pr-2">Mom's Dumplings</h2>
+</div>
+<div class="flex items-center gap-1 text-primary mb-2">
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+</div>
+<p class="text-on-surface-variant text-sm line-clamp-2 mt-auto">The classic family recipe passed down for generations. Perfect for chilly evenings.</p>
+</article>
+<!-- Recipe Card 2 -->
+<article class="bg-surface-container border-2 border-tertiary rounded-xl p-unit shadow-[4px_4px_0px_0px_rgba(136,81,32,0.2)] flex flex-col hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="h-40 bg-surface-variant border-2 border-outline-variant rounded-lg mb-unit overflow-hidden relative">
+<img alt="Fruit Salad" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A vibrant 16-bit pixel art depiction of a wooden bowl overflowing with fresh, colorful fruit chunks like strawberries, bananas, and blueberries. The image uses a warm, cheerful color palette consistent with the 'Digital Organicism' UI design, featuring earthy undertones and crisp, blocky pixel edges. The overall mood is fresh, tactile, and nostalgic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGeHsNTTo0_mVyHqemD7dK-xNn_YbHjfzR9d4ttfSn90307pxWXPFcPfLHvZf_JESUBaNSBp8rzyufzdBcqBH8JefGaFnrOyock6fjXNoZPHqtWc9HY4I0rs8Uh-FAA8H0K8aM2fXbG6KW3V3NJzwCKy_wLTGVxXHhNmLd-4I7cLbc5rGE8tcZp9gikfjzQEm_kDdwFqooBjgNMr0qb0MX56Jrn0IW9zV4gXZpVIKFnjs5ifr5Mp78tU0k2l9hL_4PU5GS0HGsmv7r"/>
+<div class="absolute top-2 right-2 bg-secondary-container text-on-secondary-container border-2 border-secondary rounded px-2 py-1 font-label-md text-label-md shadow-[2px_2px_0px_0px_rgba(71,103,44,0.3)]">
+                        Healthy
+                    </div>
+</div>
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate pr-2">Fruit Salad</h2>
+</div>
+<div class="flex items-center gap-1 text-primary mb-2">
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined text-[16px]">star</span>
+</div>
+<p class="text-on-surface-variant text-sm line-clamp-2 mt-auto">A quick, refreshing mix of seasonal fruits. Great for after-school energy blocks.</p>
+</article>
+<!-- Recipe Card 3 -->
+<article class="bg-surface-container border-2 border-tertiary rounded-xl p-unit shadow-[4px_4px_0px_0px_rgba(136,81,32,0.2)] flex flex-col hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="h-40 bg-surface-variant border-2 border-outline-variant rounded-lg mb-unit overflow-hidden relative">
+<div class="w-full h-full bg-tertiary-container/30 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined text-[48px] text-tertiary-container">set_meal</span>
+</div>
+<div class="absolute top-2 right-2 bg-tertiary-container text-on-tertiary-container border-2 border-tertiary rounded px-2 py-1 font-label-md text-label-md shadow-[2px_2px_0px_0px_rgba(136,81,32,0.3)]">
+                        Kids Choice
+                    </div>
+</div>
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate pr-2">Dino Nuggets</h2>
+</div>
+<div class="flex items-center gap-1 text-primary mb-2">
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+<span class="material-symbols-outlined filled text-[16px]">star</span>
+</div>
+<p class="text-on-surface-variant text-sm line-clamp-2 mt-auto">Baked to crispy perfection. The ultimate comfort food building blocks.</p>
+</article>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button aria-label="New Recipe" class="fixed bottom-24 right-margin-mobile md:bottom-8 md:right-margin-desktop z-40 w-16 h-16 bg-primary-container text-on-primary-container border-4 border-primary rounded-xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(136,81,32,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-primary transition-all group">
+<span class="material-symbols-outlined text-[32px] group-hover:text-on-primary transition-colors">add</span>
+</button>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container border-t-4 border-outline-variant md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-unit hover:bg-tertiary-container/20 active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-unit hover:bg-tertiary-container/20 active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined mb-1">school</span>
+<span class="font-label-md text-label-md">Study</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-unit hover:bg-tertiary-container/20 active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined mb-1">event_repeat</span>
+<span class="font-label-md text-label-md">Habits</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl p-unit active:scale-95 transition-transform duration-100 shadow-[inset_2px_2px_0px_0px_rgba(255,255,255,0.2)] border border-secondary/20" href="#">
+<span class="material-symbols-outlined filled mb-1">restaurant_menu</span>
+<span class="font-label-md text-label-md">Menu</span>
+</a>
+</nav>
+</body></html>

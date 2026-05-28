@@ -1,0 +1,34 @@
+<view class="container">
+  <view class="empty-tip" wx:if="{{records.length === 0}}">
+    暂无打卡记录
+  </view>
+
+  <view class="record-list" wx:if="{{records.length > 0}}">
+    <view class="record-item card" wx:for="{{records}}" wx:key="index">
+      <view class="record-header flex-between">
+        <view class="flex-row">
+          <text class="record-icon">{{typeIcons[item.type]}}</text>
+          <text class="record-type">{{typeNames[item.type]}}</text>
+        </view>
+        <text class="record-date">{{item.date}}</text>
+      </view>
+      <view class="divider"></view>
+      <view class="record-body">
+        <view class="record-row flex-between">
+          <text class="record-label">目标时间</text>
+          <text class="record-value">{{item.targetTime}}</text>
+        </view>
+        <view class="record-row flex-between">
+          <text class="record-label">实际时间</text>
+          <text class="record-value">{{item.actualTime}}</text>
+        </view>
+        <view class="record-row flex-between">
+          <text class="record-label">奖励时间</text>
+          <text class="record-value {{item.reward > 0 ? 'positive' : item.reward < 0 ? 'negative' : ''}}">
+            {{item.reward > 0 ? '+' : ''}}{{item.reward}} 分钟
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

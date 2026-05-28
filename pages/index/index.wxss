@@ -1,0 +1,200 @@
+.header-card {
+  background: #e6b325;
+  border: 4rpx solid #807661;
+  border-radius: 16rpx;
+  padding: 32rpx 24rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.header-top {
+  margin-bottom: 8rpx;
+}
+
+.header-brand {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #5e4700;
+  font-family: 'PingFang SC', monospace;
+  letter-spacing: -0.02em;
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  background: #fef9ed;
+  border: 4rpx solid #807661;
+  border-radius: 8rpx;
+  padding: 8rpx 16rpx;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
+}
+
+.streak-icon {
+  font-size: 28rpx;
+  margin-right: 6rpx;
+}
+
+.streak-num {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #775a00;
+  font-family: 'PingFang SC', monospace;
+}
+
+.streak-unit {
+  font-size: 22rpx;
+  color: #775a00;
+  margin-left: 4rpx;
+}
+
+.header-sub {
+  font-size: 26rpx;
+  color: #5e4700;
+  opacity: 0.8;
+}
+
+.func-list {
+  margin-bottom: 8rpx;
+}
+
+.func-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.func-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #807661;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.3);
+}
+
+.math-icon {
+  background: #c7efa4;
+}
+
+.pinyin-icon {
+  background: #f3ab72;
+}
+
+.english-icon {
+  background: #b8e0ff;
+}
+
+.wrong-icon {
+  background: #ffdad6;
+}
+
+.recipe-icon {
+  background: #ffdcc3;
+}
+
+.func-icon {
+  font-size: 40rpx;
+}
+
+.func-info {
+  flex: 1;
+}
+
+.func-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  margin-bottom: 4rpx;
+  font-family: 'PingFang SC', monospace;
+}
+
+.func-desc {
+  font-size: 24rpx;
+  color: #4e4634;
+}
+
+.func-arrow {
+  font-size: 36rpx;
+  color: #807661;
+  font-weight: 700;
+}
+
+.habit-list {
+  margin-bottom: 8rpx;
+}
+
+.habit-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.habit-item.done {
+  background: #f8f3e7;
+  border-color: #47672c;
+  box-shadow: none;
+}
+
+.habit-icon-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #807661;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  background: #fef9ed;
+}
+
+.habit-icon-wrap.done-icon {
+  background: #c7efa4;
+  border-color: #47672c;
+}
+
+.habit-icon {
+  font-size: 36rpx;
+}
+
+.habit-info {
+  flex: 1;
+}
+
+.habit-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  font-family: 'PingFang SC', monospace;
+}
+
+.habit-name.line-through {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.habit-time {
+  font-size: 24rpx;
+  color: #4e4634;
+  margin-top: 4rpx;
+}
+
+.habit-status {
+  font-size: 36rpx;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.status-done {
+  color: #47672c;
+}
+
+.status-pending {
+  color: #807661;
+}

@@ -1,0 +1,82 @@
+.result-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40rpx 30rpx;
+}
+
+.result-card {
+  width: 100%;
+  background: #fef9ed;
+  border-radius: 16rpx;
+  padding: 60rpx 40rpx;
+  text-align: center;
+  border: 4rpx solid #807661;
+  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  margin-bottom: 60rpx;
+  font-family: 'PingFang SC', monospace;
+}
+
+.result-card.perfect {
+  background: #fef9ed;
+  border-color: #e6b325;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(230, 179, 37, 0.15), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.result-card.great {
+  background: #fef9ed;
+  border-color: #47672c;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(71, 103, 44, 0.1), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.result-card.good {
+  background: #fef9ed;
+  border-color: #885120;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(136, 81, 32, 0.1), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.result-card.tryagain {
+  background: #fef9ed;
+  border-color: #807661;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.result-emoji {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+}
+
+.result-score {
+  font-size: 72rpx;
+  font-weight: 800;
+  color: #775a00;
+  margin-bottom: 16rpx;
+  font-family: 'PingFang SC', monospace;
+}
+
+.result-msg {
+  font-size: 32rpx;
+  color: #775a00;
+  margin-bottom: 12rpx;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.result-time {
+  font-size: 26rpx;
+  color: #807661;
+  font-family: 'PingFang SC', monospace;
+}
+
+.btn-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.btn-group button {
+  width: 100% !important;
+}

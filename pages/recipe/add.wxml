@@ -1,0 +1,68 @@
+<view class="container">
+  <view class="form-card card">
+    <view class="card-title">
+      <text class="icon">📝</text>
+      <text>菜谱信息</text>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">菜名 *</text>
+      <input class="input-field" placeholder="例如: 番茄炒蛋" value="{{name}}" bindinput="onNameInput" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">成品照片</text>
+      <view class="image-list">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image class="image-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
+          <view class="remove-img" data-index="{{index}}" catchtap="onRemoveImage">✕</view>
+        </view>
+        <view class="image-add" bindtap="onChooseImage" wx:if="{{images.length < 2}}">
+          <text class="add-icon">+</text>
+          <text class="add-text">{{images.length}}/2</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">食材</text>
+      <textarea class="textarea-field" placeholder="食材，用逗号分隔" value="{{ingredients}}" bindinput="onIngredientsInput" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">做法</text>
+      <textarea class="textarea-field" placeholder="做法步骤" value="{{steps}}" bindinput="onStepsInput" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">分类</text>
+      <picker range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="time-picker">
+          {{categories[categoryIndex]}}
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">标签</text>
+      <input class="input-field" placeholder="例如: 下饭, 简单, 快手菜" value="{{tags}}" bindinput="onTagsInput" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">参考链接</text>
+      <input class="input-field" placeholder="粘贴小红书或哔哩哔哩链接" value="{{referenceLink}}" bindinput="onReferenceLinkInput" />
+      <view class="link-type-tag" wx:if="{{referenceLabel}}">
+        <text class="link-type-icon">{{referenceType === 'xiaohongshu' ? '📕' : referenceType === 'bilibili' ? '📺' : '🔗'}}</text>
+        <text class="link-type-text">{{referenceLabel}}</text>
+      </view>
+    </view>
+
+    <view class="form-group" wx:if="{{nutrition}}">
+      <text class="form-label">营养分析</text>
+      <view class="nutrition-text">{{nutrition}}</view>
+    </view>
+
+    <button class="btn-primary save-btn" bindtap="onSave">保存菜谱</button>
+  </view>
+</view>

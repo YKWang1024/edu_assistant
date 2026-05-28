@@ -1,0 +1,191 @@
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  margin-bottom: 24rpx;
+  font-family: 'PingFang SC', monospace;
+}
+
+.section-title .icon {
+  margin-right: 12rpx;
+  font-size: 36rpx;
+}
+
+.member-card {
+  margin-bottom: 16rpx;
+}
+
+.member-row {
+  padding: 16rpx 0;
+  border-bottom: 4rpx solid #d2c5ad;
+}
+
+.member-row:last-child {
+  border-bottom: none;
+}
+
+.member-display {
+  width: 100%;
+}
+
+.member-avatar {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 8rpx;
+  background: #e6b325;
+  color: #5e4700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  margin-right: 16rpx;
+  text-align: center;
+  line-height: 56rpx;
+  border: 4rpx solid #807661;
+  font-family: 'PingFang SC', monospace;
+}
+
+.member-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  font-family: 'PingFang SC', monospace;
+}
+
+.member-actions {
+  display: flex;
+  gap: 12rpx;
+  align-items: center;
+}
+
+.edit-btn {
+  font-size: 24rpx;
+  color: #775a00;
+  padding: 4rpx 12rpx;
+  border: 4rpx solid #807661;
+  border-radius: 8rpx;
+  background: #f2ede2;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.edit-btn:active {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: none;
+}
+
+.remove-btn {
+  font-size: 24rpx;
+  color: #ba1a1a;
+  padding: 4rpx 12rpx;
+  border: 4rpx solid #807661;
+  border-radius: 8rpx;
+  background: #ffdad6;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.remove-btn:active {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: none;
+}
+
+.member-edit {
+  padding: 4rpx 0;
+}
+
+.edit-row {
+  display: flex;
+  gap: 12rpx;
+  align-items: center;
+}
+
+.edit-input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.edit-btns {
+  display: flex;
+  gap: 10rpx;
+  align-items: center;
+}
+
+.save-btn {
+  font-size: 24rpx;
+  color: #0c2000;
+  padding: 8rpx 16rpx;
+  border: 4rpx solid #807661;
+  border-radius: 8rpx;
+  background: #c7efa4;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.save-btn:active {
+  transform: translate(4rpx, 4rpx);
+}
+
+.cancel-btn {
+  font-size: 24rpx;
+  color: #4e4634;
+  padding: 8rpx 16rpx;
+  border: 4rpx solid #807661;
+  border-radius: 8rpx;
+  background: #f2ede2;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.cancel-btn:active {
+  transform: translate(4rpx, 4rpx);
+}
+
+.add-member {
+  margin-bottom: 16rpx;
+}
+
+.add-row {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.add-input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.add-btn {
+  width: 140rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+  padding: 0;
+  font-size: 26rpx;
+}
+
+.tip-card {
+  padding: 24rpx;
+  background: #f2ede2;
+  border: 4rpx solid #807661;
+  border-radius: 16rpx;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
+}
+
+.tip-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #885120;
+  margin-bottom: 12rpx;
+  font-family: 'PingFang SC', monospace;
+}
+
+.tip-item {
+  font-size: 24rpx;
+  color: #4e4634;
+  line-height: 1.8;
+  font-family: 'PingFang SC', monospace;
+}

@@ -1,0 +1,109 @@
+<view class="container">
+  <view class="header-card">
+    <view class="header-top flex-between">
+      <view class="header-brand">宝贝成长</view>
+      <view class="streak-badge">
+        <text class="streak-icon">🔥</text>
+        <text class="streak-num">{{gameMinutes}}</text>
+        <text class="streak-unit">分钟</text>
+      </view>
+    </view>
+    <view class="header-sub">每天进步一点点，一块一块搭未来</view>
+  </view>
+
+  <view class="section-title">学习练习</view>
+  <view class="func-list">
+    <view class="func-item card" bindtap="onTapMath">
+      <view class="func-icon-wrap math-icon">
+        <text class="func-icon">🧮</text>
+      </view>
+      <view class="func-info">
+        <view class="func-name">数学速算</view>
+        <view class="func-desc">10/20以内加减法</view>
+      </view>
+      <view class="func-arrow">›</view>
+    </view>
+    <view class="func-item card" bindtap="onTapPinyin">
+      <view class="func-icon-wrap pinyin-icon">
+        <text class="func-icon">📖</text>
+      </view>
+      <view class="func-info">
+        <view class="func-name">语文拼音</view>
+        <view class="func-desc">识字/写字练习</view>
+      </view>
+      <view class="func-arrow">›</view>
+    </view>
+    <view class="func-item card" bindtap="onTapEnglish">
+      <view class="func-icon-wrap english-icon">
+        <text class="func-icon">🔤</text>
+      </view>
+      <view class="func-info">
+        <view class="func-name">英语测试</view>
+        <view class="func-desc">词汇/句型/易混词</view>
+      </view>
+      <view class="func-arrow">›</view>
+    </view>
+    <view class="func-item card" bindtap="onTapWrong">
+      <view class="func-icon-wrap wrong-icon">
+        <text class="func-icon">📝</text>
+      </view>
+      <view class="func-info">
+        <view class="func-name">错题本</view>
+        <view class="func-desc">自动收集错题</view>
+      </view>
+      <view class="func-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="section-title">习惯养成</view>
+  <view class="habit-list">
+    <view class="habit-item card {{todayChecked.school ? 'done' : ''}}" bindtap="onTapReward">
+      <view class="habit-icon-wrap {{todayChecked.school ? 'done-icon' : ''}}">
+        <text class="habit-icon">🏫</text>
+      </view>
+      <view class="habit-info flex-1">
+        <view class="habit-name {{todayChecked.school ? 'line-through' : ''}}">到校打卡</view>
+        <view class="habit-time">目标 8:10</view>
+      </view>
+      <view class="habit-status {{todayChecked.school ? 'status-done' : 'status-pending'}}">
+        {{todayChecked.school ? '✓' : '○'}}
+      </view>
+    </view>
+    <view class="habit-item card {{todayChecked.homework ? 'done' : ''}}" bindtap="onTapReward">
+      <view class="habit-icon-wrap {{todayChecked.homework ? 'done-icon' : ''}}">
+        <text class="habit-icon">📚</text>
+      </view>
+      <view class="habit-info flex-1">
+        <view class="habit-name {{todayChecked.homework ? 'line-through' : ''}}">作业打卡</view>
+        <view class="habit-time">目标 19:30</view>
+      </view>
+      <view class="habit-status {{todayChecked.homework ? 'status-done' : 'status-pending'}}">
+        {{todayChecked.homework ? '✓' : '○'}}
+      </view>
+    </view>
+    <view class="habit-item card {{todayChecked.sleep ? 'done' : ''}}" bindtap="onTapReward">
+      <view class="habit-icon-wrap {{todayChecked.sleep ? 'done-icon' : ''}}">
+        <text class="habit-icon">🌙</text>
+      </view>
+      <view class="habit-info flex-1">
+        <view class="habit-name {{todayChecked.sleep ? 'line-through' : ''}}">睡觉打卡</view>
+        <view class="habit-time">目标 21:00</view>
+      </view>
+      <view class="habit-status {{todayChecked.sleep ? 'status-done' : 'status-pending'}}">
+        {{todayChecked.sleep ? '✓' : '○'}}
+      </view>
+    </view>
+  </view>
+
+  <view class="section-title">饮食健康</view>
+  <view class="func-item card" bindtap="onTapRecipe">
+    <view class="func-icon-wrap recipe-icon">
+      <text class="func-icon">🍽️</text>
+    </view>
+    <view class="func-info">
+      <view class="func-name">菜谱管理</view>
+      <view class="func-desc">打卡评分推荐</view>
+    </view>
+    <view class="func-arrow">›</view>
+  </view>
+</view>

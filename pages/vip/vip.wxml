@@ -1,0 +1,31 @@
+<view class="container">
+  <view class="profile-header">
+    <view class="app-icon">🏠</view>
+    <view class="app-name">{{appName}}</view>
+    <view class="app-version">v{{version}}</view>
+  </view>
+
+  <view class="action-list">
+    <view class="action-item card" bindtap="onViewWrong">
+      <view class="flex-row">
+        <text class="action-icon">📝</text>
+        <text class="action-name">错题本</text>
+      </view>
+      <text class="action-arrow">›</text>
+    </view>
+    <view class="action-item card" bindtap="onGoSettings">
+      <view class="flex-row">
+        <text class="action-icon">⚙️</text>
+        <text class="action-name">设置（家庭成员管理）</text>
+      </view>
+      <text class="action-arrow">›</text>
+    </view>
+    <view class="action-item card" bindtap="onClearData">
+      <view class="flex-row">
+        <text class="action-icon">🗑️</text>
+        <text class="action-name danger-text">清除数据</text>
+      </view>
+      <text class="action-arrow">›</text>
+    </view>
+  </view>
+</view>

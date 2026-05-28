@@ -1,0 +1,60 @@
+<view class="container" wx:if="{{mode === 'select'}}">
+  <view class="select-header">
+    <view class="select-title">🧮 数学速算</view>
+    <view class="select-desc">选择难度开始练习</view>
+  </view>
+
+  <view class="level-list">
+    <view
+      class="level-item {{selectedLevel === item.key ? 'active' : ''}}"
+      wx:for="{{levels}}"
+      wx:key="key"
+      data-level="{{item.key}}"
+      bindtap="onSelectLevel"
+    >
+      <view class="level-icon">{{item.icon}}</view>
+      <view class="level-info">
+        <view class="level-name">{{item.name}}</view>
+        <view class="level-desc">{{item.desc}}</view>
+      </view>
+      <view class="level-check" wx:if="{{selectedLevel === item.key}}">✓</view>
+    </view>
+  </view>
+
+  <button class="btn-primary start-btn" bindtap="onStartPractice">开始练习</button>
+</view>
+
+<view class="container" wx:if="{{mode === 'practice'}}">
+  <view class="progress-bar">
+    <view class="progress-fill" style="width: {{(currentIndex + 1) / totalQuestions * 100}}%"></view>
+  </view>
+  <view class="progress-text">第 {{currentIndex + 1}} / {{totalQuestions}} 题</view>
+
+  <view class="question-card">
+    <view class="question-text">
+      <text class="num">{{questions[currentIndex].a}}</text>
+      <text class="operator">{{questions[currentIndex].operator}}</text>
+      <text class="num">{{questions[currentIndex].b}}</text>
+      <text class="operator">=</text>
+      <text class="num placeholder">?</text>
+    </view>
+  </view>
+
+  <view class="options-grid">
+    <view
+      class="option-btn {{selectedOption === index ? (currentCorrect ? 'correct' : 'wrong') : ''}} {{showResult && questions[currentIndex].options[index] === questions[currentIndex].answer ? 'show-correct' : ''}}"
+      wx:for="{{questions[currentIndex].options}}"
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="onSelectOption"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <view class="result-tip" wx:if="{{showResult}}">
+    <text class="tip-text {{currentCorrect ? 'tip-correct' : 'tip-wrong'}}">
+      {{currentCorrect ? '✓ 回答正确！' : '✗ 正确答案是 ' + questions[currentIndex].answer}}
+    </text>
+  </view>
+</view>

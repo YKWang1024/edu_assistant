@@ -1,0 +1,60 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/math/math",
+    "pages/math/result",
+    "pages/pinyin/pinyin",
+    "pages/english/english",
+    "pages/reward/reward",
+    "pages/reward/record",
+    "pages/recipe/recipe",
+    "pages/recipe/add",
+    "pages/recipe/detail",
+    "pages/recipe/rate",
+    "pages/account/account",
+    "pages/wrong/wrong",
+    "pages/vip/vip",
+    "pages/settings/settings",
+    "pages/webview/webview"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#775a00",
+    "navigationBarTitleText": "宝贝成长助手",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#807661",
+    "selectedColor": "#47672c",
+    "backgroundColor": "#fef9ed",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/account/account",
+        "text": "时间账户",
+        "iconPath": "images/account.png",
+        "selectedIconPath": "images/account-active.png"
+      },
+      {
+        "pagePath": "pages/recipe/recipe",
+        "text": "菜谱",
+        "iconPath": "images/recipe.png",
+        "selectedIconPath": "images/recipe-active.png"
+      },
+      {
+        "pagePath": "pages/vip/vip",
+        "text": "我的",
+        "iconPath": "images/user.png",
+        "selectedIconPath": "images/user-active.png"
+      }
+    ]
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

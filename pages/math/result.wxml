@@ -1,0 +1,13 @@
+<view class="container result-page">
+  <view class="result-card {{scoreLevel}}">
+    <view class="result-emoji">{{scoreEmoji}}</view>
+    <view class="result-score">{{correct}} / {{total}}</view>
+    <view class="result-msg">{{scoreMsg}}</view>
+    <view class="result-time">用时 {{time}} 秒</view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn-primary" bindtap="onTapRestart">再来一轮</button>
+    <button class="btn-secondary" bindtap="onTapBack">返回首页</button>
+  </view>
+</view>

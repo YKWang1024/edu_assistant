@@ -1,0 +1,55 @@
+<view class="container">
+  <view class="practice-mode" wx:if="{{practiceMode}}">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{(practiceIndex + 1) / practiceQuestions.length * 100}}%"></view>
+    </view>
+    <view class="progress-text">错题复习 {{practiceIndex + 1}} / {{practiceQuestions.length}}</view>
+    <view class="question-card card">
+      <view class="question-type-tag">{{practiceQuestions[practiceIndex].typeLabel}}</view>
+      <view class="question-text" wx:if="{{practiceQuestions[practiceIndex].type === 'math'}}">
+        <text class="num">{{practiceQuestions[practiceIndex].a}}</text>
+        <text class="operator">{{practiceQuestions[practiceIndex].operator}}</text>
+        <text class="num">{{practiceQuestions[practiceIndex].b}}</text>
+        <text class="operator">=</text>
+        <text class="num placeholder">?</text>
+      </view>
+      <view class="question-text" wx:else>
+        <text class="question-content">{{practiceQuestions[practiceIndex].question}}</text>
+        <text class="question-hint">请填写正确答案</text>
+      </view>
+    </view>
+    <view class="answer-area">
+      <input class="answer-input" type="{{practiceQuestions[practiceIndex].type === 'math' ? 'number' : 'text'}}" placeholder="请输入答案" value="{{practiceAnswer}}" bindinput="onPracticeInput" bindconfirm="onSubmitPractice" focus="{{true}}" />
+      <button class="btn-primary submit-btn" bindtap="onSubmitPractice">确定</button>
+    </view>
+  </view>
+  <view class="list-mode" wx:if="{{!practiceMode}}">
+    <view class="header-bar flex-between">
+      <view class="wrong-count">共 {{wrongList.length}} 道错题</view>
+      <view class="header-actions">
+        <view class="action-text" bindtap="onStartPractice" wx:if="{{wrongList.length > 0}}">复习错题</view>
+        <view class="action-text danger" bindtap="onClearAll" wx:if="{{wrongList.length > 0}}">清空</view>
+      </view>
+    </view>
+    <view class="empty-tip" wx:if="{{wrongList.length === 0}}">暂无错题，继续保持！🎉</view>
+    <view class="wrong-list" wx:if="{{wrongList.length > 0}}">
+      <view class="wrong-item card" wx:for="{{wrongList}}" wx:key="index">
+        <view class="wrong-header">
+          <view class="question-type-tag">{{item.typeLabel}}</view>
+          <view class="wrong-question" wx:if="{{item.type === 'math'}}">{{item.a}} {{item.operator}} {{item.b}} = {{item.answer}}</view>
+          <view class="wrong-question" wx:else>
+            <text class="q-text">{{item.question}}</text>
+            <text class="a-text">答案: {{item.answer}}</text>
+          </view>
+        </view>
+        <view class="wrong-footer flex-between">
+          <view class="wrong-info">
+            <text class="wrong-date">{{item.date || item.lastDate}}</text>
+            <text class="wrong-count-badge">错 {{item.count || 1}} 次</text>
+          </view>
+          <view class="delete-btn" data-index="{{index}}" catchtap="onDeleteOne">删除</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

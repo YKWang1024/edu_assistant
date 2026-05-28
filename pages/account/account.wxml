@@ -1,0 +1,47 @@
+<view class="container">
+  <view class="balance-card">
+    <view class="balance-bg"></view>
+    <view class="balance-content">
+      <view class="balance-label">🎮 游戏时间余额</view>
+      <view class="balance-value">{{gameMinutes}} <text class="balance-unit">分钟</text></view>
+      <button class="use-btn" bindtap="onUseTime">使用时间</button>
+    </view>
+  </view>
+
+  <view class="stats-row">
+    <view class="stat-item card">
+      <view class="stat-value positive">+{{todayEarned}}</view>
+      <view class="stat-label">今日获得</view>
+    </view>
+    <view class="stat-item card">
+      <view class="stat-value negative">-{{todayDeducted}}</view>
+      <view class="stat-label">今日扣除</view>
+    </view>
+    <view class="stat-item card">
+      <view class="stat-value">{{weekEarned}}</view>
+      <view class="stat-label">本周净增</view>
+    </view>
+  </view>
+
+  <view class="section-title">最近记录</view>
+  <view class="empty-tip" wx:if="{{recentRecords.length === 0}}">
+    暂无记录，快去打卡吧！
+  </view>
+  <view class="record-list" wx:if="{{recentRecords.length > 0}}">
+    <view class="record-item card" wx:for="{{recentRecords}}" wx:key="index">
+      <view class="record-header flex-between">
+        <view class="flex-row">
+          <text class="record-icon">{{typeIcons[item.type]}}</text>
+          <text class="record-type">{{typeNames[item.type]}}</text>
+        </view>
+        <text class="record-date">{{item.date}} {{item.time}}</text>
+      </view>
+      <view class="record-detail">
+        <text class="detail-text">实际 {{item.actualTime}} / 目标 {{item.targetTime}}</text>
+        <text class="detail-reward {{item.reward > 0 ? 'positive' : item.reward < 0 ? 'negative' : 'neutral'}}">
+          {{item.reward > 0 ? '+' : ''}}{{item.reward}} 分钟
+        </text>
+      </view>
+    </view>
+  </view>
+</view>

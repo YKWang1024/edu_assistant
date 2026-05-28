@@ -1,0 +1,212 @@
+.select-header {
+  text-align: center;
+  padding: 48rpx 0 36rpx;
+}
+
+.select-title {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #775a00;
+  margin-bottom: 12rpx;
+  font-family: 'PingFang SC', monospace;
+  letter-spacing: -0.02em;
+}
+
+.select-desc {
+  font-size: 26rpx;
+  color: #807661;
+  font-family: 'PingFang SC', monospace;
+}
+
+.level-list {
+  margin-bottom: 40rpx;
+}
+
+.level-item {
+  display: flex;
+  align-items: center;
+  background: #fef9ed;
+  border-radius: 12rpx;
+  padding: 30rpx 24rpx;
+  margin-bottom: 16rpx;
+  border: 4rpx solid #807661;
+  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  transition: all 0.15s;
+  font-family: 'PingFang SC', monospace;
+}
+
+.level-item:active {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: none;
+}
+
+.level-item.active {
+  border-color: #e6b325;
+  background: #fef9ed;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.level-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.level-info {
+  flex: 1;
+}
+
+.level-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #775a00;
+  margin-bottom: 4rpx;
+  font-family: 'PingFang SC', monospace;
+}
+
+.level-desc {
+  font-size: 24rpx;
+  color: #807661;
+  font-family: 'PingFang SC', monospace;
+}
+
+.level-check {
+  font-size: 32rpx;
+  color: #e6b325;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.start-btn {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  height: 16rpx;
+  background: #dedace;
+  border-radius: 4rpx;
+  border: 4rpx solid #807661;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #47672c;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  text-align: center;
+  color: #807661;
+  font-size: 26rpx;
+  margin-bottom: 40rpx;
+  font-family: 'PingFang SC', monospace;
+  font-weight: 700;
+}
+
+.question-card {
+  background: #fef9ed;
+  border-radius: 16rpx;
+  padding: 60rpx 30rpx;
+  text-align: center;
+  border: 4rpx solid #807661;
+  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  margin-bottom: 50rpx;
+}
+
+.question-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.num {
+  font-size: 80rpx;
+  font-weight: 700;
+  color: #775a00;
+  font-family: 'PingFang SC', monospace;
+}
+
+.operator {
+  font-size: 60rpx;
+  font-weight: 700;
+  color: #e6b325;
+  margin: 0 8rpx;
+  font-family: 'PingFang SC', monospace;
+}
+
+.placeholder {
+  color: #d2c5ad;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  padding: 0 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.option-btn {
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fef9ed;
+  border: 4rpx solid #807661;
+  border-radius: 12rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #775a00;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.4), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  font-family: 'PingFang SC', monospace;
+  transition: all 0.1s;
+}
+
+.option-btn:active {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(0, 0, 0, 0.1);
+}
+
+.option-btn.correct {
+  background: #c7efa4;
+  border-color: #47672c;
+  color: #47672c;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.3), 8rpx 8rpx 0rpx 0rpx rgba(71, 103, 44, 0.2);
+}
+
+.option-btn.wrong {
+  background: #f3ab72;
+  border-color: #885120;
+  color: #885120;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(0, 0, 0, 0.1), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.option-btn.show-correct {
+  background: #c7efa4;
+  border-color: #47672c;
+  color: #47672c;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.3), 8rpx 8rpx 0rpx 0rpx rgba(71, 103, 44, 0.2);
+}
+
+.result-tip {
+  text-align: center;
+  padding: 10rpx 0;
+}
+
+.tip-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.tip-correct {
+  color: #47672c;
+}
+
+.tip-wrong {
+  color: #885120;
+}

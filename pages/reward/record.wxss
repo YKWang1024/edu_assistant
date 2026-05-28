@@ -1,0 +1,53 @@
+.record-item {
+  margin-bottom: 20rpx;
+}
+
+.record-header {
+  margin-bottom: 6rpx;
+}
+
+.record-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.record-type {
+  font-weight: 700;
+  font-size: 30rpx;
+  color: #1d1c15;
+  font-family: 'PingFang SC', monospace;
+}
+
+.record-date {
+  font-size: 24rpx;
+  color: #807661;
+  font-family: 'PingFang SC', monospace;
+}
+
+.record-body {
+  padding-top: 6rpx;
+}
+
+.record-row {
+  padding: 8rpx 0;
+}
+
+.record-label {
+  font-size: 26rpx;
+  color: #4e4634;
+  font-family: 'PingFang SC', monospace;
+}
+
+.record-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  font-family: 'PingFang SC', monospace;
+}
+
+.record-value.positive {
+  color: #47672c;
+}
+
+.record-value.negative {
+  color: #885120;
+}

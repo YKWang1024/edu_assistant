@@ -1,0 +1,112 @@
+<view class="container" wx:if="{{recipe}}">
+  <view class="detail-card card">
+    <view class="detail-images" wx:if="{{displayImages.length > 0}}">
+      <swiper class="image-swiper" indicator-dots="{{displayImages.length > 1}}" indicator-color="rgba(128,118,97,0.3)" indicator-active-color="#e6b325" current="{{currentImageIndex}}" bindchange="onSwiperChange">
+        <swiper-item wx:for="{{displayImages}}" wx:key="*this">
+          <image class="detail-img" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
+        </swiper-item>
+      </swiper>
+      <view class="image-counter" wx:if="{{displayImages.length > 1}}">{{currentImageIndex + 1}}/{{displayImages.length}}</view>
+    </view>
+    <view class="detail-name">{{recipe.name}}</view>
+    <view class="detail-category">{{recipe.category}}</view>
+    <view class="detail-score" wx:if="{{recipe.avgScore > 0}}">
+      ⭐ 综合评分: {{recipe.avgScore}} 分
+    </view>
+    <view class="detail-score" wx:else>
+      暂无评分
+    </view>
+  </view>
+
+  <view class="member-scores card" wx:if="{{recipe.memberAvgScores}}">
+    <view class="card-title">
+      <text class="icon">👨‍👩‍👧</text>
+      <text>家庭成员评分</text>
+    </view>
+    <view class="member-score-list">
+      <view class="member-score-row flex-between" wx:for="{{recipe.memberAvgScores}}" wx:for-index="memberName" wx:for-item="memberScore" wx:key="memberName">
+        <view class="flex-row">
+          <text class="score-avatar">{{memberName[0]}}</text>
+          <text class="score-name">{{memberName}}</text>
+        </view>
+        <view class="score-right">
+          <view class="score-stars">
+            <text class="star-filled" wx:for="{{5}}" wx:for-item="s" wx:key="*this">{{s <= memberScore ? '★' : '☆'}}</text>
+          </view>
+          <text class="score-value">{{memberScore}} 分</text>
+          <text class="score-label">{{memberScore >= 4 ? '爱吃' : memberScore >= 3 ? '一般' : '不爱吃'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card card">
+    <view class="card-title">
+      <text class="icon">🥬</text>
+      <text>食材</text>
+    </view>
+    <view class="info-content">{{recipe.ingredients || '暂无'}}</view>
+  </view>
+
+  <view class="info-card card" wx:if="{{recipe.steps}}">
+    <view class="card-title">
+      <text class="icon">👨‍🍳</text>
+      <text>做法</text>
+    </view>
+    <view class="info-content steps">{{recipe.steps}}</view>
+  </view>
+
+  <view class="reference-card card" wx:if="{{recipe.referenceLink}}" bindtap="onOpenReference">
+    <view class="card-title">
+      <text class="icon">{{recipe.referenceType === 'xiaohongshu' ? '📕' : recipe.referenceType === 'bilibili' ? '📺' : '🔗'}}</text>
+      <text>参考教程</text>
+    </view>
+    <view class="reference-info">
+      <view class="reference-platform">
+        <text class="platform-badge {{recipe.referenceType}}">{{recipe.referenceLabel || '链接'}}</text>
+      </view>
+      <view class="reference-link-text">{{recipe.referenceLink}}</view>
+      <view class="reference-hint">点击复制链接，在浏览器或APP中打开</view>
+    </view>
+  </view>
+
+  <view class="info-card card" wx:if="{{recipe.nutrition}}">
+    <view class="card-title">
+      <text class="icon">🥗</text>
+      <text>营养分析</text>
+    </view>
+    <view class="info-content nutrition">{{recipe.nutrition}}</view>
+  </view>
+
+  <view class="info-card card" wx:if="{{recipe.tags}}">
+    <view class="card-title">
+      <text class="icon">🏷️</text>
+      <text>标签</text>
+    </view>
+    <view class="info-content">{{recipe.tags}}</view>
+  </view>
+
+  <view class="info-card card" wx:if="{{recipe.ratings && recipe.ratings.length > 0}}">
+    <view class="card-title">
+      <text class="icon">📊</text>
+      <text>评分记录 ({{recipe.ratings.length}}次)</text>
+    </view>
+    <view class="rating-list">
+      <view class="rating-item" wx:for="{{recipe.ratings}}" wx:key="index">
+        <view class="flex-between">
+          <view class="flex-row">
+            <text class="rating-member">{{item.member || '未知'}}</text>
+            <text class="rating-date">{{item.date}}</text>
+          </view>
+          <text class="rating-score">⭐ {{item.score}} 分</text>
+        </view>
+        <view class="rating-comment" wx:if="{{item.comment}}">{{item.comment}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn-primary" bindtap="onRateRecipe">给这道菜打分</button>
+    <button class="btn-danger" bindtap="onDeleteRecipe">删除菜谱</button>
+  </view>
+</view>

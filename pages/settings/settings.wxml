@@ -1,0 +1,46 @@
+<view class="container">
+  <view class="section-title">
+    <text class="icon">👨‍👩‍👧</text>
+    <text>家庭成员管理</text>
+  </view>
+
+  <view class="member-card card">
+    <view class="member-list">
+      <view class="member-row" wx:for="{{familyMembers}}" wx:key="index">
+        <view class="member-display flex-between" wx:if="{{editingIndex !== index}}">
+          <view class="flex-row" data-index="{{index}}" bindtap="onEditMember">
+            <text class="member-avatar">{{item[0]}}</text>
+            <text class="member-name">{{item}}</text>
+          </view>
+          <view class="member-actions">
+            <view class="edit-btn" data-index="{{index}}" catchtap="onEditMember">修改</view>
+            <view class="remove-btn" data-index="{{index}}" catchtap="onRemoveMember">删除</view>
+          </view>
+        </view>
+        <view class="member-edit" wx:if="{{editingIndex === index}}">
+          <view class="edit-row">
+            <input class="input-field edit-input" value="{{editingName}}" bindinput="onEditingInput" bindconfirm="onSaveEdit" focus="{{true}}" />
+            <view class="edit-btns">
+              <view class="save-btn" catchtap="onSaveEdit">保存</view>
+              <view class="cancel-btn" catchtap="onCancelEdit">取消</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="add-member card">
+    <view class="add-row">
+      <input class="input-field add-input" placeholder="输入成员名称" value="{{newMemberName}}" bindinput="onNewMemberInput" bindconfirm="onAddMember" />
+      <button class="btn-primary add-btn" bindtap="onAddMember">添加</button>
+    </view>
+  </view>
+
+  <view class="tip-card card">
+    <view class="tip-title">💡 说明</view>
+    <view class="tip-item">点击成员名称或"修改"按钮可修改名称</view>
+    <view class="tip-item">修改名称后，菜谱评分记录会自动同步更新</view>
+    <view class="tip-item">可以自由添加，如：爷爷、奶奶、外公等</view>
+  </view>
+</view>
