@@ -1,3 +1,101 @@
+.btn-secondary {
+  background: #e6b325;
+  color: #775a00;
+  border: 4rpx solid #807661;
+  border-radius: 8rpx;
+  padding: 16rpx 30rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  margin-top: 12rpx;
+  box-shadow: 4rpx 4rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+}
+
+.btn-secondary:active {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: none;
+}
+
+.analyze-btn {
+  margin-left: auto;
+  display: block;
+}
+
+.calories-card {
+  background: #fff9e6;
+  border: 4rpx solid #e6b325;
+  margin-bottom: 28rpx;
+}
+
+.calories-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx;
+  border-bottom: 2rpx dashed #e6b325;
+}
+
+.calories-icon {
+  font-size: 36rpx;
+}
+
+.calories-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #775a00;
+}
+
+.calories-content {
+  padding: 20rpx;
+}
+
+.calories-main {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.calories-value {
+  font-size: 64rpx;
+  font-weight: 700;
+  color: #885120;
+}
+
+.calories-unit {
+  font-size: 28rpx;
+  color: #807661;
+  margin-left: 8rpx;
+}
+
+.calories-details {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx dashed #e6b325;
+}
+
+.detail-item {
+  text-align: center;
+}
+
+.detail-label {
+  display: block;
+  font-size: 24rpx;
+  color: #807661;
+  margin-bottom: 6rpx;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #4e4634;
+}
+
+.calories-confidence {
+  text-align: center;
+  font-size: 22rpx;
+  color: #807661;
+  margin-top: 12rpx;
+}
+
 .image-list {
   display: flex;
   gap: 16rpx;

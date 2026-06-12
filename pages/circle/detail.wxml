@@ -1,0 +1,53 @@
+<view class="container" wx:if="{{recipe}}">
+  <view class="recipe-header">
+    <view class="user-bar">
+      <image wx:if="{{recipe.userAvatar}}" src="{{recipe.userAvatar}}" class="user-avatar" />
+      <view wx:else class="user-avatar-placeholder">👤</view>
+      <view class="user-info">
+        <text class="user-name">{{recipe.userName || '匿名用户'}}</text>
+        <text class="share-time">{{recipe.createdAt ? recipe.createdAt.split('T')[0] : ''}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="recipe-images">
+    <swiper class="image-swiper" indicator-dots="{{recipe.images && recipe.images.length > 1}}" autoplay circular>
+      <swiper-item wx:for="{{recipe.images || [recipe.imageUrl]}}" wx:key="index">
+        <image src="{{item}}" mode="aspectFill" class="swiper-image" bindtap="onPreviewImage" data-src="{{item}}" />
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <view class="recipe-content">
+    <view class="recipe-title-row">
+      <text class="recipe-name">{{recipe.name}}</text>
+      <text class="recipe-category">{{recipe.category}}</text>
+    </view>
+
+    <view class="recipe-stats">
+      <view class="stat-item">
+        <text class="stat-icon">⭐</text>
+        <text class="stat-value">{{recipe.avgScore || 0}}分</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-icon">👨🍳</text>
+        <text class="stat-value">{{recipe.ratings ? recipe.ratings.length : 0}}人评分</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">食材</text>
+      <text class="section-content">{{recipe.ingredients || '暂无'}}</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">做法</text>
+      <text class="section-content">{{recipe.steps || '暂无'}}</text>
+    </view>
+
+    <view class="section" wx:if="{{recipe.tags}}">
+      <text class="section-title">标签</text>
+      <text class="section-content">{{recipe.tags}}</text>
+    </view>
+  </view>
+</view>

@@ -8,6 +8,39 @@
     <view class="form-group">
       <text class="form-label">菜名 *</text>
       <input class="input-field" placeholder="例如: 番茄炒蛋" value="{{name}}" bindinput="onNameInput" />
+      <button class="btn-secondary analyze-btn" bindtap="onAnalyzeCalories" loading="{{analyzing}}" wx:if="{{name}}">
+        🔥 AI识别热量
+      </button>
+    </view>
+
+    <view class="calories-card card" wx:if="{{calories}}">
+      <view class="calories-header">
+        <text class="calories-icon">🔥</text>
+        <text class="calories-title">营养信息</text>
+      </view>
+      <view class="calories-content">
+        <view class="calories-main">
+          <text class="calories-value">{{calories.calories}}</text>
+          <text class="calories-unit">{{calories.unit}}</text>
+        </view>
+        <view class="calories-details">
+          <view class="detail-item">
+            <text class="detail-label">蛋白质</text>
+            <text class="detail-value">{{calories.protein}}g</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">脂肪</text>
+            <text class="detail-value">{{calories.fat}}g</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">碳水</text>
+            <text class="detail-value">{{calories.carbs}}g</text>
+          </view>
+        </view>
+        <view class="calories-confidence" wx:if="{{calories.confidence}}">
+          识别置信度: {{calories.confidence}}%
+        </view>
+      </view>
     </view>
 
     <view class="form-group">

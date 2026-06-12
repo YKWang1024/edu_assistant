@@ -15,7 +15,10 @@
     "pages/wrong/wrong",
     "pages/vip/vip",
     "pages/settings/settings",
-    "pages/webview/webview"
+    "pages/webview/webview",
+    "pages/auth/auth",
+    "pages/circle/circle",
+    "pages/circle/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -36,10 +39,10 @@
         "selectedIconPath": "images/home-active.png"
       },
       {
-        "pagePath": "pages/account/account",
-        "text": "时间账户",
-        "iconPath": "images/account.png",
-        "selectedIconPath": "images/account-active.png"
+        "pagePath": "pages/circle/circle",
+        "text": "菜友圈",
+        "iconPath": "images/circle.png",
+        "selectedIconPath": "images/circle-active.png"
       },
       {
         "pagePath": "pages/recipe/recipe",

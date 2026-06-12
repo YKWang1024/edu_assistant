@@ -31,7 +31,9 @@ Page({
     images: [],
     referenceLink: '',
     referenceType: '',
-    referenceLabel: ''
+    referenceLabel: '',
+    calories: null,
+    analyzing: false
   },
 
   onNameInput: function (e) {
@@ -108,6 +110,36 @@ Page({
     })
   },
 
+  onAnalyzeCalories: function () {
+    var foodName = this.data.name.trim()
+    if (!foodName) {
+      wx.showToast({ title: '请先输入菜名', icon: 'none' })
+      return
+    }
+
+    this.setData({ analyzing: true })
+
+    wx.cloud.callFunction({
+      name: 'aiRecognize',
+      data: {
+        foodName: foodName
+      },
+      success: function (res) {
+        if (res.result.success && res.result.data) {
+          this.setData({ calories: res.result.data })
+        } else {
+          wx.showToast({ title: '识别失败', icon: 'none' })
+        }
+      }.bind(this),
+      fail: function () {
+        wx.showToast({ title: '识别失败', icon: 'none' })
+      },
+      complete: function () {
+        this.setData({ analyzing: false })
+      }.bind(this)
+    })
+  },
+
   onSave: function () {
     var name = this.data.name.trim()
     if (!name) {
@@ -127,6 +159,7 @@ Page({
       referenceLink: this.data.referenceLink.trim(),
       referenceType: this.data.referenceType,
       referenceLabel: this.data.referenceLabel,
+      calories: this.data.calories,
       ratings: [],
       avgScore: 0,
       createDate: util.getTodayStr(),

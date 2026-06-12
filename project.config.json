@@ -45,7 +45,8 @@
     "condition": false,
     "swc": false,
     "disableSWC": true,
-    "lazyCodeLoading": "requiredComponents"
+    "lazyCodeLoading": "requiredComponents",
+    "cloudfunctionRoot": "cloudfunctions/"
   },
   "compileType": "miniprogram",
   "libVersion": "3.3.4",
@@ -53,5 +54,9 @@
   "projectname": "baby-growth-helper",
   "condition": {},
   "simulatorPluginLibVersion": {},
-  "editorSetting": {}
+  "editorSetting": {},
+  "cloud": {
+    "envId": "cloud1-d0gnc8vm2aae15ae5"
+  },
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }

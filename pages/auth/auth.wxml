@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="auth-card card">
+    <view class="auth-header">
+      <view class="title">{{isRegister ? '注册账号' : '登录'}}</view>
+      <view class="subtitle">{{isRegister ? '创建您的家庭菜谱账户' : '欢迎回来'}}</view>
+    </view>
+
+    <view class="form-group" wx:if="{{isRegister}}">
+      <view class="form-label">昵称</view>
+      <input class="form-input" placeholder="请输入您的昵称" value="{{nickname}}" bindinput="onNicknameInput" />
+    </view>
+
+    <view class="form-group" wx:if="{{isRegister}}">
+      <view class="form-label">头像</view>
+      <view class="avatar-upload" bindtap="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" class="avatar-preview" />
+        <view wx:else class="avatar-placeholder">
+          <text class="upload-icon">📷</text>
+          <text class="upload-text">点击上传</text>
+        </view>
+      </view>
+    </view>
+
+    <button class="btn-primary auth-btn" bindtap="{{isRegister ? 'onRegister' : 'onLogin'}}" loading="{{loading}}">
+      {{isRegister ? '注册' : '登录'}}
+    </button>
+
+    <view class="switch-mode" bindtap="switchMode">
+      {{isRegister ? '已有账号？立即登录' : '还没有账号？立即注册'}}
+    </view>
+  </view>
+</view>
