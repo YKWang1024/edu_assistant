@@ -1,31 +1,38 @@
+// 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-const db = cloud.database()
-
+// 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const openid = wxContext.OPENID
 
   try {
-    const userRes = await db.collection('users').where({ openid: openid }).get()
-    if (userRes.data.length > 0) {
+    const db = cloud.database()
+    const openid = wxContext.OPENID
+
+    // 查找用户
+    const userResult = await db.collection('users').where({
+      openid: openid
+    }).get()
+
+    if (userResult.data && userResult.data.length > 0) {
       return {
         success: true,
-        userInfo: userRes.data[0]
+        data: userResult.data[0],
+        message: '登录成功'
       }
     } else {
       return {
-        success: true,
-        userInfo: null,
-        message: '用户未注册'
+        success: false,
+        message: '用户未注册，请先注册'
       }
     }
-  } catch (e) {
+  } catch (err) {
     return {
       success: false,
-      message: e.message
+      message: '登录失败',
+      error: err.message
     }
   }
 }

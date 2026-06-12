@@ -1,15 +1,7 @@
 {
   "name": "getFriendRecipes",
   "version": "1.0.0",
-  "description": "获取菜友圈菜谱",
+  "description": "获取菜友圈菜谱云函数",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
+  "dependencies": {}
 }

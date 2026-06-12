@@ -1,64 +1,67 @@
+// 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-const db = cloud.database()
-
+// 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const openid = wxContext.OPENID
 
   try {
+    const db = cloud.database()
+    const openid = wxContext.OPENID
     const { nickname, avatarUrl } = event
 
-    const userRes = await db.collection('users').where({ openid: openid }).get()
-    if (userRes.data.length > 0) {
+    // 检查用户是否已注册
+    const existUser = await db.collection('users').where({
+      openid: openid
+    }).get()
+
+    if (existUser.data && existUser.data.length > 0) {
       return {
         success: false,
         message: '用户已注册'
       }
     }
 
-    const familyId = 'family_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-
-    await db.collection('users').add({
+    // 创建家庭
+    const familyResult = await db.collection('families').add({
       data: {
-        openid: openid,
-        nickname: nickname,
-        avatarUrl: avatarUrl,
-        familyId: familyId,
-        familyRole: 'owner',
-        createdAt: db.serverDate()
+        createdAt: new Date(),
+        members: [{
+          openid: openid,
+          role: 'admin',
+          joinedAt: new Date()
+        }]
       }
     })
 
-    await db.collection('families').add({
+    // 创建用户
+    const userResult = await db.collection('users').add({
       data: {
-        _id: familyId,
-        members: [{
-          openid: openid,
-          nickname: nickname,
-          role: 'owner'
-        }],
-        createdAt: db.serverDate()
+        openid: openid,
+        nickname: nickname || '用户',
+        avatarUrl: avatarUrl || '',
+        familyId: familyResult._id,
+        familyRole: 'admin',
+        createdAt: new Date()
       }
     })
 
     return {
       success: true,
-      userInfo: {
-        openid: openid,
-        nickname: nickname,
-        avatarUrl: avatarUrl,
-        familyId: familyId,
-        familyRole: 'owner'
-      },
-      familyId: familyId
+      message: '注册成功',
+      data: {
+        userId: userResult._id,
+        familyId: familyResult._id,
+        openid: openid
+      }
     }
-  } catch (e) {
+  } catch (err) {
     return {
       success: false,
-      message: e.message
+      message: '注册失败',
+      error: err.message
     }
   }
 }

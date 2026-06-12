@@ -1,0 +1,62 @@
+{
+  "envId": "cloud1-d0gnc8vm2aae15ae5",
+  "functionRoot": "cloudfunctions",
+  "functions": [
+    {
+      "name": "login",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "register",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "addFamilyMember",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "getFamilyRecipes",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "shareRecipe",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "getFriendRecipes",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "aiRecognize",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    }
+  ]
+}

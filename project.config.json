@@ -45,11 +45,11 @@
     "condition": false,
     "swc": false,
     "disableSWC": true,
-    "lazyCodeLoading": "requiredComponents",
-    "cloudfunctionRoot": "cloudfunctions/"
+    "lazyCodeLoading": "requiredComponents"
   },
+  "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",
-  "libVersion": "3.3.4",
+  "libVersion": "3.16.0",
   "appid": "wxd38ea3f772d7f157",
   "projectname": "baby-growth-helper",
   "condition": {},
@@ -57,6 +57,5 @@
   "editorSetting": {},
   "cloud": {
     "envId": "cloud1-d0gnc8vm2aae15ae5"
-  },
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
+  }
 }

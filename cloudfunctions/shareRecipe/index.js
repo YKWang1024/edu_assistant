@@ -1,36 +1,42 @@
+// 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-const db = cloud.database()
-
+// 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const openid = wxContext.OPENID
 
   try {
-    const { recipe, isPublic } = event
+    const db = cloud.database()
+    const openid = wxContext.OPENID
+    const { recipeId, shareMessage } = event
 
-    const userRes = await db.collection('users').where({ openid: openid }).get()
-    if (userRes.data.length === 0) {
+    // 验证菜谱归属
+    const recipe = await db.collection('recipes').doc(recipeId).get()
+
+    if (!recipe.data) {
       return {
         success: false,
-        message: '用户未注册'
+        message: '菜谱不存在'
       }
     }
 
-    const user = userRes.data[0]
+    if (recipe.data.userId !== openid) {
+      return {
+        success: false,
+        message: '只能分享自己的菜谱'
+      }
+    }
 
-    await db.collection('recipes').add({
+    // 更新为公开分享
+    await db.collection('recipes').doc(recipeId).update({
       data: {
-        ...recipe,
-        familyId: user.familyId,
-        userId: openid,
-        userName: user.nickname,
-        userAvatar: user.avatarUrl,
+        isPublic: true,
         isShared: true,
-        isPublic: isPublic,
-        createdAt: db.serverDate()
+        sharedAt: new Date(),
+        shareMessage: shareMessage || '',
+        shareCount: db.command.inc(1)
       }
     })
 
@@ -38,10 +44,11 @@ exports.main = async (event, context) => {
       success: true,
       message: '分享成功'
     }
-  } catch (e) {
+  } catch (err) {
     return {
       success: false,
-      message: e.message
+      message: '分享失败',
+      error: err.message
     }
   }
 }

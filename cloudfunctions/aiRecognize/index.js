@@ -1,97 +1,119 @@
+// 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-const db = cloud.database()
+// 常见食物营养数据（每100g）
+const FOOD_DATABASE = {
+  // 主食类
+  '米饭': { calories: 116, protein: 2.6, fat: 0.3, carbs: 25.9 },
+  '面条': { calories: 284, protein: 8.3, fat: 0.8, carbs: 59.5 },
+  '馒头': { calories: 223, protein: 7.0, fat: 1.1, carbs: 47.0 },
+  '包子': { calories: 227, protein: 9.1, fat: 6.4, carbs: 36.0 },
+  '饺子': { calories: 242, protein: 12.3, fat: 12.0, carbs: 26.0 },
+  '面包': { calories: 265, protein: 8.0, fat: 3.2, carbs: 50.0 },
 
-const foodCalories = {
-  '米饭': { calories: 130, unit: '千卡/100克', protein: 2.7, fat: 0.3, carbs: 28 },
-  '面条': { calories: 110, unit: '千卡/100克', protein: 2.7, fat: 0.7, carbs: 24 },
-  '馒头': { calories: 221, unit: '千卡/100克', protein: 7, fat: 1.1, carbs: 48 },
-  '鸡蛋': { calories: 143, unit: '千卡/100克', protein: 13.3, fat: 8.8, carbs: 2.8 },
-  '鸡胸肉': { calories: 165, unit: '千卡/100克', protein: 22.4, fat: 5, carbs: 0 },
-  '牛肉': { calories: 125, unit: '千卡/100克', protein: 20.2, fat: 4.2, carbs: 1.2 },
-  '猪肉': { calories: 204, unit: '千卡/100克', protein: 26.3, fat: 7.9, carbs: 1.5 },
-  '鱼': { calories: 120, unit: '千卡/100克', protein: 20.1, fat: 3.2, carbs: 0.5 },
-  '虾': { calories: 80, unit: '千卡/100克', protein: 18.6, fat: 0.8, carbs: 2.8 },
-  '豆腐': { calories: 69, unit: '千卡/100克', protein: 6.2, fat: 2.5, carbs: 2.6 },
-  '白菜': { calories: 17, unit: '千卡/100克', protein: 1.5, fat: 0.3, carbs: 3.2 },
-  '菠菜': { calories: 28, unit: '千卡/100克', protein: 2.6, fat: 0.3, carbs: 4.5 },
-  '西兰花': { calories: 34, unit: '千卡/100克', protein: 2.8, fat: 0.4, carbs: 6.6 },
-  '胡萝卜': { calories: 41, unit: '千卡/100克', protein: 1, fat: 0.2, carbs: 9.6 },
-  '土豆': { calories: 77, unit: '千卡/100克', protein: 2.6, fat: 0.2, carbs: 17.8 },
-  '西红柿': { calories: 19, unit: '千卡/100克', protein: 0.9, fat: 0.2, carbs: 4 },
-  '黄瓜': { calories: 16, unit: '千卡/100克', protein: 0.8, fat: 0.2, carbs: 2.9 },
-  '苹果': { calories: 52, unit: '千卡/100克', protein: 0.3, fat: 0.2, carbs: 14 },
-  '香蕉': { calories: 91, unit: '千卡/100克', protein: 1.1, fat: 0.3, carbs: 22.8 },
-  '橙子': { calories: 47, unit: '千卡/100克', protein: 0.9, fat: 0.2, carbs: 11.5 },
-  '牛奶': { calories: 54, unit: '千卡/100克', protein: 3.2, fat: 3.2, carbs: 3.4 },
-  '酸奶': { calories: 72, unit: '千卡/100克', protein: 2.5, fat: 2.7, carbs: 9.3 },
-  '面包': { calories: 250, unit: '千卡/100克', protein: 7.5, fat: 3.2, carbs: 48 },
-  '蛋糕': { calories: 340, unit: '千卡/100克', protein: 7.2, fat: 15.3, carbs: 43.7 },
-  '巧克力': { calories: 539, unit: '千卡/100克', protein: 7.5, fat: 30.7, carbs: 51.9 },
-  '饼干': { calories: 435, unit: '千卡/100克', protein: 7.6, fat: 17.2, carbs: 69.2 }
+  // 肉类
+  '猪肉': { calories: 143, protein: 21.3, fat: 6.2, carbs: 0 },
+  '牛肉': { calories: 125, protein: 19.9, fat: 4.2, carbs: 0 },
+  '鸡肉': { calories: 133, protein: 20.3, fat: 4.5, carbs: 0 },
+  '鸭肉': { calories: 149, protein: 17.3, fat: 8.0, carbs: 0 },
+  '鱼肉': { calories: 90, protein: 18.0, fat: 2.0, carbs: 0 },
+  '虾': { calories: 93, protein: 18.0, fat: 0.8, carbs: 2.0 },
+
+  // 蛋类
+  '鸡蛋': { calories: 144, protein: 13.3, fat: 8.8, carbs: 1.5 },
+  '鸭蛋': { calories: 180, protein: 13.0, fat: 14.0, carbs: 1.0 },
+
+  // 蔬菜类
+  '白菜': { calories: 17, protein: 1.5, fat: 0.3, carbs: 2.4 },
+  '菠菜': { calories: 20, protein: 2.6, fat: 0.3, carbs: 2.8 },
+  '西红柿': { calories: 15, protein: 0.9, fat: 0.2, carbs: 3.0 },
+  '黄瓜': { calories: 15, protein: 0.8, fat: 0.2, carbs: 2.9 },
+  '土豆': { calories: 76, protein: 2.0, fat: 0.1, carbs: 17.0 },
+  '红薯': { calories: 99, protein: 1.1, fat: 0.1, carbs: 24.0 },
+  '胡萝卜': { calories: 35, protein: 0.9, fat: 0.2, carbs: 8.0 },
+
+  // 水果类
+  '苹果': { calories: 52, protein: 0.3, fat: 0.2, carbs: 13.0 },
+  '香蕉': { calories: 93, protein: 1.4, fat: 0.2, carbs: 22.0 },
+  '橙子': { calories: 47, protein: 0.9, fat: 0.1, carbs: 11.0 },
+
+  // 饮品
+  '牛奶': { calories: 54, protein: 3.0, fat: 3.2, carbs: 3.4 },
+  '豆浆': { calories: 33, protein: 2.9, fat: 1.2, carbs: 1.2 },
+
+  // 其他
+  '豆腐': { calories: 81, protein: 8.1, fat: 3.7, carbs: 4.2 },
+  '红烧肉': { calories: 478, protein: 13.0, fat: 45.0, carbs: 7.0 },
+  '糖醋排骨': { calories: 264, protein: 15.0, fat: 18.0, carbs: 12.0 },
+  '宫保鸡丁': { calories: 197, protein: 18.0, fat: 10.0, carbs: 8.0 },
+  '麻婆豆腐': { calories: 135, protein: 10.0, fat: 8.0, carbs: 6.0 },
+  '鱼香肉丝': { calories: 185, protein: 12.0, fat: 11.0, carbs: 8.0 }
 }
 
+// 云函数入口函数
 exports.main = async (event, context) => {
-  const { imageUrl, foodName } = event
+  const wxContext = cloud.getWXContext()
 
   try {
-    let result = null
-    
-    if (foodName) {
-      const food = foodCalories[foodName]
-      if (food) {
-        result = {
+    const { foodName } = event
+
+    if (!foodName) {
+      return {
+        success: false,
+        message: '请输入食物名称'
+      }
+    }
+
+    // 精确匹配
+    let nutrition = FOOD_DATABASE[foodName]
+
+    // 模糊匹配
+    if (!nutrition) {
+      const foodNames = Object.keys(FOOD_DATABASE)
+      for (let name of foodNames) {
+        if (foodName.includes(name) || name.includes(foodName)) {
+          nutrition = FOOD_DATABASE[name]
+          break
+        }
+      }
+    }
+
+    if (nutrition) {
+      return {
+        success: true,
+        data: {
           foodName: foodName,
-          calories: food.calories,
-          unit: food.unit,
-          protein: food.protein,
-          fat: food.fat,
-          carbs: food.carbs,
-          confidence: 95
-        }
-      } else {
-        const matchedFood = Object.keys(foodCalories).find(key => 
-          key.includes(foodName) || foodName.includes(key)
-        )
-        if (matchedFood) {
-          const food = foodCalories[matchedFood]
-          result = {
-            foodName: matchedFood,
-            calories: food.calories,
-            unit: food.unit,
-            protein: food.protein,
-            fat: food.fat,
-            carbs: food.carbs,
-            confidence: 75
-          }
+          ...nutrition,
+          unit: '每100g',
+          tips: getDietTips(nutrition.calories)
         }
       }
-    }
-
-    if (!result) {
-      const randomFoods = Object.keys(foodCalories).sort(() => 0.5 - Math.random()).slice(0, 3)
-      result = {
-        foodName: randomFoods[0],
-        calories: foodCalories[randomFoods[0]].calories,
-        unit: foodCalories[randomFoods[0]].unit,
-        protein: foodCalories[randomFoods[0]].protein,
-        fat: foodCalories[randomFoods[0]].fat,
-        carbs: foodCalories[randomFoods[0]].carbs,
-        confidence: 60,
-        suggestions: randomFoods
+    } else {
+      return {
+        success: false,
+        message: '未找到该食物的营养数据，请尝试其他常见食物名称'
       }
     }
-
-    return {
-      success: true,
-      data: result
-    }
-  } catch (e) {
+  } catch (err) {
     return {
       success: false,
-      message: e.message
+      message: '识别失败',
+      error: err.message
     }
+  }
+}
+
+// 获取饮食建议
+function getDietTips(calories) {
+  if (calories < 50) {
+    return '热量较低，可以放心食用'
+  } else if (calories < 150) {
+    return '热量适中，建议适量食用'
+  } else if (calories < 300) {
+    return '热量较高，应控制摄入量'
+  } else {
+    return '热量较高，建议少吃或配合运动'
   }
 }
