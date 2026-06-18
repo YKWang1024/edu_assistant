@@ -1,4 +1,4 @@
-// 云函数：删除一道错题（家庭成员均可删，同时尝试删除关联的裁剪图）
+// 云函数：读取单道错题（供家长跨成员查看题目/课程，绕过集合客户端 ACL）
 const cloud = require('wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
@@ -27,18 +27,11 @@ exports.main = async (event, context) => {
     const ctx = await resolveFamily(openid)
     const snap = await db.collection('examQuestions').doc(questionId).get()
     const q = snap.data
-    if (!q) return { success: true } // 已不存在，视为删除成功
-    if (!canAccess(q, openid, ctx)) return { success: false, message: '无权操作该题目' }
+    if (!q) return { success: false, message: '题目不存在' }
+    if (!canAccess(q, openid, ctx)) return { success: false, message: '无权查看该题目' }
 
-    if (q.imageFileID) {
-      try {
-        await cloud.deleteCloudFile({ fileList: [q.imageFileID] })
-      } catch (e) { /* 图片删除失败不影响题目删除 */ }
-    }
-
-    await db.collection('examQuestions').doc(questionId).remove()
-    return { success: true }
+    return { success: true, data: q }
   } catch (err) {
-    return { success: false, message: '删除失败', error: err.message }
+    return { success: false, message: '加载失败', error: err.message }
   }
 }

@@ -1,4 +1,4 @@
-// 云函数：按用户拉取错题列表（可按科目筛选 / 只看到期）
+// 云函数：拉取错题列表（家庭维度：本家庭 + 本人旧数据兼容）
 const cloud = require('wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
@@ -11,24 +11,33 @@ function dateStrUTC8(offsetDays) {
   return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate())
 }
 
-// 排序优先级：重点疑难 > 待重做 > 复习中 > 已掌握
+async function resolveFamily(openid) {
+  const u = await db.collection('users').where({ openid: openid }).get()
+  if (!u.data || !u.data.length) return null
+  return { user: u.data[0], familyId: u.data[0].familyId, role: u.data[0].familyRole }
+}
+
 const STATUS_ORDER = { hard: 0, 'new': 1, reviewing: 2, mastered: 3 }
 
 exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID
 
   try {
-    const { subject, dueOnly } = event
+    const { subject, dueOnly, childName } = event
     const today = dateStrUTC8(0)
+    const ctx = await resolveFamily(openid)
 
-    const where = { _openid: openid }
-    if (subject && subject !== '全部') where.subject = subject
-    if (dueOnly) {
-      where.status = _.neq('mastered')
-      where.nextReviewDate = _.lte(today)
-    }
+    // 同家庭 或 本人旧数据(无 familyId)
+    let cond
+    if (ctx && ctx.familyId) cond = _.or([{ familyId: ctx.familyId }, { _openid: openid }])
+    else cond = { _openid: openid }
 
-    const res = await db.collection('examQuestions').where(where).limit(1000).get()
+    let query = db.collection('examQuestions').where(cond)
+    if (subject && subject !== '全部') query = query.where({ subject: subject })
+    if (childName) query = query.where({ childName: childName })
+    if (dueOnly) query = query.where({ status: _.neq('mastered'), nextReviewDate: _.lte(today) })
+
+    const res = await query.limit(1000).get()
     const list = res.data || []
 
     list.forEach(function (q) {

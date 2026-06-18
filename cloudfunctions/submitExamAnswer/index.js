@@ -1,4 +1,4 @@
-// 云函数：提交一次重做作答 —— 间隔复习 + 难题升级 的权威状态机
+// 云函数：提交一次重做作答 —— 间隔复习 + 难题升级 的权威状态机（家庭成员均可作答）
 const cloud = require('wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
@@ -14,6 +14,19 @@ function normalize(s) {
   return String(s == null ? '' : s).trim().toLowerCase()
 }
 
+async function resolveFamily(openid) {
+  const u = await db.collection('users').where({ openid: openid }).get()
+  if (!u.data || !u.data.length) return null
+  return { user: u.data[0], familyId: u.data[0].familyId, role: u.data[0].familyRole }
+}
+
+function canAccess(q, openid, ctx) {
+  if (!q) return false
+  if (q._openid === openid) return true
+  if (ctx && ctx.familyId && q.familyId === ctx.familyId) return true
+  return false
+}
+
 exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID
 
@@ -21,10 +34,11 @@ exports.main = async (event, context) => {
     const { questionId, answer } = event
     if (!questionId) return { success: false, message: '缺少题目 ID' }
 
+    const ctx = await resolveFamily(openid)
     const snap = await db.collection('examQuestions').doc(questionId).get()
     const q = snap.data
     if (!q) return { success: false, message: '题目不存在' }
-    if (q._openid !== openid) return { success: false, message: '无权操作该题目' }
+    if (!canAccess(q, openid, ctx)) return { success: false, message: '无权操作该题目' }
 
     // 判定对错：优先用客户端自评(无标准答案的题)，否则按标准答案匹配
     let correct
@@ -46,11 +60,9 @@ exports.main = async (event, context) => {
     if (correct) {
       consecutiveWrong = 0
       if (status === 'reviewing') {
-        // 这是「第一次做对 → 20 天后」的那次复习，做对即掌握
         status = 'mastered'
         nextReviewDate = null
       } else {
-        // new / hard 的首次做对：进入 20 天后复习
         status = 'reviewing'
         firstCorrectDate = today
         nextReviewDate = dateStrUTC8(20)
@@ -60,7 +72,7 @@ exports.main = async (event, context) => {
       firstCorrectDate = null
       if (consecutiveWrong >= 3) {
         becameHard = (status !== 'hard') // 仅在「首次升级为疑难题」时触发 AI 课程，避免重复弹窗
-        status = 'hard'           // 连续做错 3 次 → 重点疑难题
+        status = 'hard'
         nextReviewDate = today
       } else {
         status = 'new'
@@ -71,7 +83,8 @@ exports.main = async (event, context) => {
     const attempt = {
       date: today,
       answer: String(answer == null ? '' : answer),
-      correct: correct
+      correct: correct,
+      by: openid
     }
 
     await db.collection('examQuestions').doc(questionId).update({

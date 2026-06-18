@@ -76,6 +76,21 @@ Page({
     }
     util.saveRecord('rewardRecords', record)
 
+    // 同步到云端家庭打卡（尽力而为，不影响本地流程与游戏时间钱包）
+    if (app.globalData.cloudReady) {
+      app.callCloudFunction('saveCheckin', {
+        type: record.type,
+        actualTime: record.actualTime,
+        targetTime: record.targetTime,
+        reward: record.reward,
+        diff: record.diff,
+        isEarly: record.isEarly,
+        isLate: record.isLate,
+        date: record.date,
+        time: record.time
+      }, function () {})
+    }
+
     var msg = ''
     if (result.reward > 0) {
       msg = '太棒了！获得 ' + result.reward + ' 分钟游戏时间！'
