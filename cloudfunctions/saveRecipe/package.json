@@ -1,0 +1,7 @@
+{
+  "name": "saveRecipe",
+  "version": "1.0.0",
+  "description": "保存菜谱",
+  "main": "index.js",
+  "dependencies": {}
+}

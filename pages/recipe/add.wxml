@@ -6,17 +6,26 @@
     </view>
 
     <view class="form-group">
-      <text class="form-label">菜名 *</text>
-      <input class="input-field" placeholder="例如: 番茄炒蛋" value="{{name}}" bindinput="onNameInput" />
-      <button class="btn-secondary analyze-btn" bindtap="onAnalyzeCalories" loading="{{analyzing}}" wx:if="{{name}}">
-        🔥 AI识别热量
+      <text class="form-label">成品照片</text>
+      <view class="image-list">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image class="image-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
+          <view class="remove-img" data-index="{{index}}" catchtap="onRemoveImage">✕</view>
+        </view>
+        <view class="image-add" bindtap="onChooseImage" wx:if="{{images.length < 2}}">
+          <text class="add-icon">+</text>
+          <text class="add-text">{{images.length}}/2</text>
+        </view>
+      </view>
+      <button class="btn-secondary analyze-btn" bindtap="onAIRecognize" loading="{{recognizing}}" disabled="{{recognizing}}" wx:if="{{images.length > 0}}">
+        🤖 AI识别菜谱（自动填写）
       </button>
     </view>
 
     <view class="calories-card card" wx:if="{{calories}}">
       <view class="calories-header">
         <text class="calories-icon">🔥</text>
-        <text class="calories-title">营养信息</text>
+        <text class="calories-title">营养信息（AI 估算，可不填）</text>
       </view>
       <view class="calories-content">
         <view class="calories-main">
@@ -37,34 +46,22 @@
             <text class="detail-value">{{calories.carbs}}g</text>
           </view>
         </view>
-        <view class="calories-confidence" wx:if="{{calories.confidence}}">
-          识别置信度: {{calories.confidence}}%
-        </view>
       </view>
     </view>
 
     <view class="form-group">
-      <text class="form-label">成品照片</text>
-      <view class="image-list">
-        <view class="image-item" wx:for="{{images}}" wx:key="*this">
-          <image class="image-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
-          <view class="remove-img" data-index="{{index}}" catchtap="onRemoveImage">✕</view>
-        </view>
-        <view class="image-add" bindtap="onChooseImage" wx:if="{{images.length < 2}}">
-          <text class="add-icon">+</text>
-          <text class="add-text">{{images.length}}/2</text>
-        </view>
-      </view>
+      <text class="form-label">菜名 *</text>
+      <input class="input-field" placeholder="例如: 番茄炒蛋" value="{{name}}" bindinput="onNameInput" />
     </view>
 
     <view class="form-group">
       <text class="form-label">食材</text>
-      <textarea class="textarea-field" placeholder="食材，用逗号分隔" value="{{ingredients}}" bindinput="onIngredientsInput" />
+      <textarea class="textarea-field" placeholder="食材，用「、」分隔" value="{{ingredients}}" bindinput="onIngredientsInput" auto-height />
     </view>
 
     <view class="form-group">
       <text class="form-label">做法</text>
-      <textarea class="textarea-field" placeholder="做法步骤" value="{{steps}}" bindinput="onStepsInput" />
+      <textarea class="textarea-field" placeholder="做法步骤" value="{{steps}}" bindinput="onStepsInput" auto-height />
     </view>
 
     <view class="form-group">
@@ -84,7 +81,7 @@
 
     <view class="form-group">
       <text class="form-label">参考链接</text>
-      <input class="input-field" placeholder="粘贴小红书或哔哩哔哩链接" value="{{referenceLink}}" bindinput="onReferenceLinkInput" />
+      <input class="input-field" placeholder="粘贴小红书或哔哩哔哩链接" value="{{referenceInput}}" bindinput="onReferenceLinkInput" />
       <view class="link-type-tag" wx:if="{{referenceLabel}}">
         <text class="link-type-icon">{{referenceType === 'xiaohongshu' ? '📕' : referenceType === 'bilibili' ? '📺' : '🔗'}}</text>
         <text class="link-type-text">{{referenceLabel}}</text>
@@ -96,6 +93,9 @@
       <view class="nutrition-text">{{nutrition}}</view>
     </view>
 
-    <button class="btn-primary save-btn" bindtap="onSave">保存菜谱</button>
+    <button class="btn-primary save-btn" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">保存菜谱</button>
   </view>
+
+  <!-- 离屏 canvas：用于压缩图片 -->
+  <canvas type="2d" id="recipeCanvas" style="position:fixed;left:-9999px;top:0;width:10px;height:10px;"></canvas>
 </view>

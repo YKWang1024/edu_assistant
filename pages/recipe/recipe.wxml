@@ -53,7 +53,7 @@
   </view>
 
   <view class="recipe-list">
-    <view class="recipe-item card" wx:for="{{recipes}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
+    <view class="recipe-item card" wx:for="{{displayRecipes}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
       <view class="recipe-thumb" wx:if="{{item.images[0] || item.imageUrl}}">
         <image class="recipe-thumb-img" src="{{item.images[0] || item.imageUrl}}" mode="aspectFill" />
       </view>

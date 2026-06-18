@@ -137,6 +137,54 @@
       "timeout": 10,
       "memorySize": 256,
       "installDependency": true
+    },
+    {
+      "name": "saveRecipe",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "listRecipes",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "deleteRecipe",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "rateRecipe",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "editRating",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "deleteRating",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
     }
   ]
 }
