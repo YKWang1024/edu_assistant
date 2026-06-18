@@ -1,0 +1,7 @@
+{
+  "name": "deleteExamQuestion",
+  "version": "1.0.0",
+  "description": "删除一道错题",
+  "main": "index.js",
+  "dependencies": {}
+}

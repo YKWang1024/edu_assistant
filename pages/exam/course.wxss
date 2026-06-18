@@ -1,0 +1,74 @@
+.q-recap {
+  padding: 20rpx 24rpx;
+}
+.recap-label {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #5e4700;
+  margin-bottom: 10rpx;
+  font-family: 'PingFang SC', monospace;
+}
+.recap-stem {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  line-height: 1.6;
+}
+.recap-opt {
+  font-size: 26rpx;
+  color: #4e4634;
+  margin-top: 8rpx;
+}
+.recap-answer {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #47672c;
+  margin-top: 12rpx;
+}
+
+.error-card {
+  text-align: center;
+  padding: 40rpx 24rpx;
+}
+.error-text {
+  font-size: 28rpx;
+  color: #ba1a1a;
+  margin-bottom: 24rpx;
+}
+
+.course-card {
+  padding: 24rpx;
+}
+.course-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  border-bottom: 2rpx solid #ece5d6;
+  padding-bottom: 14rpx;
+}
+.course-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  font-family: 'PingFang SC', monospace;
+}
+.course-status {
+  font-size: 22rpx;
+  color: #807661;
+}
+.course-text {
+  font-size: 29rpx;
+  color: #1d1c15;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.course-cursor {
+  color: #775a00;
+  font-weight: 700;
+}
+.regen-btn {
+  width: 100%;
+  margin-top: 24rpx;
+}
