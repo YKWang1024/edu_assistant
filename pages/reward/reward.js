@@ -61,7 +61,6 @@ Page({
     }
 
     var result = util.calculateReward(this.data.activeTab, timeValue)
-    var totalMinutes = app.addGameMinutes(result.reward)
 
     var record = {
       date: util.getTodayStr(),
@@ -102,18 +101,22 @@ Page({
       msg = '虽然超时了，但不扣时间哦，明天加油！'
     }
 
-    this.setData({
-      rewardResult: {
-        reward: result.reward,
-        totalMinutes: totalMinutes,
-        msg: msg,
-        isEarly: result.isEarly,
-        isLate: result.isLate
-      },
-      todayRecord: record
-    })
-
+    var that = this
+    this.setData({ todayRecord: record })
     wx.showToast({ title: msg, icon: 'none', duration: 2500 })
+
+    // 游戏时间入云端钱包，回调里更新显示余额
+    app.addGameMinutes(result.reward, function (totalMinutes) {
+      that.setData({
+        rewardResult: {
+          reward: result.reward,
+          totalMinutes: totalMinutes,
+          msg: msg,
+          isEarly: result.isEarly,
+          isLate: result.isLate
+        }
+      })
+    })
   },
 
   onViewRecords: function () {

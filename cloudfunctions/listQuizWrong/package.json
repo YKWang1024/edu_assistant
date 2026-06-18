@@ -1,0 +1,7 @@
+{
+  "name": "listQuizWrong",
+  "version": "1.0.0",
+  "description": "拉取自动小测错题",
+  "main": "index.js",
+  "dependencies": {}
+}

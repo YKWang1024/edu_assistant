@@ -1,0 +1,7 @@
+{
+  "name": "clearQuizWrong",
+  "version": "1.0.0",
+  "description": "清空小测错题",
+  "main": "index.js",
+  "dependencies": {}
+}

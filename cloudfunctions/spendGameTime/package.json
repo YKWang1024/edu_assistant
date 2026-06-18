@@ -1,0 +1,7 @@
+{
+  "name": "spendGameTime",
+  "version": "1.0.0",
+  "description": "消费游戏时间",
+  "main": "index.js",
+  "dependencies": {}
+}

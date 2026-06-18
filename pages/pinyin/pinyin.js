@@ -167,7 +167,7 @@ Page({
       type: 'pinyin_' + this.data.selectedMode,
       listType: this.data.selectedList
     }
-    util.saveRecord('pinyinRecords', record)
+    util.saveQuizRecord('pinyin', record)
 
     wx.redirectTo({
       url: '/pages/math/result?correct=' + correct + '&total=' + this.data.totalQuestions + '&time=' + timeUsed

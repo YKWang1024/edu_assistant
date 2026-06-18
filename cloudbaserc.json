@@ -209,6 +209,70 @@
       "timeout": 10,
       "memorySize": 256,
       "installDependency": true
+    },
+    {
+      "name": "getGameTime",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "addGameTime",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "spendGameTime",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "saveQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "listQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "deleteQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "clearQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "saveQuizRecord",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
     }
   ]
 }

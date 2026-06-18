@@ -11,7 +11,11 @@
 
 已存在：`users`、`families`、`recipes`、`examQuestions`（NoSQL 无需预定义字段，新增字段自动写入）。
 
-**需新建**：`familyCheckins`（习惯打卡，家庭维度）。控制台 → 数据库 →「+ 添加集合」。
+**需新建**（控制台 → 数据库 →「+ 添加集合」，权限均「仅创建者可读写」）：
+- `familyCheckins`（习惯打卡，家庭维度）
+- `gameTime`（游戏时间余额，每 familyId+childName 一条）— Phase 4
+- `quizWrong`（自动小测错题，家庭维度）— Phase 5
+- `quizRecords`（自动小测整局记录）— Phase 5
 
 **权限（全部设「仅创建者可读写」即可）**：所有读写都走云函数（云函数以管理员身份运行，绕过集合 ACL），客户端不再直接读数据库，因此各集合保持「仅创建者可读写」最安全。
 - 特别注意 `examQuestions`：家长跨成员查看孩子的题目/课程走云函数 `getExamQuestion`，不依赖放开 ACL。
@@ -31,6 +35,12 @@
 **Phase 2（菜谱）**：`register`(改, 含预置示例菜谱)、`saveRecipe`、`listRecipes`、`deleteRecipe`、`rateRecipe`、`editRating`、`deleteRating`
 
 **Phase 3（错题/习惯共享）**：`saveExamQuestion`(改)、`listExamQuestions`(改)、`submitExamAnswer`(改)、`deleteExamQuestion`(改)、`saveExamCourse`(改)、`getExamQuestion`、`saveCheckin`、`listCheckins`
+
+**Phase 4（时间管理上云）**：`getGameTime`、`addGameTime`、`spendGameTime`（`app.js`/`reward`/`account`/`index` 随小程序发布）
+
+**Phase 5（旧小测错题/记录上云）**：`saveQuizWrong`、`listQuizWrong`、`deleteQuizWrong`、`clearQuizWrong`、`saveQuizRecord`（`utils/util.js`/`wrong`/`math`/`pinyin`/`english` 随小程序发布）
+
+> 游戏时间余额现按 `(familyId, childName)` 存于 `gameTime`，跨设备一致；首次联网会把本地旧 `gameMinutes` 迁为初始余额一次。旧本地小测错题首次联网导入 `quizWrong` 一次。
 
 > `register`/`login` 一定要重新部署（返回结构改了，否则家庭功能拿不到 familyId）。所有 `examQuestions` 函数都改过（加了 familyId/canAccess），也要重新部署。
 
