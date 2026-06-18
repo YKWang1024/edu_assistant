@@ -1,0 +1,109 @@
+<view class="container">
+
+  <!-- ============ 列表模式 ============ -->
+  <block wx:if="{{mode === 'list'}}">
+    <view class="stats-card card">
+      <view class="stat-item">
+        <view class="stat-num">{{stats.total}}</view>
+        <view class="stat-label">总错题</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num due">{{stats.due}}</view>
+        <view class="stat-label">待复习</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num hard">{{stats.hard}}</view>
+        <view class="stat-label">疑难</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num mastered">{{stats.mastered}}</view>
+        <view class="stat-label">已掌握</view>
+      </view>
+    </view>
+
+    <view class="top-actions">
+      <button class="btn-primary top-btn" bindtap="onTapCapture">📷 拍照识题</button>
+      <button class="btn-success top-btn" bindtap="onStartPractice">▶ 开始复习 ({{stats.due}})</button>
+    </view>
+
+    <scroll-view class="subject-bar" scroll-x="true">
+      <view class="subject-chip {{activeSubject === item ? 'active' : ''}}" wx:for="{{subjects}}" wx:key="*this" data-subject="{{item}}" bindtap="onSelectSubject">{{item}}</view>
+    </scroll-view>
+
+    <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+    <view wx:elif="{{groups.length === 0}}" class="empty-tip">还没有错题，点「拍照识题」添加吧 📸</view>
+
+    <view wx:for="{{groups}}" wx:for-item="group" wx:key="subject" class="subject-group">
+      <view class="group-head">
+        <text class="group-subject">{{group.subject}}</text>
+        <text class="group-due" wx:if="{{group.dueCount > 0}}">{{group.dueCount}} 题待做</text>
+      </view>
+      <view class="q-item card" wx:for="{{group.items}}" wx:for-item="q" wx:key="_id">
+        <view class="q-top">
+          <text class="q-badge type">{{q.type === 'choice' ? '选择题' : (q.type === 'fill' ? '填空' : '题目')}}</text>
+          <text class="q-badge status status-{{q.status}}">{{q.statusText}}</text>
+          <text class="q-badge due-badge" wx:if="{{q.due}}">待做</text>
+        </view>
+        <view class="q-stem">{{q.stemBrief}}</view>
+        <view class="q-foot">
+          <text class="q-meta" wx:if="{{q.consecutiveWrong > 0}}">连错 {{q.consecutiveWrong}} 次</text>
+          <text class="q-meta">已做 {{q.attemptCount}} 次</text>
+          <view class="q-foot-actions">
+            <text class="q-action" wx:if="{{q.status === 'hard'}}" data-id="{{q._id}}" catchtap="onViewCourse">AI 讲解</text>
+            <text class="q-action danger" data-id="{{q._id}}" catchtap="onDeleteOne">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============ 复习模式 ============ -->
+  <block wx:elif="{{mode === 'practice'}}">
+    <view class="progress-text">复习 {{practiceIndex + 1}} / {{practiceList.length}}</view>
+
+    <view class="card q-card">
+      <view class="q-top">
+        <text class="q-badge type">{{current.subject}}</text>
+        <text class="q-badge type">{{current.type === 'choice' ? '选择题' : (current.type === 'fill' ? '填空' : '题目')}}</text>
+      </view>
+      <image wx:if="{{current.imageFileID}}" class="q-image" src="{{current.imageFileID}}" mode="widthFix"></image>
+      <view class="q-card-stem">{{current.stem}}</view>
+
+      <!-- 选择题 -->
+      <block wx:if="{{current.type === 'choice'}}">
+        <view class="p-option {{selectedKey === item.key ? 'selected' : ''}} {{showResult && item.key === current.correctAnswer ? 'correct' : ''}} {{showResult && selectedKey === item.key && item.key !== current.correctAnswer ? 'wrong' : ''}}"
+          wx:for="{{current.options}}" wx:key="key" data-key="{{item.key}}" bindtap="onSelectOption">
+          <text class="p-opt-key">{{item.key}}</text>
+          <text class="p-opt-text">{{item.text}}</text>
+        </view>
+      </block>
+
+      <!-- 非选择题 -->
+      <block wx:else>
+        <input wx:if="{{!showResult}}" class="input-field p-answer" value="{{answerInput}}" bindinput="onAnswerInput" placeholder="请输入答案" />
+        <view wx:if="{{showResult && current.correctAnswer}}" class="p-correct-answer">正确答案：{{current.correctAnswer}}</view>
+      </block>
+    </view>
+
+    <!-- 结果反馈 -->
+    <view wx:if="{{showResult}}" class="result-box {{lastCorrect ? 'ok' : 'no'}}">
+      <view class="result-title">{{lastCorrect ? '✓ 答对了！' : '✗ 答错了'}}</view>
+      <view wx:if="{{current.analysis}}" class="result-analysis">{{current.analysis}}</view>
+    </view>
+
+    <!-- 自评(无标准答案) -->
+    <view wx:if="{{needSelfReport}}" class="self-report card">
+      <view class="self-title">这道题没有标准答案，请判断小朋友答得对吗？</view>
+      <view class="self-btns">
+        <button class="btn-success self-btn" data-correct="true" bindtap="onSelfReport">做对了</button>
+        <button class="btn-danger self-btn" data-correct="false" bindtap="onSelfReport">做错了</button>
+      </view>
+    </view>
+
+    <view class="practice-actions">
+      <button wx:if="{{!showResult && !needSelfReport}}" class="btn-primary pa-btn" bindtap="onSubmitAnswer" loading="{{submitting}}" disabled="{{submitting}}">提交答案</button>
+      <button wx:if="{{showResult}}" class="btn-primary pa-btn" bindtap="onNext">{{practiceIndex < practiceList.length - 1 ? '下一题' : '完成复习'}}</button>
+      <button class="btn-secondary pa-btn" bindtap="onExitPractice">退出复习</button>
+    </view>
+  </block>
+</view>

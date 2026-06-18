@@ -1,0 +1,7 @@
+{
+  "name": "listExamQuestions",
+  "version": "1.0.0",
+  "description": "拉取错题列表",
+  "main": "index.js",
+  "dependencies": {}
+}

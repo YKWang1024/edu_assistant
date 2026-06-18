@@ -1,0 +1,270 @@
+/* 统计卡 */
+.stats-card {
+  display: flex;
+  justify-content: space-around;
+  padding: 24rpx 12rpx;
+}
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+.stat-num {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #775a00;
+  font-family: 'PingFang SC', monospace;
+}
+.stat-num.due { color: #885120; }
+.stat-num.hard { color: #ba1a1a; }
+.stat-num.mastered { color: #47672c; }
+.stat-label {
+  font-size: 22rpx;
+  color: #4e4634;
+  margin-top: 6rpx;
+}
+
+/* 顶部操作 */
+.top-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.top-btn {
+  flex: 1;
+  padding: 18rpx 0;
+  font-size: 26rpx;
+}
+
+/* 科目筛选 */
+.subject-bar {
+  white-space: nowrap;
+  margin-bottom: 20rpx;
+}
+.subject-chip {
+  display: inline-block;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #4e4634;
+  background: #f2ede2;
+  border: 4rpx solid #807661;
+  border-radius: 8rpx;
+  padding: 10rpx 24rpx;
+  margin-right: 14rpx;
+  font-family: 'PingFang SC', monospace;
+}
+.subject-chip.active {
+  color: #fef9ed;
+  background: #47672c;
+  border-color: #2d441a;
+}
+
+/* 分组 */
+.subject-group {
+  margin-bottom: 16rpx;
+}
+.group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 4rpx 12rpx;
+}
+.group-subject {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  font-family: 'PingFang SC', monospace;
+}
+.group-due {
+  font-size: 22rpx;
+  color: #885120;
+  background: #f3ab72;
+  border: 2rpx solid #807661;
+  border-radius: 4rpx;
+  padding: 4rpx 14rpx;
+  font-weight: 700;
+}
+
+/* 题目项 */
+.q-item {
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+}
+.q-top {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 12rpx;
+  flex-wrap: wrap;
+}
+.q-badge {
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 4rpx;
+  border: 2rpx solid #807661;
+  font-family: 'PingFang SC', monospace;
+}
+.q-badge.type {
+  color: #fef9ed;
+  background: #47672c;
+  border-color: #2d441a;
+}
+.q-badge.status-new { color: #5e4700; background: #e6b325; }
+.q-badge.status-reviewing { color: #00468b; background: #b8e0ff; }
+.q-badge.status-mastered { color: #0c2000; background: #c7efa4; }
+.q-badge.status-hard { color: #fff; background: #ba1a1a; border-color: #93000a; }
+.q-badge.due-badge { color: #885120; background: #f3ab72; }
+
+.q-stem {
+  font-size: 28rpx;
+  color: #1d1c15;
+  line-height: 1.5;
+  margin-bottom: 12rpx;
+}
+.q-foot {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  border-top: 2rpx solid #ece5d6;
+  padding-top: 12rpx;
+}
+.q-meta {
+  font-size: 22rpx;
+  color: #807661;
+  font-family: 'PingFang SC', monospace;
+}
+.q-foot-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 16rpx;
+}
+.q-action {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #775a00;
+}
+.q-action.danger { color: #ba1a1a; }
+
+/* 复习模式 */
+.progress-text {
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #4e4634;
+  margin-bottom: 20rpx;
+  font-family: 'PingFang SC', monospace;
+}
+.q-card {
+  padding: 28rpx 24rpx;
+}
+.q-image {
+  width: 100%;
+  border: 4rpx solid #807661;
+  border-radius: 12rpx;
+  margin: 8rpx 0 16rpx;
+  background: #fff;
+}
+.q-card-stem {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  line-height: 1.6;
+  margin: 12rpx 0 20rpx;
+}
+.p-option {
+  display: flex;
+  align-items: center;
+  border: 4rpx solid #807661;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  margin-bottom: 14rpx;
+  background: #fef9ed;
+  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255,255,255,0.4);
+}
+.p-option.selected {
+  border-color: #775a00;
+  background: #fdf0cf;
+}
+.p-option.correct {
+  border-color: #47672c;
+  background: #c7efa4;
+}
+.p-option.wrong {
+  border-color: #ba1a1a;
+  background: #ffdad6;
+}
+.p-opt-key {
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  text-align: center;
+  font-weight: 700;
+  color: #5e4700;
+  border: 2rpx solid #807661;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  font-family: 'PingFang SC', monospace;
+}
+.p-opt-text {
+  font-size: 28rpx;
+  color: #1d1c15;
+  flex: 1;
+}
+.p-answer {
+  margin-top: 8rpx;
+}
+.p-correct-answer {
+  margin-top: 12rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #47672c;
+}
+
+.result-box {
+  border: 4rpx solid #807661;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  margin: 20rpx 0;
+}
+.result-box.ok { background: #c7efa4; border-color: #47672c; }
+.result-box.no { background: #ffdad6; border-color: #ba1a1a; }
+.result-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  font-family: 'PingFang SC', monospace;
+}
+.result-analysis {
+  font-size: 26rpx;
+  color: #4e4634;
+  margin-top: 10rpx;
+  line-height: 1.5;
+}
+
+.self-report {
+  padding: 24rpx;
+  margin-top: 20rpx;
+}
+.self-title {
+  font-size: 26rpx;
+  color: #4e4634;
+  margin-bottom: 16rpx;
+}
+.self-btns {
+  display: flex;
+  gap: 20rpx;
+}
+.self-btn {
+  flex: 1;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+}
+
+.practice-actions {
+  margin-top: 24rpx;
+}
+.pa-btn {
+  width: 100%;
+  margin-bottom: 16rpx;
+}

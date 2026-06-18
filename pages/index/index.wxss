@@ -93,6 +93,10 @@
   background: #ffdad6;
 }
 
+.exam-icon {
+  background: #d8c8a0;
+}
+
 .recipe-icon {
   background: #ffdcc3;
 }

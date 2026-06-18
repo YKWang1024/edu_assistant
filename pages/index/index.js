@@ -56,5 +56,9 @@ Page({
 
   onTapWrong: function () {
     wx.navigateTo({ url: '/pages/wrong/wrong' })
+  },
+
+  onTapExam: function () {
+    wx.navigateTo({ url: '/pages/exam/exam' })
   }
 })

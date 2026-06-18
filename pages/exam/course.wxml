@@ -1,0 +1,27 @@
+<view class="container">
+  <view wx:if="{{question}}" class="card q-recap">
+    <view class="recap-label">📌 题目</view>
+    <view class="recap-stem">{{question.stem}}</view>
+    <view wx:if="{{question.options.length}}" class="recap-opt" wx:for="{{question.options}}" wx:key="key">{{item.key}}. {{item.text}}</view>
+    <view wx:if="{{question.correctAnswer}}" class="recap-answer">正确答案：{{question.correctAnswer}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+
+  <view wx:if="{{error}}" class="card error-card">
+    <view class="error-text">{{error}}</view>
+    <button class="btn-secondary" bindtap="onRegenerate">重试</button>
+  </view>
+
+  <view wx:if="{{content || generating}}" class="card course-card">
+    <view class="course-head">
+      <text class="course-title">🤖 AI 老师讲解</text>
+      <text wx:if="{{generating}}" class="course-status">生成中…</text>
+      <text wx:elif="{{cached}}" class="course-status">已保存</text>
+    </view>
+    <text class="course-text" user-select="true">{{content}}</text>
+    <text wx:if="{{generating}}" class="course-cursor">▌</text>
+  </view>
+
+  <button wx:if="{{!generating && content}}" class="btn-secondary regen-btn" bindtap="onRegenerate">重新生成</button>
+</view>

@@ -53,6 +53,16 @@
       </view>
       <view class="func-arrow">›</view>
     </view>
+    <view class="func-item card" bindtap="onTapExam">
+      <view class="func-icon-wrap exam-icon">
+        <text class="func-icon">📷</text>
+      </view>
+      <view class="func-info">
+        <view class="func-name">试卷错题</view>
+        <view class="func-desc">拍照识题 · AI 讲解 · 智能复习</view>
+      </view>
+      <view class="func-arrow">›</view>
+    </view>
   </view>
 
   <view class="section-title">习惯养成</view>

@@ -1,0 +1,7 @@
+{
+  "name": "saveExamCourse",
+  "version": "1.0.0",
+  "description": "保存 AI 讲解课程",
+  "main": "index.js",
+  "dependencies": {}
+}
