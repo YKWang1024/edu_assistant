@@ -1,0 +1,7 @@
+{
+  "name": "setMemberName",
+  "version": "1.0.0",
+  "description": "设置家庭成员显示名",
+  "main": "index.js",
+  "dependencies": {}
+}

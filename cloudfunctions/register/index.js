@@ -48,9 +48,20 @@ exports.main = async (event, context) => {
       }
     })
 
+    const userInfo = {
+      _id: userResult._id,
+      openid: openid,
+      nickname: nickname || '用户',
+      avatarUrl: avatarUrl || '',
+      familyId: familyResult._id,
+      familyRole: 'admin'
+    }
+
     return {
       success: true,
       message: '注册成功',
+      userInfo: userInfo,
+      familyId: familyResult._id,
       data: {
         userId: userResult._id,
         familyId: familyResult._id,

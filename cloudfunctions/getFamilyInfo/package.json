@@ -1,0 +1,7 @@
+{
+  "name": "getFamilyInfo",
+  "version": "1.0.0",
+  "description": "获取家庭信息与成员",
+  "main": "index.js",
+  "dependencies": {}
+}
