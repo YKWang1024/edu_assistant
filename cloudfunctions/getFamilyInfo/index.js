@@ -5,6 +5,13 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
 
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+function genCode() {
+  let s = ''
+  for (let i = 0; i < 6; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]
+  return s
+}
+
 async function resolveFamily(openid) {
   const u = await db.collection('users').where({ openid: openid }).get()
   if (!u.data || !u.data.length) return null
@@ -42,14 +49,29 @@ exports.main = async (event, context) => {
       }
     })
 
+    // 补全家庭码：无论谁查看、家庭如何创建，都保证有码可见
+    let inviteCode = family.inviteCode || ''
+    let inviteExpire = family.inviteCodeExpireAt || null
+    if (!inviteCode) {
+      for (let t = 0; t < 8; t++) {
+        const c = genCode()
+        const ex = await db.collection('families').where({ inviteCode: c }).get()
+        if (!ex.data || !ex.data.length) { inviteCode = c; break }
+      }
+      if (inviteCode) {
+        inviteExpire = new Date(Date.now() + 7 * 24 * 3600 * 1000)
+        await db.collection('families').doc(ctx.familyId).update({ data: { inviteCode: inviteCode, inviteCodeExpireAt: inviteExpire } })
+      }
+    }
+
     return {
       success: true,
       data: {
         familyId: ctx.familyId,
         myRole: ctx.role,
         members: members,
-        inviteCode: ctx.role === 'admin' ? (family.inviteCode || '') : '',
-        inviteCodeExpireAt: family.inviteCodeExpireAt || null
+        inviteCode: inviteCode,
+        inviteCodeExpireAt: inviteExpire
       }
     }
   } catch (err) {

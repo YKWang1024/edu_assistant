@@ -33,6 +33,12 @@ Page({
           members: res.data.members || [],
           inviteCode: res.data.inviteCode || ''
         })
+        // 管理员若还没有家庭码，自动生成一个，保证「看得到家庭码」
+        if (res.data.myRole === 'admin' && !res.data.inviteCode) {
+          app.callCloudFunction('generateInviteCode', {}, function (r) {
+            if (r && r.success) that.setData({ inviteCode: r.data.code })
+          })
+        }
       } else if (res && res.code === 'NO_FAMILY') {
         that.setData({ loading: false, needLogin: true })
       } else {
@@ -80,5 +86,21 @@ Page({
 
   onGoJoin: function () {
     wx.navigateTo({ url: '/pages/family/join' })
+  },
+
+  onRename: function () {
+    var that = this
+    wx.showModal({
+      title: '修改我的称呼',
+      editable: true,
+      placeholderText: '如 妈妈 / 爸爸 / 家长',
+      success: function (m) {
+        if (!m.confirm || !(m.content || '').trim()) return
+        app.callCloudFunction('setMemberName', { displayName: m.content.trim() }, function (r) {
+          if (r && r.success) { wx.showToast({ title: '已修改', icon: 'success' }); that.load() }
+          else wx.showToast({ title: (r && r.message) || '修改失败', icon: 'none' })
+        })
+      }
+    })
   }
 })

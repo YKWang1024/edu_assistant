@@ -2,20 +2,22 @@
 // 适配 Kimi Code 的 apikey(Anthropic 兼容)。客户端传 base64 图片 + prompt，返回模型文本。
 //
 // ⚠️ API Key 等机密请在云开发控制台 → 云函数 aiVision → 环境变量 里配置，不要写进代码提交：
-//   AI_VISION_API_KEY   你的 Kimi Code / 视觉接口 API Key (必填)
+//   AI_VISION_API_KEY   你的 Kimi Code API Key (必填，Kimi Code 控制台创建)
 //   AI_VISION_PROTOCOL  'anthropic'(默认, Claude 兼容) 或 'openai'
-//   AI_VISION_BASE_URL  根地址，默认 https://api.moonshot.cn/anthropic
-//                       (国际版用 https://api.moonshot.ai/anthropic; openai 协议用 https://api.moonshot.cn/v1)
+//   AI_VISION_BASE_URL  根地址，默认 https://api.kimi.com/coding (Kimi Code)
+//                       anthropic 协议 → 实际请求 .../coding/v1/messages
+//                       openai 协议   → 设为 https://api.kimi.com/coding/v1 → .../chat/completions
 //   AI_VISION_ENDPOINT  可选：直接给完整请求 URL，覆盖 BASE_URL 拼接
-//   AI_VISION_MODEL     模型名(需支持图片)，如 kimi-latest
+//   AI_VISION_MODEL     模型名，默认 kimi-for-coding (Kimi Code 固定模型, 自动映射到最新版)
+// ⚠️ Kimi Code 是编程产品，官方文档未说明支持图片输入；若识别失败(模型不看图)，需改用支持视觉的模型/服务。
 const https = require('https')
 const { URL } = require('url')
 
 const PROTOCOL = process.env.AI_VISION_PROTOCOL || 'anthropic'
-const BASE_URL = process.env.AI_VISION_BASE_URL || 'https://api.moonshot.cn/anthropic'
+const BASE_URL = process.env.AI_VISION_BASE_URL || 'https://api.kimi.com/coding'
 const ENDPOINT = process.env.AI_VISION_ENDPOINT || ''
 const API_KEY = process.env.AI_VISION_API_KEY || ''
-const MODEL = process.env.AI_VISION_MODEL || 'kimi-latest'
+const MODEL = process.env.AI_VISION_MODEL || 'kimi-for-coding'
 
 function endpointFor(protocol) {
   if (ENDPOINT) return ENDPOINT

@@ -8,24 +8,27 @@
 
   <block wx:else>
     <view class="card">
-      <view class="card-title"><text class="icon">👨‍👩‍👧</text>家庭成员（{{members.length}}）</view>
+      <view class="card-title flex-between">
+        <view><text class="icon">👨‍👩‍👧</text>家庭成员（{{members.length}}）</view>
+        <text class="rename-link" bindtap="onRename">改我的称呼</text>
+      </view>
       <view class="member-item" wx:for="{{members}}" wx:key="openid">
         <text class="member-name">{{item.displayName}}{{item.isMe ? '（我）' : ''}}</text>
         <text class="member-role {{item.role === 'admin' ? 'admin' : ''}}">{{item.role === 'admin' ? '管理员' : '成员'}}</text>
       </view>
     </view>
 
-    <view wx:if="{{isAdmin}}" class="card">
-      <view class="card-title"><text class="icon">🔑</text>邀请家人加入</view>
+    <view class="card">
+      <view class="card-title"><text class="icon">🔑</text>我的家庭码</view>
       <view class="code-box">
-        <text class="code-text">{{inviteCode || '— — — — — —'}}</text>
+        <text class="code-text">{{inviteCode || '生成中…'}}</text>
       </view>
       <view class="code-actions">
-        <button class="btn-secondary code-btn" bindtap="onGenerateCode">{{inviteCode ? '重新生成' : '生成邀请码'}}</button>
         <button class="btn-secondary code-btn" bindtap="onCopyCode">复制</button>
         <button class="btn-primary code-btn" open-type="share">转发卡片</button>
+        <button wx:if="{{isAdmin}}" class="btn-secondary code-btn" bindtap="onGenerateCode">重新生成</button>
       </view>
-      <view class="code-hint">把邀请码或卡片发给家人，对方在「加入家庭」输入即可。邀请码 7 天有效。</view>
+      <view class="code-hint">把这个家庭码或卡片发给家人，对方在下方「输入邀请码加入」即可加入你的家庭。邀请码 7 天有效。</view>
     </view>
 
     <view class="card join-other">

@@ -38,6 +38,12 @@
   background: #e6b325;
 }
 
+.rename-link {
+  font-size: 24rpx;
+  color: #775a00;
+  font-weight: 700;
+}
+
 .code-box {
   text-align: center;
   background: #fef9ed;
