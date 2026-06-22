@@ -7,24 +7,26 @@
 
 ---
 
-## 1. 数据库集合
+## 1. 数据库集合（务必先建全，否则写入直接报错）
 
-已存在：`users`、`families`、`recipes`、`examQuestions`（NoSQL 无需预定义字段，新增字段自动写入）。
+> ⚠️ **云函数往「不存在的集合」写数据会直接失败。** 典型表现：拍照识题点「保存」报「保存失败」（把 `config/ai.js` 的 `DEBUG` 设为 `true` 后会看到 `collection not exists` / 错误码 `-502005`）。所以**上线前先把下面所有集合建好**。
 
-**需新建**（控制台 → 数据库 →「+ 添加集合」，权限均「仅创建者可读写」）：
-- `familyCheckins`（习惯打卡，家庭维度）
-- `gameTime`（游戏时间余额，每 familyId+childName 一条）— Phase 4
-- `quizWrong`（自动小测错题，家庭维度）— Phase 5
-- `quizRecords`（自动小测整局记录）— Phase 5
+控制台 → 数据库 →「+ 添加集合」，**权限统一选「仅创建者可读写」**。逐个建好（打勾自查）：
 
-**权限（全部设「仅创建者可读写」即可）**：所有读写都走云函数（云函数以管理员身份运行，绕过集合 ACL），客户端不再直接读数据库，因此各集合保持「仅创建者可读写」最安全。
-- 特别注意 `examQuestions`：家长跨成员查看孩子的题目/课程走云函数 `getExamQuestion`，不依赖放开 ACL。
+| 集合 | 用途 | 备注 |
+|---|---|---|
+| ☐ `users` | 用户与家庭归属 | 能自动登录即说明已存在 |
+| ☐ `families` | 家庭信息 + 邀请码 | 同上，通常已存在 |
+| ☐ `recipes` | 家庭菜谱 | 新家庭会被预置示例菜谱 |
+| ☐ `examQuestions` | 试卷错题 | **拍照识题保存到这里**（漏建即保存报错） |
+| ☐ `familyCheckins` | 习惯打卡（家庭维度） | |
+| ☐ `gameTime` | 游戏时间余额 | 每 `familyId`+`childName` 一条 |
+| ☐ `quizWrong` | 自动小测错题（数学/拼音/英语） | |
+| ☐ `quizRecords` | 自动小测整局记录 | |
 
-**建议索引（性能，非必需）**：
-- `families.inviteCode`（单字段）— 邀请码查找
-- `recipes`：`familyId` + `createdAt`（复合）
-- `examQuestions`：`familyId`（单字段）
-- `familyCheckins`：`familyId` + `date`（复合）
+**权限说明**：所有读写都走云函数（以管理员身份运行，绕过集合 ACL），客户端不再直接读库，所以统一「仅创建者可读写」最安全。`examQuestions` 跨成员查看走云函数 `getExamQuestion`，不需放开 ACL。
+
+**建议索引（性能，非必需）**：`families.inviteCode`（单字段）；`recipes`（`familyId`+`createdAt`）；`examQuestions.familyId`（单字段）；`familyCheckins`（`familyId`+`date`）。
 
 ---
 
