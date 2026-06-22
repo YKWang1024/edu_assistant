@@ -15,7 +15,7 @@ module.exports = {
 
   // 文本模型（错题 AI 讲解课程，走 wx.cloud.extend.AI）
   TEXT_PROVIDER: 'cloudbase',
-  TEXT_MODEL: 'deepseek-v3.2',       // 改成你已开通的文本模型 id
+  TEXT_MODEL: 'hy3-preview',         // 已开通的文本模型 id（与 main 一致，可按需修改）
 
   // 兼容旧字段（视觉已迁至云函数 aiVision，这里不再使用）
   VISION_PROVIDER: 'cloudbase',

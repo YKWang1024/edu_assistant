@@ -3,5 +3,7 @@
   "version": "1.0.0",
   "description": "提交重做作答并更新复习状态",
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

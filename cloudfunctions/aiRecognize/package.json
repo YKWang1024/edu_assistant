@@ -3,5 +3,7 @@
   "version": "1.0.0",
   "description": "AI热量识别云函数",
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

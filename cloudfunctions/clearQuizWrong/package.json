@@ -3,5 +3,7 @@
   "version": "1.0.0",
   "description": "清空小测错题",
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

@@ -3,5 +3,7 @@
   "version": "1.0.0",
   "description": "通用视觉识别(直连 OpenAI/Anthropic 兼容多模态接口)",
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }
