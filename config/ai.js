@@ -11,7 +11,7 @@
 // =====================================================================
 
 module.exports = {
-  DEEPSEEK_API_KEY: 'sk-',  // TODO: 填写你的 DeepSeek API Key
+  DEEPSEEK_API_KEY: 'sk-xxxxxx',  // TODO: 填写你的 DeepSeek API Key
 
   TEXT_PROVIDER: 'cloudbase',
   TEXT_MODEL: 'hy3-preview',
