@@ -52,6 +52,7 @@ function httpPostJson(urlStr, headers, bodyObj) {
 }
 
 exports.main = async (event, context) => {
+  const DEBUG = !!(event && event.debug)
   try {
     if (!API_KEY) {
       return { success: false, message: '未配置视觉模型 API Key：请在云函数 aiVision 的环境变量 AI_VISION_API_KEY 中设置' }
@@ -76,7 +77,7 @@ exports.main = async (event, context) => {
         }]
       }
       const res = await httpPostJson(endpointFor('openai'), { 'Authorization': 'Bearer ' + API_KEY }, body)
-      if (res.status >= 400) return { success: false, message: '视觉接口返回错误(' + res.status + ')', error: typeof res.body === 'string' ? res.body : JSON.stringify(res.body) }
+      if (res.status >= 400) return { success: false, message: '视觉接口返回错误(' + res.status + ')', error: DEBUG ? (typeof res.body === 'string' ? res.body : JSON.stringify(res.body)) : undefined }
       try { text = res.body.choices[0].message.content } catch (e) { text = '' }
     } else {
       // anthropic (Claude / Kimi Code 兼容)
@@ -92,7 +93,7 @@ exports.main = async (event, context) => {
         }]
       }
       const res = await httpPostJson(endpointFor('anthropic'), { 'x-api-key': API_KEY, 'Authorization': 'Bearer ' + API_KEY, 'anthropic-version': '2023-06-01' }, body)
-      if (res.status >= 400) return { success: false, message: '视觉接口返回错误(' + res.status + ')', error: typeof res.body === 'string' ? res.body : JSON.stringify(res.body) }
+      if (res.status >= 400) return { success: false, message: '视觉接口返回错误(' + res.status + ')', error: DEBUG ? (typeof res.body === 'string' ? res.body : JSON.stringify(res.body)) : undefined }
       try {
         text = (res.body.content || []).filter(function (b) { return b.type === 'text' }).map(function (b) { return b.text }).join('')
       } catch (e) { text = '' }
@@ -101,6 +102,6 @@ exports.main = async (event, context) => {
     if (!text) return { success: false, message: '模型未返回内容' }
     return { success: true, text: text }
   } catch (err) {
-    return { success: false, message: '识别失败', error: err.message }
+    return { success: false, message: '识别失败', error: DEBUG ? err.message : undefined }
   }
 }

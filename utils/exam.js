@@ -105,10 +105,13 @@ function recognizeQuestion(base64DataUri) {
     app.callCloudFunction('aiVision', {
       image: img.base64,
       mediaType: img.mediaType,
-      prompt: buildRecognizePrompt()
+      prompt: buildRecognizePrompt(),
+      debug: !!config.DEBUG
     }, function (res) {
       if (!res || !res.success) {
-        reject(new Error((res && (res.message + (res.error ? ('：' + res.error) : ''))) || 'AI 识别失败'))
+        var msg = (res && res.message) || 'AI 识别失败'
+        if (config.DEBUG && res && res.error) msg += '：' + res.error
+        reject(new Error(msg))
         return
       }
       try { resolve(parseQuestionJSON(res.text)) } catch (e) { reject(e) }

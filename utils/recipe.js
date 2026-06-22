@@ -130,10 +130,13 @@ function recognizeRecipe(base64DataUri, nameHint) {
     app.callCloudFunction('aiVision', {
       image: img.base64,
       mediaType: img.mediaType,
-      prompt: buildRecipePrompt(nameHint)
+      prompt: buildRecipePrompt(nameHint),
+      debug: !!config.DEBUG
     }, function (res) {
       if (!res || !res.success) {
-        reject(new Error((res && (res.message + (res.error ? ('：' + res.error) : ''))) || 'AI 识别失败'))
+        var msg = (res && res.message) || 'AI 识别失败'
+        if (config.DEBUG && res && res.error) msg += '：' + res.error
+        reject(new Error(msg))
         return
       }
       try { resolve(parseRecipeJSON(res.text)) } catch (e) { reject(e) }

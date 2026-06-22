@@ -1,5 +1,6 @@
 var app = getApp()
 var examUtil = require('../../utils/exam.js')
+var config = require('../../config/ai.js')
 
 Page({
   data: {
@@ -54,7 +55,9 @@ Page({
       }
     }).catch(function (err) {
       console.error('generate course fail', err)
-      that.setData({ generating: false, error: (err && err.message) || 'AI 生成失败，请重试' })
+      var msg = 'AI 生成失败，请重试'
+      if (config.DEBUG && err && err.message) msg = err.message
+      that.setData({ generating: false, error: msg })
     })
   },
 
