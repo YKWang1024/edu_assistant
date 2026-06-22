@@ -11,12 +11,10 @@
 // =====================================================================
 
 module.exports = {
-  VISION_PROVIDER: 'cloudbase',
-  VISION_MODEL: 'hy3-preview',   // TODO: 改成你已开通的【多模态】模型 id
+  DEEPSEEK_API_KEY: 'sk-',  // TODO: 填写你的 DeepSeek API Key
 
   TEXT_PROVIDER: 'cloudbase',
-  TEXT_MODEL: 'hy3-preview',       // TODO: 改成你已开通的【文本】模型 id
+  TEXT_MODEL: 'hy3-preview',
 
-  // 可保存错题的科目列表
   SUBJECTS: ['语文', '数学', '英语', '科学', '其他']
 }

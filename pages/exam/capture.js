@@ -55,7 +55,7 @@ Page({
   },
 
   setupCropStage: function (path, natW, natH) {
-    var sys = wx.getSystemInfoSync()
+    var sys = wx.getWindowInfo()
     var dispW = sys.windowWidth
     var dispH = Math.round(dispW * natH / natW)
     var maxH = Math.round(sys.windowHeight * 0.66)

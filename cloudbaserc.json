@@ -273,6 +273,14 @@
       "timeout": 10,
       "memorySize": 256,
       "installDependency": true
+    },
+    {
+      "name": "aiVision",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 30,
+      "memorySize": 256,
+      "installDependency": true
     }
   ]
 }
