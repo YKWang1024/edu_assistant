@@ -25,42 +25,25 @@ Page({
   },
 
   loadData: function () {
-    var gameMinutes = app.globalData.gameMinutes
-    var today = util.getTodayStr()
-    var records = util.getRecords('rewardRecords')
-    this.processData(gameMinutes, records, today)
-  },
-
-  processData: function (gameMinutes, records, today) {
-    var todayEarned = 0
-    var todayDeducted = 0
-    var weekEarned = 0
-
-    var now = new Date()
-    var weekStart = new Date(now)
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-    var weekStartStr = util.formatDate(weekStart)
-
-    records.forEach(function (r) {
-      if (r.date === today) {
-        if (r.reward > 0) todayEarned += r.reward
-        if (r.reward < 0) todayDeducted += Math.abs(r.reward)
-      }
-      if (r.date >= weekStartStr) {
-        if (r.reward > 0) weekEarned += r.reward
-        if (r.reward < 0) weekEarned += r.reward
-      }
+    var that = this
+    // 余额 + 今日/本周获得（云端权威，离线回退缓存）
+    app.refreshGameTime(function (balance, stats) {
+      that.setData({
+        gameMinutes: balance,
+        todayEarned: stats ? stats.todayEarned : 0,
+        todayDeducted: stats ? stats.todayDeducted : 0,
+        weekEarned: stats ? stats.weekEarned : 0
+      })
     })
-
-    var recentRecords = records.slice(0, 20)
-
-    this.setData({
-      gameMinutes: gameMinutes,
-      todayEarned: todayEarned,
-      todayDeducted: todayDeducted,
-      weekEarned: weekEarned,
-      recentRecords: recentRecords
-    })
+    // 最近打卡记录
+    if (app.globalData.cloudReady) {
+      app.callCloudFunction('listCheckins', { limit: 20 }, function (res) {
+        if (res && res.success) that.setData({ recentRecords: (res.data || []).slice(0, 20) })
+        else that.setData({ recentRecords: util.getRecords('rewardRecords').slice(0, 20) })
+      })
+    } else {
+      this.setData({ recentRecords: util.getRecords('rewardRecords').slice(0, 20) })
+    }
   },
 
   onUseTime: function () {
@@ -75,20 +58,29 @@ Page({
       editable: true,
       placeholderText: '请输入使用分钟数',
       success: function (res) {
-        if (res.confirm && res.content) {
-          var minutes = parseInt(res.content)
-          if (isNaN(minutes) || minutes <= 0) {
-            wx.showToast({ title: '请输入有效分钟数', icon: 'none' })
-            return
-          }
-          if (minutes > that.data.gameMinutes) {
-            wx.showToast({ title: '游戏时间不足', icon: 'none' })
-            return
-          }
-          app.addGameMinutes(-minutes)
-          that.loadData()
-          wx.showToast({ title: '已使用 ' + minutes + ' 分钟', icon: 'success' })
+        if (!res.confirm || !res.content) return
+        var minutes = parseInt(res.content)
+        if (isNaN(minutes) || minutes <= 0) {
+          wx.showToast({ title: '请输入有效分钟数', icon: 'none' })
+          return
         }
+        if (minutes > that.data.gameMinutes) {
+          wx.showToast({ title: '游戏时间不足', icon: 'none' })
+          return
+        }
+        if (!app.globalData.cloudReady) {
+          wx.showToast({ title: '请联网后再使用', icon: 'none' })
+          return
+        }
+        app.callCloudFunction('spendGameTime', { minutes: minutes }, function (r) {
+          if (r && r.success) {
+            app.saveGameMinutes(r.data.balance)
+            that.loadData()
+            wx.showToast({ title: '已使用 ' + minutes + ' 分钟', icon: 'success' })
+          } else {
+            wx.showToast({ title: (r && r.message) || '扣减失败', icon: 'none' })
+          }
+        })
       }
     })
   }

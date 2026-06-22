@@ -145,7 +145,14 @@ function getRecords(key) {
   }
 }
 
-function saveWrongQuestion(question) {
+function deriveSubject(operator) {
+  operator = operator || ''
+  if (operator.indexOf('english') === 0) return 'english'
+  if (operator.indexOf('pinyin') >= 0 || operator === 'char2pinyin' || operator === 'pinyin2char' || operator === 'pinyin2write' || operator === 'hanzi2pinyin') return 'pinyin'
+  return 'math'
+}
+
+function saveWrongQuestionLocal(question) {
   try {
     var wrongList = wx.getStorageSync('wrongQuestions') || []
     var exists = wrongList.some(function (item) {
@@ -168,6 +175,41 @@ function saveWrongQuestion(question) {
   } catch (e) {
     return false
   }
+}
+
+// 云就绪→写云端 quizWrong(fire-and-forget)；否则本地兜底
+function saveWrongQuestion(question) {
+  var app = getApp()
+  if (app && app.globalData && app.globalData.cloudReady) {
+    app.callCloudFunction('saveQuizWrong', {
+      a: question.a,
+      b: question.b,
+      operator: question.operator,
+      answer: question.answer,
+      userAnswer: question.userAnswer,
+      subject: deriveSubject(question.operator)
+    }, function () {})
+    return true
+  }
+  return saveWrongQuestionLocal(question)
+}
+
+// 一局小测记录：云就绪→quizRecords；否则本地兜底
+function saveQuizRecord(subject, record) {
+  var app = getApp()
+  if (app && app.globalData && app.globalData.cloudReady) {
+    app.callCloudFunction('saveQuizRecord', {
+      subject: subject,
+      total: record.total,
+      correct: record.correct,
+      timeUsed: record.timeUsed,
+      level: record.level,
+      date: record.date,
+      time: record.time
+    }, function () {})
+    return true
+  }
+  return saveRecord(subject + 'Records', record)
 }
 
 function getWrongQuestions() {
@@ -255,6 +297,7 @@ module.exports = {
   saveRecord: saveRecord,
   getRecords: getRecords,
   saveWrongQuestion: saveWrongQuestion,
+  saveQuizRecord: saveQuizRecord,
   getWrongQuestions: getWrongQuestions,
   analyzeNutrition: analyzeNutrition,
   getRecipeRecommendations: getRecipeRecommendations

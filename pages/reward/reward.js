@@ -61,7 +61,6 @@ Page({
     }
 
     var result = util.calculateReward(this.data.activeTab, timeValue)
-    var totalMinutes = app.addGameMinutes(result.reward)
 
     var record = {
       date: util.getTodayStr(),
@@ -76,6 +75,21 @@ Page({
     }
     util.saveRecord('rewardRecords', record)
 
+    // 同步到云端家庭打卡（尽力而为，不影响本地流程与游戏时间钱包）
+    if (app.globalData.cloudReady) {
+      app.callCloudFunction('saveCheckin', {
+        type: record.type,
+        actualTime: record.actualTime,
+        targetTime: record.targetTime,
+        reward: record.reward,
+        diff: record.diff,
+        isEarly: record.isEarly,
+        isLate: record.isLate,
+        date: record.date,
+        time: record.time
+      }, function () {})
+    }
+
     var msg = ''
     if (result.reward > 0) {
       msg = '太棒了！获得 ' + result.reward + ' 分钟游戏时间！'
@@ -87,18 +101,22 @@ Page({
       msg = '虽然超时了，但不扣时间哦，明天加油！'
     }
 
-    this.setData({
-      rewardResult: {
-        reward: result.reward,
-        totalMinutes: totalMinutes,
-        msg: msg,
-        isEarly: result.isEarly,
-        isLate: result.isLate
-      },
-      todayRecord: record
-    })
-
+    var that = this
+    this.setData({ todayRecord: record })
     wx.showToast({ title: msg, icon: 'none', duration: 2500 })
+
+    // 游戏时间入云端钱包，回调里更新显示余额
+    app.addGameMinutes(result.reward, function (totalMinutes) {
+      that.setData({
+        rewardResult: {
+          reward: result.reward,
+          totalMinutes: totalMinutes,
+          msg: msg,
+          isEarly: result.isEarly,
+          isLate: result.isLate
+        }
+      })
+    })
   },
 
   onViewRecords: function () {

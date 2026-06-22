@@ -1,0 +1,7 @@
+{
+  "name": "deleteQuizWrong",
+  "version": "1.0.0",
+  "description": "删除一条小测错题",
+  "main": "index.js",
+  "dependencies": {}
+}

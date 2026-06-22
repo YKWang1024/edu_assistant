@@ -1,0 +1,7 @@
+{
+  "name": "editRating",
+  "version": "1.0.0",
+  "description": "修改评分",
+  "main": "index.js",
+  "dependencies": {}
+}

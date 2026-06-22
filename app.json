@@ -18,6 +18,8 @@
     "pages/exam/course",
     "pages/vip/vip",
     "pages/settings/settings",
+    "pages/family/manage",
+    "pages/family/join",
     "pages/webview/webview",
     "pages/auth/auth",
     "pages/circle/circle",

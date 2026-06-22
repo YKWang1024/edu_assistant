@@ -1,0 +1,17 @@
+<view class="container">
+  <view class="card">
+    <view class="card-title"><text class="icon">🏠</text>加入家庭</view>
+
+    <view wx:if="{{fromCard}}" class="from-card-tip">有人邀请你加入TA的家庭，填写称呼后点「确认加入」。</view>
+    <block wx:else>
+      <view class="field-label">邀请码</view>
+      <input class="input-field code-input" value="{{code}}" bindinput="onCodeInput" placeholder="输入 6 位邀请码" maxlength="6" />
+    </block>
+
+    <view class="field-label">你的称呼</view>
+    <input class="input-field" value="{{displayName}}" bindinput="onNameInput" placeholder="如 妈妈 / 爸爸 / 宝贝" maxlength="10" />
+
+    <button class="btn-primary join-btn" bindtap="onJoin" loading="{{joining}}" disabled="{{joining}}">确认加入</button>
+    <view class="join-hint">加入后即可与家人共享菜谱、孩子的错题与习惯数据。</view>
+  </view>
+</view>

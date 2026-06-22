@@ -1,0 +1,7 @@
+{
+  "name": "deleteRating",
+  "version": "1.0.0",
+  "description": "删除评分(软删除)",
+  "main": "index.js",
+  "dependencies": {}
+}

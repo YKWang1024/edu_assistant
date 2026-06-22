@@ -22,25 +22,22 @@ Page({
 
   loadQuestion: function () {
     var that = this
-    if (!app.globalData.cloudReady || !wx.cloud || !wx.cloud.database) {
+    if (!app.globalData.cloudReady) {
       this.setData({ loading: false, error: '云开发未就绪，请稍后重试' })
       return
     }
-    wx.cloud.database().collection('examQuestions').doc(this.questionId).get({
-      success: function (res) {
+    // 走云函数读取(支持家长跨成员查看孩子的题目)
+    app.callCloudFunction('getExamQuestion', { questionId: this.questionId }, function (res) {
+      if (res && res.success && res.data) {
         var q = res.data
         that.setData({ question: q, loading: false })
-        if (q && q.aiCourse && q.aiCourse.content) {
+        if (q.aiCourse && q.aiCourse.content) {
           that.setData({ content: q.aiCourse.content, cached: true })
-        } else if (q) {
-          that.generate(q)
         } else {
-          that.setData({ error: '题目不存在' })
+          that.generate(q)
         }
-      },
-      fail: function (err) {
-        console.error('load question fail', err)
-        that.setData({ loading: false, error: '加载题目失败' })
+      } else {
+        that.setData({ loading: false, error: (res && res.message) || '加载题目失败' })
       }
     })
   },

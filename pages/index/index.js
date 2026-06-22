@@ -12,22 +12,31 @@ Page({
   },
 
   onShow: function () {
-    this.setData({
-      gameMinutes: app.globalData.gameMinutes
-    })
+    var that = this
+    this.setData({ gameMinutes: app.globalData.gameMinutes })
+    app.refreshGameTime(function (balance) { that.setData({ gameMinutes: balance }) })
     this.checkTodayStatus()
   },
 
   checkTodayStatus: function () {
+    var that = this
     var today = util.getTodayStr()
-    var records = util.getRecords('rewardRecords')
-    var checked = { school: false, homework: false, sleep: false }
-    records.forEach(function (r) {
-      if (r.date === today) {
-        checked[r.type] = true
+    function applyLocal() {
+      var records = util.getRecords('rewardRecords')
+      var checked = { school: false, homework: false, sleep: false }
+      records.forEach(function (r) { if (r.date === today) checked[r.type] = true })
+      that.setData({ todayChecked: checked })
+    }
+    if (!app.globalData.cloudReady) { applyLocal(); return }
+    app.callCloudFunction('listCheckins', {}, function (res) {
+      if (res && res.success) {
+        var checked = { school: false, homework: false, sleep: false }
+        ;(res.data || []).forEach(function (r) { if (r.date === today) checked[r.type] = true })
+        that.setData({ todayChecked: checked })
+      } else {
+        applyLocal()
       }
     })
-    this.setData({ todayChecked: checked })
   },
 
   onTapMath: function () {

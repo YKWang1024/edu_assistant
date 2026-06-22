@@ -113,7 +113,7 @@ Page({
       level: this.data.selectedLevel,
       questions: questions
     }
-    util.saveRecord('mathRecords', record)
+    util.saveQuizRecord('math', record)
 
     wx.redirectTo({
       url: '/pages/math/result?correct=' + correct + '&total=' + this.data.totalQuestions + '&time=' + timeUsed

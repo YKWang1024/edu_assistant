@@ -1,0 +1,36 @@
+<view class="container">
+  <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+
+  <view wx:elif="{{needLogin}}" class="card login-card">
+    <view class="login-text">需要先登录/注册才能管理家庭</view>
+    <button class="btn-primary" bindtap="onGoAuth">去登录 / 注册</button>
+  </view>
+
+  <block wx:else>
+    <view class="card">
+      <view class="card-title"><text class="icon">👨‍👩‍👧</text>家庭成员（{{members.length}}）</view>
+      <view class="member-item" wx:for="{{members}}" wx:key="openid">
+        <text class="member-name">{{item.displayName}}{{item.isMe ? '（我）' : ''}}</text>
+        <text class="member-role {{item.role === 'admin' ? 'admin' : ''}}">{{item.role === 'admin' ? '管理员' : '成员'}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{isAdmin}}" class="card">
+      <view class="card-title"><text class="icon">🔑</text>邀请家人加入</view>
+      <view class="code-box">
+        <text class="code-text">{{inviteCode || '— — — — — —'}}</text>
+      </view>
+      <view class="code-actions">
+        <button class="btn-secondary code-btn" bindtap="onGenerateCode">{{inviteCode ? '重新生成' : '生成邀请码'}}</button>
+        <button class="btn-secondary code-btn" bindtap="onCopyCode">复制</button>
+        <button class="btn-primary code-btn" open-type="share">转发卡片</button>
+      </view>
+      <view class="code-hint">把邀请码或卡片发给家人，对方在「加入家庭」输入即可。邀请码 7 天有效。</view>
+    </view>
+
+    <view class="card join-other">
+      <view class="join-text">想加入别人的家庭？</view>
+      <button class="btn-secondary" bindtap="onGoJoin">输入邀请码加入</button>
+    </view>
+  </block>
+</view>

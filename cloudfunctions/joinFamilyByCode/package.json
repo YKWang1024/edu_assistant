@@ -1,0 +1,7 @@
+{
+  "name": "joinFamilyByCode",
+  "version": "1.0.0",
+  "description": "通过邀请码加入家庭",
+  "main": "index.js",
+  "dependencies": {}
+}

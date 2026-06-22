@@ -105,7 +105,7 @@ Page({
       timeUsed: timeUsed,
       type: 'english_' + this.data.selectedMode
     }
-    util.saveRecord('englishRecords', record)
+    util.saveQuizRecord('english', record)
 
     wx.redirectTo({
       url: '/pages/math/result?correct=' + correct + '&total=' + this.data.totalQuestions + '&time=' + timeUsed

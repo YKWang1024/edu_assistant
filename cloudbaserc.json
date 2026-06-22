@@ -97,6 +97,182 @@
       "timeout": 10,
       "memorySize": 256,
       "installDependency": true
+    },
+    {
+      "name": "getFamilyInfo",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "generateInviteCode",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "joinFamilyByCode",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "joinFamilyById",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "setMemberName",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "saveRecipe",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "listRecipes",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "deleteRecipe",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "rateRecipe",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "editRating",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "deleteRating",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "getExamQuestion",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "saveCheckin",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "listCheckins",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "getGameTime",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "addGameTime",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "spendGameTime",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "saveQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "listQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "deleteQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "clearQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "saveQuizRecord",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
     }
   ]
 }

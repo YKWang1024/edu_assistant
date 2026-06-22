@@ -59,8 +59,8 @@ Page({
           wx.cloud.callFunction({
             name: 'shareRecipe',
             data: {
-              recipe: recipe,
-              isPublic: true
+              recipeId: recipe._id,
+              shareMessage: ''
             },
             success: function (res) {
               if (res.result.success) {

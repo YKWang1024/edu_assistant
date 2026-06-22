@@ -1,0 +1,7 @@
+{
+  "name": "listCheckins",
+  "version": "1.0.0",
+  "description": "拉取习惯打卡记录",
+  "main": "index.js",
+  "dependencies": {}
+}

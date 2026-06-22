@@ -1,0 +1,7 @@
+{
+  "name": "saveQuizRecord",
+  "version": "1.0.0",
+  "description": "保存小测整局记录",
+  "main": "index.js",
+  "dependencies": {}
+}

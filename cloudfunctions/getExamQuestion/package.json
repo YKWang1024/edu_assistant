@@ -1,0 +1,7 @@
+{
+  "name": "getExamQuestion",
+  "version": "1.0.0",
+  "description": "读取单道错题",
+  "main": "index.js",
+  "dependencies": {}
+}

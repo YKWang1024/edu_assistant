@@ -8,6 +8,10 @@ Page({
     wx.navigateTo({ url: '/pages/wrong/wrong' })
   },
 
+  onGoFamily: function () {
+    wx.navigateTo({ url: '/pages/family/manage' })
+  },
+
   onGoSettings: function () {
     wx.navigateTo({ url: '/pages/settings/settings' })
   },

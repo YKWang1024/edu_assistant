@@ -1,0 +1,7 @@
+{
+  "name": "rateRecipe",
+  "version": "1.0.0",
+  "description": "给菜谱评分",
+  "main": "index.js",
+  "dependencies": {}
+}

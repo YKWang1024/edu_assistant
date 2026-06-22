@@ -19,6 +19,8 @@ exports.main = async (event, context) => {
     if (userResult.data && userResult.data.length > 0) {
       return {
         success: true,
+        userInfo: userResult.data[0],
+        familyId: userResult.data[0].familyId,
         data: userResult.data[0],
         message: '登录成功'
       }

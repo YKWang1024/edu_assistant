@@ -1,3 +1,4 @@
+var app = getApp()
 var util = require('../../utils/util.js')
 
 function getQuestionDisplay(item) {
@@ -11,7 +12,7 @@ function getQuestionDisplay(item) {
       userAnswer: item.userAnswer
     }
   }
-  if (op.startsWith('pinyin') || op === 'hanzi2pinyin' || op === 'pinyin2write') {
+  if (op.indexOf('pinyin') >= 0 || op === 'char2pinyin' || op === 'pinyin2char' || op === 'pinyin2write' || op === 'hanzi2pinyin') {
     return {
       type: 'pinyin',
       typeLabel: '拼音',
@@ -42,21 +43,55 @@ Page({
     practiceResults: []
   },
 
-  onLoad: function () {
-    this.loadWrongQuestions()
-  },
-
   onShow: function () {
-    this.loadWrongQuestions()
+    if (!this.data.practiceMode) this.loadWrongQuestions()
   },
 
   loadWrongQuestions: function () {
-    var list = util.getWrongQuestions()
+    var that = this
+    if (!app.globalData.cloudReady) {
+      this.applyList(util.getWrongQuestions())
+      return
+    }
+    this.maybeMigrate(function () {
+      app.callCloudFunction('listQuizWrong', {}, function (res) {
+        if (res && res.success) that.applyList(res.data || [])
+        else that.applyList(util.getWrongQuestions())
+      })
+    })
+  },
+
+  applyList: function (list) {
+    list = (list || []).slice()
     list.sort(function (a, b) { return (b.count || 1) - (a.count || 1) })
     var displayList = list.map(function (item) {
       return Object.assign({}, item, getQuestionDisplay(item))
     })
     this.setData({ wrongList: displayList })
+  },
+
+  // 首次联网把本地旧错题导入云端，仅一次
+  maybeMigrate: function (done) {
+    var migrated = false
+    try { migrated = wx.getStorageSync('migratedQuizWrong') } catch (e) {}
+    if (migrated) { done(); return }
+    var local = util.getWrongQuestions()
+    if (!local.length) {
+      try { wx.setStorageSync('migratedQuizWrong', true) } catch (e) {}
+      done()
+      return
+    }
+    var i = 0
+    function next() {
+      if (i >= local.length) {
+        try { wx.setStorageSync('migratedQuizWrong', true) } catch (e) {}
+        done()
+        return
+      }
+      var q = local[i]
+      app.callCloudFunction('saveQuizWrong', { a: q.a, b: q.b, operator: q.operator, answer: q.answer, userAnswer: q.userAnswer }, function () { i++; next() })
+    }
+    next()
   },
 
   onStartPractice: function () {
@@ -68,6 +103,7 @@ Page({
 
     var practiceQuestions = list.slice(0, Math.min(10, list.length)).map(function (q) {
       return {
+        _id: q._id,
         a: q.a,
         b: q.b,
         operator: q.operator,
@@ -103,7 +139,7 @@ Page({
     var idx = this.data.practiceIndex
     var questions = this.data.practiceQuestions
     questions[idx].userAnswer = answer
-    
+
     var current = questions[idx]
     if (current.type === 'math') {
       questions[idx].isCorrect = (parseInt(answer) === current.answer)
@@ -142,6 +178,11 @@ Page({
   },
 
   removeFromWrongList: function (question) {
+    if (app.globalData.cloudReady && question._id) {
+      app.callCloudFunction('deleteQuizWrong', { id: question._id }, function () {})
+      return
+    }
+    // 离线本地兜底
     try {
       var wrongList = wx.getStorageSync('wrongQuestions') || []
       if (question.type === 'math') {
@@ -164,12 +205,20 @@ Page({
       content: '确定要清空所有错题吗？',
       confirmColor: '#FF6B6B',
       success: function (res) {
-        if (res.confirm) {
-          try {
-            wx.setStorageSync('wrongQuestions', [])
-            that.setData({ wrongList: [] })
-            wx.showToast({ title: '已清空', icon: 'success' })
-          } catch (e) {}
+        if (!res.confirm) return
+        if (app.globalData.cloudReady) {
+          app.callCloudFunction('clearQuizWrong', {}, function (r) {
+            if (r && r.success) {
+              that.setData({ wrongList: [] })
+              wx.showToast({ title: '已清空', icon: 'success' })
+            } else {
+              wx.showToast({ title: (r && r.message) || '清空失败', icon: 'none' })
+            }
+          })
+        } else {
+          try { wx.setStorageSync('wrongQuestions', []) } catch (e) {}
+          that.setData({ wrongList: [] })
+          wx.showToast({ title: '已清空', icon: 'success' })
         }
       }
     })
@@ -177,7 +226,8 @@ Page({
 
   onDeleteOne: function (e) {
     var idx = e.currentTarget.dataset.index
-    var wrongList = this.data.wrongList
+    var that = this
+    var wrongList = this.data.wrongList.slice()
     var item = wrongList[idx]
     this.removeFromWrongList(item)
     wrongList.splice(idx, 1)

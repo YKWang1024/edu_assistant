@@ -1,0 +1,7 @@
+{
+  "name": "getGameTime",
+  "version": "1.0.0",
+  "description": "读取游戏时间余额",
+  "main": "index.js",
+  "dependencies": {}
+}

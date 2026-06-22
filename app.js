@@ -85,11 +85,54 @@ App({
     }
   },
 
-  addGameMinutes: function (minutes) {
-    var total = this.globalData.gameMinutes + minutes
-    if (total < 0) total = 0
-    this.saveGameMinutes(total)
-    return total
+  // 从云端刷新游戏时间余额（首次会把本地旧钱包迁移为初始余额）。cb(balance, stats)
+  refreshGameTime: function (cb) {
+    var that = this
+    if (!this.globalData.cloudReady) { if (cb) cb(this.globalData.gameMinutes, null); return }
+    this.maybeMigrateGameTime(function () {
+      that.callCloudFunction('getGameTime', {}, function (res) {
+        if (res && res.success) {
+          that.saveGameMinutes(res.data.balance)
+          that.globalData.gameTimeStats = res.data
+          if (cb) cb(res.data.balance, res.data)
+        } else {
+          if (cb) cb(that.globalData.gameMinutes, null)
+        }
+      })
+    })
+  },
+
+  maybeMigrateGameTime: function (done) {
+    var migrated = false
+    try { migrated = wx.getStorageSync('migratedGameTime') } catch (e) {}
+    if (migrated) { done(); return }
+    var that = this
+    function finish() { try { wx.setStorageSync('migratedGameTime', true) } catch (e) {} done() }
+    var local = 0
+    try { var g = wx.getStorageSync('gameMinutes'); if (g !== '' && g) local = Number(g) || 0 } catch (e) {}
+    if (!local || local <= 0) { finish(); return }
+    // 云端已有余额则不重复注入
+    this.callCloudFunction('getGameTime', {}, function (res) {
+      if (res && res.success && (res.data.balance || 0) > 0) { finish(); return }
+      that.callCloudFunction('addGameTime', { delta: local }, function () { finish() })
+    })
+  },
+
+  // 增减游戏时间（云端权威；离线兜底本地）。cb(balance)
+  addGameMinutes: function (minutes, cb) {
+    var that = this
+    if (!this.globalData.cloudReady) {
+      var total = (this.globalData.gameMinutes || 0) + minutes
+      if (total < 0) total = 0
+      this.saveGameMinutes(total)
+      if (cb) cb(total)
+      return total
+    }
+    this.callCloudFunction('addGameTime', { delta: minutes }, function (res) {
+      if (res && res.success) that.saveGameMinutes(res.data.balance)
+      if (cb) cb(that.globalData.gameMinutes)
+    })
+    return this.globalData.gameMinutes
   },
 
   // 异步检查登录状态，带超时处理

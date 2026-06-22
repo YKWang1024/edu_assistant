@@ -1,0 +1,7 @@
+{
+  "name": "saveCheckin",
+  "version": "1.0.0",
+  "description": "保存习惯打卡",
+  "main": "index.js",
+  "dependencies": {}
+}

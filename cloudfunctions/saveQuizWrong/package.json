@@ -1,0 +1,7 @@
+{
+  "name": "saveQuizWrong",
+  "version": "1.0.0",
+  "description": "保存自动小测错题",
+  "main": "index.js",
+  "dependencies": {}
+}

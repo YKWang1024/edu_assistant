@@ -66,7 +66,7 @@
         <text class="platform-badge {{recipe.referenceType}}">{{recipe.referenceLabel || '链接'}}</text>
       </view>
       <view class="reference-link-text">{{recipe.referenceLink}}</view>
-      <view class="reference-hint">点击复制链接，在浏览器或APP中打开</view>
+      <view class="reference-hint">{{recipe.referenceType === 'xiaohongshu' ? '点击复制链接，打开小红书App查看' : '点击在网页中打开'}}</view>
     </view>
   </view>
 
@@ -86,27 +86,32 @@
     <view class="info-content">{{recipe.tags}}</view>
   </view>
 
-  <view class="info-card card" wx:if="{{recipe.ratings && recipe.ratings.length > 0}}">
+  <view class="info-card card" wx:if="{{visibleRatings.length > 0}}">
     <view class="card-title">
       <text class="icon">📊</text>
-      <text>评分记录 ({{recipe.ratings.length}}次)</text>
+      <text>评分记录 ({{visibleRatings.length}}次)</text>
     </view>
     <view class="rating-list">
-      <view class="rating-item" wx:for="{{recipe.ratings}}" wx:key="index">
+      <view class="rating-item" wx:for="{{visibleRatings}}" wx:key="id">
         <view class="flex-between">
           <view class="flex-row">
-            <text class="rating-member">{{item.member || '未知'}}</text>
+            <text class="rating-member">{{item.memberName || '未知'}}</text>
             <text class="rating-date">{{item.date}}</text>
           </view>
           <text class="rating-score">⭐ {{item.score}} 分</text>
         </view>
         <view class="rating-comment" wx:if="{{item.comment}}">{{item.comment}}</view>
+        <view class="rating-manage" wx:if="{{item.canManage}}">
+          <text class="rating-op" data-id="{{item.id}}" catchtap="onEditRating">改分</text>
+          <text class="rating-op danger" data-id="{{item.id}}" data-date="{{item.date}}" catchtap="onDeleteRating">删除</text>
+        </view>
       </view>
     </view>
   </view>
 
   <view class="btn-group">
     <button class="btn-primary" bindtap="onRateRecipe">给这道菜打分</button>
+    <button class="btn-secondary" bindtap="onShareToCircle">分享到菜友圈</button>
     <button class="btn-danger" bindtap="onDeleteRecipe">删除菜谱</button>
   </view>
 </view>

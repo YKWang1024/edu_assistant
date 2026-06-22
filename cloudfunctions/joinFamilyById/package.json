@@ -1,0 +1,7 @@
+{
+  "name": "joinFamilyById",
+  "version": "1.0.0",
+  "description": "通过转发卡片加入家庭",
+  "main": "index.js",
+  "dependencies": {}
+}
