@@ -1,7 +1,7 @@
 {
   "name": "deleteExamQuestion",
   "version": "1.0.0",
-  "description": "删除一道错�?,
+  "description": "删除一道错题",
   "main": "index.js",
   "dependencies": {
     "wx-server-sdk": "~2.6.3"

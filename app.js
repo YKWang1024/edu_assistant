@@ -135,25 +135,27 @@ App({
     return this.globalData.gameMinutes
   },
 
-  // 异步检查登录状态，带超时处理
+  // 微信自动登录（按 openid 静默登录；新用户云端自动建账号+家庭）
   checkLoginStatusAsync: function () {
     var that = this
-    
-    // 设置超时，5秒后放弃等待
+
+    // 首次进入会自动建家庭+预置菜谱，留足时间
     var timeoutId = setTimeout(function () {
       console.log('云函数登录超时，使用本地数据')
-    }, 5000)
+    }, 12000)
 
     wx.cloud.callFunction({
       name: 'login',
-      timeout: 5000,
+      timeout: 12000,
       success: function (res) {
         clearTimeout(timeoutId)
         if (res.result && res.result.success && res.result.userInfo) {
           that.saveUserInfo(res.result.userInfo)
-          console.log('云函数登录成功')
+          that.saveFamilyId(res.result.userInfo.familyId)
+          that.refreshGameTime()
+          console.log('微信自动登录成功')
         } else {
-          console.log('用户未在云端注册，使用本地数据')
+          console.log('自动登录失败:', res.result && res.result.message)
         }
       },
       fail: function (err) {
@@ -165,7 +167,7 @@ App({
   },
 
   // 手动调用云函数（带超时和错误处理）
-  callCloudFunction: function (name, data, callback) {
+  callCloudFunction: function (name, data, callback, timeout) {
     if (!this.globalData.cloudReady) {
       callback({ success: false, message: '云开发未初始化' })
       return
@@ -174,7 +176,7 @@ App({
     wx.cloud.callFunction({
       name: name,
       data: data,
-      timeout: 10000,
+      timeout: timeout || 10000,
       success: function (res) {
         callback(res.result)
       },

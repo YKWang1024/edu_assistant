@@ -40,6 +40,8 @@
 
 **Phase 5（旧小测错题/记录上云）**：`saveQuizWrong`、`listQuizWrong`、`deleteQuizWrong`、`clearQuizWrong`、`saveQuizRecord`（`utils/util.js`/`wrong`/`math`/`pinyin`/`english` 随小程序发布）
 
+**视觉识别**：`aiVision`（超时 60s；需在其环境变量配置 `AI_VISION_API_KEY` 等，见 §3）
+
 > 游戏时间余额现按 `(familyId, childName)` 存于 `gameTime`，跨设备一致；首次联网会把本地旧 `gameMinutes` 迁为初始余额一次。旧本地小测错题首次联网导入 `quizWrong` 一次。
 
 > `register`/`login` 一定要重新部署（返回结构改了，否则家庭功能拿不到 familyId）。所有 `examQuestions` 函数都改过（加了 familyId/canAccess），也要重新部署。
@@ -48,7 +50,22 @@
 
 ## 3. AI 模型
 
-沿用错题/菜谱共用的视觉模型：在 `config/ai.js` 把 `VISION_MODEL` 指向已启用的**多模态**模型（菜谱识别 + 拍照识题都用它），`TEXT_MODEL` 为文本模型（错题讲解）。托管模型无 apikey，按 Token 资源包计费（详见 docs/exam-feature-deploy.md）。
+### 视觉识别（菜谱识图 / 拍照识题）—— 云函数 `aiVision`
+腾讯云开发的**托管 AI（deepseek 等）不接受图片输入**（`content` 只支持文字，这就是 `image_url` 报错的原因）。视觉识别改为云函数 `aiVision` 直连「Anthropic(Claude) 兼容」接口（适配 **Kimi Code** 的 apikey）。在 云开发控制台 → 云函数 `aiVision` → **环境变量** 配置（**不要把 key 写进代码提交**）：
+默认已按 **Kimi Code** 配好，通常**只需设 `AI_VISION_API_KEY`** 一项：
+- `AI_VISION_API_KEY`：Kimi Code 控制台创建的 API Key（必填，最多 5 个、仅创建时显示）
+- `AI_VISION_PROTOCOL`：默认 `anthropic`（Claude 兼容）；可选 `openai`
+- `AI_VISION_BASE_URL`：默认 `https://api.kimi.com/coding`（anthropic 实际请求 `.../coding/v1/messages`；openai 协议请设为 `https://api.kimi.com/coding/v1` → `.../chat/completions`）
+- `AI_VISION_MODEL`：默认 `kimi-for-coding`（Kimi Code 固定模型，后端自动映射到最新版/k2.6）
+- `AI_VISION_ENDPOINT`（可选）：完整请求 URL，覆盖自动拼接
+- 鉴权固定 `Authorization: Bearer <key>`
+
+部署 `aiVision`（超时已配 60s）。菜谱「AI识别菜谱」与「拍照识题」都走它，返回做法/配料/热量/题干等结构化 JSON。
+
+> ⚠️ **Kimi Code 是编程产品，官方文档未声明支持图片输入。** 若识别报错或模型“看不到图”，说明该模型不支持视觉，需改用真正的视觉模型（如 Moonshot 开放平台的 `moonshot-v1-*-vision`，但那要用开放平台 API Key，把 `AI_VISION_*` 改成对应值），或改走 OCR。
+
+### 文本（错题 AI 讲解课程）
+课程生成仍走小程序端 `wx.cloud.extend.AI` 文本模型，`config/ai.js` 的 `TEXT_MODEL` 指向已启用的文本模型（如 `deepseek-v4-pro`）。若该文本模型也未开通，可同理改造为走云函数文本接口。
 
 ---
 

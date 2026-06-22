@@ -278,7 +278,7 @@
       "name": "aiVision",
       "handler": "index.main",
       "runtime": "Nodejs16.13",
-      "timeout": 30,
+      "timeout": 60,
       "memorySize": 256,
       "installDependency": true
     }

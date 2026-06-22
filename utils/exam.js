@@ -27,7 +27,40 @@ var STATUS_LABEL = {
 
 function statusLabel(status) { return STATUS_LABEL[status] || '' }
 
-// ---------------- AI：识别题目（通过云函数调用 DeepSeek V4 Pro） ----------------
+// ---------------- AI：识别题目（视觉，非流式） ----------------
+
+function buildRecognizePrompt() {
+  return [
+    '你是一个中小学题目识别助手。请识别图片中的这一道题目，并【只输出一个 JSON 对象】，',
+    '不要输出任何额外文字、解释、Markdown 代码块或反引号。JSON 字段如下：',
+    '{',
+    '  "subject": 科目，只能是以下之一：' + JSON.stringify(config.SUBJECTS) + '，',
+    '  "type": 题型，只能是 "choice"(选择题) / "fill"(填空或简答) / "other"，',
+    '  "stem": 题干文字(字符串，不要包含选项内容)，',
+    '  "options": 选择题选项数组，每项形如 {"key":"A","text":"选项内容"}；非选择题填 []，',
+    '  "correctAnswer": 正确答案。选择题填选项字母如 "B"；其它题填答案文本；若无法判断填 ""，',
+    '  "analysis": 简短解析(50字以内，可为空字符串)',
+    '}',
+    '若图片中有多道题，只识别最完整、最居中的那一道。数学公式用普通文本表示。'
+  ].join('\n')
+}
+
+// 从模型返回文本里抠出 JSON 并解析（容错：去代码围栏、截取大括号）
+function parseQuestionJSON(text) {
+  if (!text) throw new Error('AI 未返回内容')
+  var s = String(text).trim()
+  s = s.replace(/^```[a-zA-Z]*/, '').replace(/```$/, '').trim()
+  var start = s.indexOf('{')
+  var end = s.lastIndexOf('}')
+  if (start >= 0 && end > start) s = s.slice(start, end + 1)
+  var obj
+  try {
+    obj = JSON.parse(s)
+  } catch (e) {
+    throw new Error('AI 返回的内容无法解析为题目')
+  }
+  return normalizeQuestion(obj)
+}
 
 function normalizeQuestion(obj) {
   obj = obj || {}
@@ -54,40 +87,35 @@ function normalizeQuestion(obj) {
   }
 }
 
+function splitDataUri(dataUri) {
+  var m = /^data:(.*?);base64,(.*)$/.exec(dataUri || '')
+  if (m) return { mediaType: m[1] || 'image/jpeg', base64: m[2] }
+  return { mediaType: 'image/jpeg', base64: dataUri || '' }
+}
+
+// 通过云函数 aiVision 调用视觉模型(Kimi/Anthropic 兼容)识别题目。
 function recognizeQuestion(base64DataUri) {
   return new Promise(function (resolve, reject) {
-    if (!wx.cloud) {
-      reject(new Error('云开发环境未初始化'))
+    var app = getApp()
+    if (!app || !app.globalData || !app.globalData.cloudReady) {
+      reject(new Error('云开发未就绪，请联网后重试'))
       return
     }
-    if (!config.DEEPSEEK_API_KEY) {
-      reject(new Error('未配置 DeepSeek API Key'))
-      return
-    }
-
-    wx.cloud.callFunction({
-      name: 'aiVision',
-      data: {
-        imageBase64: base64DataUri,
-        apiKey: config.DEEPSEEK_API_KEY
-      },
-      success: function (res) {
-        if (res.result && res.result.success) {
-          try {
-            resolve(normalizeQuestion(res.result.data))
-          } catch (e) {
-            reject(new Error('解析题目失败: ' + e.message))
-          }
-        } else {
-          var msg = res.result && res.result.message || '识别失败'
-          if (res.result && res.result.error) msg += ' (' + res.result.error + ')'
-          reject(new Error(msg))
-        }
-      },
-      fail: function (err) {
-        reject(new Error('云函数调用失败: ' + (err.errMsg || err.message)))
+    var img = splitDataUri(base64DataUri)
+    app.callCloudFunction('aiVision', {
+      image: img.base64,
+      mediaType: img.mediaType,
+      prompt: buildRecognizePrompt(),
+      debug: !!config.DEBUG
+    }, function (res) {
+      if (!res || !res.success) {
+        var msg = (res && res.message) || 'AI 识别失败'
+        if (config.DEBUG && res && res.error) msg += '：' + res.error
+        reject(new Error(msg))
+        return
       }
-    })
+      try { resolve(parseQuestionJSON(res.text)) } catch (e) { reject(e) }
+    }, 60000)
   })
 }
 

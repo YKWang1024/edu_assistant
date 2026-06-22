@@ -1,7 +1,7 @@
 {
   "name": "getFamilyRecipes",
   "version": "1.0.0",
-  "description": "获取家庭菜谱云函�?,
+  "description": "获取家庭菜谱云函数",
   "main": "index.js",
   "dependencies": {
     "wx-server-sdk": "~2.6.3"

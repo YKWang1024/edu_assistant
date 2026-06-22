@@ -1,151 +1,107 @@
-const cloud = require('wx-server-sdk')
+// 云函数：通用视觉识别 —— 直连「OpenAI 兼容 / Anthropic(Claude) 兼容」的多模态接口
+// 适配 Kimi Code 的 apikey(Anthropic 兼容)。客户端传 base64 图片 + prompt，返回模型文本。
+//
+// ⚠️ API Key 等机密请在云开发控制台 → 云函数 aiVision → 环境变量 里配置，不要写进代码提交：
+//   AI_VISION_API_KEY   你的 Kimi Code API Key (必填，Kimi Code 控制台创建)
+//   AI_VISION_PROTOCOL  'anthropic'(默认, Claude 兼容) 或 'openai'
+//   AI_VISION_BASE_URL  根地址，默认 https://api.kimi.com/coding (Kimi Code)
+//                       anthropic 协议 → 实际请求 .../coding/v1/messages
+//                       openai 协议   → 设为 https://api.kimi.com/coding/v1 → .../chat/completions
+//   AI_VISION_ENDPOINT  可选：直接给完整请求 URL，覆盖 BASE_URL 拼接
+//   AI_VISION_MODEL     模型名，默认 kimi-for-coding (Kimi Code 固定模型, 自动映射到最新版)
+// ⚠️ Kimi Code 是编程产品，官方文档未说明支持图片输入；若识别失败(模型不看图)，需改用支持视觉的模型/服务。
 const https = require('https')
+const { URL } = require('url')
 
-cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
+const PROTOCOL = process.env.AI_VISION_PROTOCOL || 'anthropic'
+const BASE_URL = process.env.AI_VISION_BASE_URL || 'https://api.kimi.com/coding'
+const ENDPOINT = process.env.AI_VISION_ENDPOINT || ''
+const API_KEY = process.env.AI_VISION_API_KEY || ''
+const MODEL = process.env.AI_VISION_MODEL || 'kimi-for-coding'
 
-const SUBJECTS = ['语文', '数学', '英语', '科学', '其他']
-
-function buildRecognizePrompt() {
-  return [
-    '你是一个中小学题目识别助手。请识别图片中的这一道题目，并【只输出一个 JSON 对象】，',
-    '不要输出任何额外文字、解释、Markdown 代码块或反引号。JSON 字段如下：',
-    '{',
-    '  "subject": 科目，只能是以下之一：' + JSON.stringify(SUBJECTS) + '，',
-    '  "type": 题型，只能是 "choice"(选择题) / "fill"(填空或简答) / "other"，',
-    '  "stem": 题干文字(字符串，不要包含选项内容)，',
-    '  "options": 选择题选项数组，每项形如 {"key":"A","text":"选项内容"}；非选择题填 []，',
-    '  "correctAnswer": 正确答案。选择题填选项字母如 "B"；其它题填答案文本；若无法判断填 ""，',
-    '  "analysis": 简短解析(50字以内，可为空字符串)',
-    '}',
-    '若图片中有多道题，只识别最完整、最居中的那一道。数学公式用普通文本表示。'
-  ].join('\n')
+function endpointFor(protocol) {
+  if (ENDPOINT) return ENDPOINT
+  const base = BASE_URL.replace(/\/+$/, '')
+  return protocol === 'openai' ? (base + '/chat/completions') : (base + '/v1/messages')
 }
 
-function parseQuestionJSON(text) {
-  if (!text) throw new Error('AI 未返回内容')
-  var s = String(text).trim()
-  s = s.replace(/^```[a-zA-Z]*/, '').replace(/```$/, '').trim()
-  var start = s.indexOf('{')
-  var end = s.lastIndexOf('}')
-  if (start >= 0 && end > start) s = s.slice(start, end + 1)
-  var obj
-  try {
-    obj = JSON.parse(s)
-  } catch (e) {
-    throw new Error('AI 返回的内容无法解析为题目')
-  }
-  return normalizeQuestion(obj)
-}
-
-function normalizeQuestion(obj) {
-  obj = obj || {}
-  var subject = SUBJECTS.indexOf(obj.subject) >= 0 ? obj.subject : '其他'
-  var type = (obj.type === 'choice' || obj.type === 'fill' || obj.type === 'other') ? obj.type : 'other'
-  var options = []
-  if (Array.isArray(obj.options)) {
-    options = obj.options.map(function (o, i) {
-      var key = String.fromCharCode(65 + i)
-      if (o && typeof o === 'object') {
-        return { key: String(o.key || key), text: String(o.text == null ? '' : o.text) }
-      }
-      return { key: key, text: String(o == null ? '' : o) }
-    }).filter(function (o) { return o.text && o.text.trim() })
-  }
-  if (options.length > 0) type = 'choice'
-  return {
-    subject: subject,
-    type: type,
-    stem: String(obj.stem == null ? '' : obj.stem).trim(),
-    options: options,
-    correctAnswer: String(obj.correctAnswer == null ? '' : obj.correctAnswer).trim(),
-    analysis: String(obj.analysis == null ? '' : obj.analysis).trim()
-  }
-}
-
-function requestDeepSeek(apiKey, imageBase64) {
+function httpPostJson(urlStr, headers, bodyObj) {
   return new Promise(function (resolve, reject) {
-    var data = JSON.stringify({
-      model: 'deepseek-v4-pro',
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'text', text: buildRecognizePrompt() },
-          { type: 'image_url', image_url: { url: imageBase64 } }
-        ]
-      }],
-      max_tokens: 6000
-    })
-
-    var options = {
-      hostname: 'api.deepseek.com',
-      path: '/v1/chat/completions',
+    const u = new URL(urlStr)
+    const data = JSON.stringify(bodyObj)
+    const req = https.request({
+      hostname: u.hostname,
+      port: u.port || 443,
+      path: u.pathname + u.search,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(data),
-        'Authorization': 'Bearer ' + apiKey
-      }
-    }
-
-    var req = https.request(options, function (res) {
-      var chunks = []
-      res.on('data', function (chunk) { chunks.push(chunk) })
+      headers: Object.assign({ 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }, headers)
+    }, function (res) {
+      let buf = ''
+      res.on('data', function (d) { buf += d })
       res.on('end', function () {
-        var result = Buffer.concat(chunks).toString('utf8')
-        try {
-          var json = JSON.parse(result)
-          if (json.error) {
-            reject(new Error('API Error: ' + (json.error.message || json.error.type)))
-          } else if (json.choices && json.choices[0] && json.choices[0].message) {
-            resolve(json.choices[0].message.content)
-          } else {
-            reject(new Error('AI 返回格式异常'))
-          }
-        } catch (e) {
-          reject(new Error('解析响应失败: ' + e.message))
-        }
+        let parsed = buf
+        try { parsed = JSON.parse(buf) } catch (e) {}
+        resolve({ status: res.statusCode, body: parsed })
       })
     })
-
     req.on('error', reject)
+    req.setTimeout(50000, function () { req.destroy(new Error('请求超时')) })
     req.write(data)
     req.end()
   })
 }
 
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()
-
+  const DEBUG = !!(event && event.debug)
   try {
-    const { imageBase64, apiKey } = event
+    if (!API_KEY) {
+      return { success: false, message: '未配置视觉模型 API Key：请在云函数 aiVision 的环境变量 AI_VISION_API_KEY 中设置' }
+    }
+    const image = event.image // 原始 base64（不含 data: 前缀）
+    const prompt = event.prompt || '请描述这张图片。'
+    const mediaType = event.mediaType || 'image/jpeg'
+    const maxTokens = event.maxTokens || 2000
+    if (!image) return { success: false, message: '缺少图片' }
 
-    if (!imageBase64) {
-      return { success: false, message: '缺少图片数据' }
+    let text = ''
+    if (PROTOCOL === 'openai') {
+      const body = {
+        model: MODEL,
+        max_tokens: maxTokens,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: 'data:' + mediaType + ';base64,' + image } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      }
+      const res = await httpPostJson(endpointFor('openai'), { 'Authorization': 'Bearer ' + API_KEY }, body)
+      if (res.status >= 400) return { success: false, message: '视觉接口返回错误(' + res.status + ')', error: DEBUG ? (typeof res.body === 'string' ? res.body : JSON.stringify(res.body)) : undefined }
+      try { text = res.body.choices[0].message.content } catch (e) { text = '' }
+    } else {
+      // anthropic (Claude / Kimi Code 兼容)
+      const body = {
+        model: MODEL,
+        max_tokens: maxTokens,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: image } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      }
+      const res = await httpPostJson(endpointFor('anthropic'), { 'x-api-key': API_KEY, 'Authorization': 'Bearer ' + API_KEY, 'anthropic-version': '2023-06-01' }, body)
+      if (res.status >= 400) return { success: false, message: '视觉接口返回错误(' + res.status + ')', error: DEBUG ? (typeof res.body === 'string' ? res.body : JSON.stringify(res.body)) : undefined }
+      try {
+        text = (res.body.content || []).filter(function (b) { return b.type === 'text' }).map(function (b) { return b.text }).join('')
+      } catch (e) { text = '' }
     }
 
-    if (!apiKey) {
-      return { success: false, message: '缺少 API Key' }
-    }
-
-    if (!imageBase64.startsWith('data:image/')) {
-      return { success: false, message: '图片格式不正确' }
-    }
-
-    const content = await requestDeepSeek(apiKey, imageBase64)
-    const question = parseQuestionJSON(content)
-
-    return {
-      success: true,
-      data: question
-    }
-
+    if (!text) return { success: false, message: '模型未返回内容' }
+    return { success: true, text: text }
   } catch (err) {
-    console.error('aiVision error:', err.message, err.stack)
-    return {
-      success: false,
-      message: '识别失败',
-      error: err.message,
-      stack: err.stack ? String(err.stack).substring(0, 500) : ''
-    }
+    return { success: false, message: '识别失败', error: DEBUG ? err.message : undefined }
   }
 }

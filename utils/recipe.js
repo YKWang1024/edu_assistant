@@ -112,30 +112,35 @@ function normalizeRecipe(obj) {
   }
 }
 
-// base64DataUri: 'data:image/jpeg;base64,xxx'
+function splitDataUri(dataUri) {
+  var m = /^data:(.*?);base64,(.*)$/.exec(dataUri || '')
+  if (m) return { mediaType: m[1] || 'image/jpeg', base64: m[2] }
+  return { mediaType: 'image/jpeg', base64: dataUri || '' }
+}
+
+// 通过云函数 aiVision 调用视觉模型(Kimi/Anthropic 兼容)。base64DataUri 可带或不带 data: 前缀。
 function recognizeRecipe(base64DataUri, nameHint) {
   return new Promise(function (resolve, reject) {
-    if (!wx.cloud || !wx.cloud.extend || !wx.cloud.extend.AI) {
-      reject(new Error('当前环境不支持 AI 能力，请确认基础库≥3.7.1并已开通云开发 AI'))
+    var app = getApp()
+    if (!app || !app.globalData || !app.globalData.cloudReady) {
+      reject(new Error('云开发未就绪，请联网后重试'))
       return
     }
-    var model
-    try { model = wx.cloud.extend.AI.createModel(config.VISION_PROVIDER) } catch (e) { reject(e); return }
-
-    model.generateText({
-      model: config.VISION_MODEL,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image_url', image_url: { url: base64DataUri } },
-          { type: 'text', text: buildRecipePrompt(nameHint) }
-        ]
-      }]
-    }).then(function (res) {
-      var content = ''
-      try { content = res.choices[0].message.content } catch (e) { reject(new Error('AI 返回格式异常')); return }
-      try { resolve(parseRecipeJSON(content)) } catch (e) { reject(e) }
-    }).catch(reject)
+    var img = splitDataUri(base64DataUri)
+    app.callCloudFunction('aiVision', {
+      image: img.base64,
+      mediaType: img.mediaType,
+      prompt: buildRecipePrompt(nameHint),
+      debug: !!config.DEBUG
+    }, function (res) {
+      if (!res || !res.success) {
+        var msg = (res && res.message) || 'AI 识别失败'
+        if (config.DEBUG && res && res.error) msg += '：' + res.error
+        reject(new Error(msg))
+        return
+      }
+      try { resolve(parseRecipeJSON(res.text)) } catch (e) { reject(e) }
+    }, 60000)
   })
 }
 
