@@ -11,7 +11,7 @@
 // =====================================================================
 
 module.exports = {
-  DEBUG: false,
+  DEBUG: true,
 
   // 文本模型（错题 AI 讲解课程，走 wx.cloud.extend.AI）
   TEXT_PROVIDER: 'cloudbase',

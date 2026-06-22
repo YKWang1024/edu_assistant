@@ -17,7 +17,7 @@ const PROTOCOL = process.env.AI_VISION_PROTOCOL || 'anthropic'
 const BASE_URL = process.env.AI_VISION_BASE_URL || 'https://api.kimi.com/coding'
 const ENDPOINT = process.env.AI_VISION_ENDPOINT || ''
 const API_KEY = process.env.AI_VISION_API_KEY || ''
-const MODEL = process.env.AI_VISION_MODEL || 'kimi-for-coding'
+const MODEL = process.env.AI_VISION_MODEL || 'kimi-2.6'
 
 function endpointFor(protocol) {
   if (ENDPOINT) return ENDPOINT
