@@ -370,7 +370,11 @@ Page({
           setTimeout(function () { wx.navigateBack() }, 1200)
         } else {
           that.setData({ stage: 'edit' })
-          wx.showToast({ title: (res && res.message) || '保存失败', icon: 'none' })
+          if (config.DEBUG && res && res.error) {
+            wx.showModal({ title: '保存失败(调试)', content: ((res && res.message) || '') + '\n' + res.error, showCancel: false })
+          } else {
+            wx.showToast({ title: (res && res.message) || '保存失败', icon: 'none' })
+          }
         }
       })
     }
