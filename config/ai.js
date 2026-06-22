@@ -12,10 +12,10 @@
 
 module.exports = {
   VISION_PROVIDER: 'cloudbase',
-  VISION_MODEL: 'deepseek-v4-pro',   // TODO: 改成你已开通的【多模态】模型 id
+  VISION_MODEL: 'hy3-preview',   // TODO: 改成你已开通的【多模态】模型 id
 
   TEXT_PROVIDER: 'cloudbase',
-  TEXT_MODEL: 'deepseek-v3.2',       // TODO: 改成你已开通的【文本】模型 id
+  TEXT_MODEL: 'hy3-preview',       // TODO: 改成你已开通的【文本】模型 id
 
   // 可保存错题的科目列表
   SUBJECTS: ['语文', '数学', '英语', '科学', '其他']
