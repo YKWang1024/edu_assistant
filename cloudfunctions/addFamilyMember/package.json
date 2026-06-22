@@ -1,7 +1,9 @@
 {
   "name": "addFamilyMember",
   "version": "1.0.0",
-  "description": "添加家庭成员云函数",
+  "description": "添加家庭成员云函�?,
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

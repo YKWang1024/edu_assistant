@@ -3,5 +3,7 @@
   "version": "1.0.0",
   "description": "增减游戏时间余额",
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

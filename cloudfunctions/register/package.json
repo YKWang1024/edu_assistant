@@ -1,7 +1,9 @@
 {
   "name": "register",
   "version": "1.0.0",
-  "description": "用户注册云函数",
+  "description": "用户注册云函�?,
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

@@ -1,7 +1,9 @@
 {
   "name": "login",
   "version": "1.0.0",
-  "description": "用户登录云函数",
+  "description": "用户登录云函�?,
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

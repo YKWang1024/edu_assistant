@@ -1,0 +1,2 @@
+# 云函数 node_modules - 部署时由云端自动安装
+cloudfunctions/*/node_modules/

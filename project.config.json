@@ -57,5 +57,6 @@
   "editorSetting": {},
   "cloud": {
     "envId": "cloud1-d0gnc8vm2aae15ae5"
-  }
+  },
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }

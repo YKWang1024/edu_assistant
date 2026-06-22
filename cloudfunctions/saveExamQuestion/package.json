@@ -1,7 +1,9 @@
 {
   "name": "saveExamQuestion",
   "version": "1.0.0",
-  "description": "保存拍照识别的错题",
+  "description": "保存拍照识别的错�?,
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }
