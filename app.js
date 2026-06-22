@@ -165,7 +165,7 @@ App({
   },
 
   // 手动调用云函数（带超时和错误处理）
-  callCloudFunction: function (name, data, callback) {
+  callCloudFunction: function (name, data, callback, timeout) {
     if (!this.globalData.cloudReady) {
       callback({ success: false, message: '云开发未初始化' })
       return
@@ -174,7 +174,7 @@ App({
     wx.cloud.callFunction({
       name: name,
       data: data,
-      timeout: 10000,
+      timeout: timeout || 10000,
       success: function (res) {
         callback(res.result)
       },

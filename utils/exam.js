@@ -87,38 +87,32 @@ function normalizeQuestion(obj) {
   }
 }
 
-// base64DataUri: 形如 'data:image/jpeg;base64,xxxx'
+function splitDataUri(dataUri) {
+  var m = /^data:(.*?);base64,(.*)$/.exec(dataUri || '')
+  if (m) return { mediaType: m[1] || 'image/jpeg', base64: m[2] }
+  return { mediaType: 'image/jpeg', base64: dataUri || '' }
+}
+
+// 通过云函数 aiVision 调用视觉模型(Kimi/Anthropic 兼容)识别题目。
 function recognizeQuestion(base64DataUri) {
   return new Promise(function (resolve, reject) {
-    if (!wx.cloud || !wx.cloud.extend || !wx.cloud.extend.AI) {
-      reject(new Error('当前环境不支持 AI 能力，请确认基础库≥3.7.1并已开通云开发 AI'))
+    var app = getApp()
+    if (!app || !app.globalData || !app.globalData.cloudReady) {
+      reject(new Error('云开发未就绪，请联网后重试'))
       return
     }
-    var model
-    try {
-      model = wx.cloud.extend.AI.createModel(config.VISION_PROVIDER)
-    } catch (e) { reject(e); return }
-
-    model.generateText({
-      model: config.VISION_MODEL,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image_url', image_url: { url: base64DataUri } },
-          { type: 'text', text: buildRecognizePrompt() }
-        ]
-      }]
-    }).then(function (res) {
-      var content = ''
-      try {
-        content = res.choices[0].message.content
-      } catch (e) {
-        reject(new Error('AI 返回格式异常')); return
+    var img = splitDataUri(base64DataUri)
+    app.callCloudFunction('aiVision', {
+      image: img.base64,
+      mediaType: img.mediaType,
+      prompt: buildRecognizePrompt()
+    }, function (res) {
+      if (!res || !res.success) {
+        reject(new Error((res && (res.message + (res.error ? ('：' + res.error) : ''))) || 'AI 识别失败'))
+        return
       }
-      try {
-        resolve(parseQuestionJSON(content))
-      } catch (e) { reject(e) }
-    }).catch(reject)
+      try { resolve(parseQuestionJSON(res.text)) } catch (e) { reject(e) }
+    }, 60000)
   })
 }
 
