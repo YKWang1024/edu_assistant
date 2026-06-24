@@ -3,6 +3,11 @@
   background: #f2ede2;
 }
 
+.empty-cta {
+  margin-top: 24rpx;
+  display: inline-block;
+}
+
 /* 买菜心得入口 + 信息流 */
 .wiki-entry {
   margin-top: 16rpx;

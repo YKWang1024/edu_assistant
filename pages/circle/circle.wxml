@@ -25,7 +25,8 @@
 
   <view class="recipe-list" wx:else>
     <view class="empty-tip" wx:if="{{recipes.length === 0}}">
-      暂无分享的菜谱，快来分享你的拿手菜吧！
+      <view>还没有菜友分享的菜谱～</view>
+      <button class="btn-primary empty-cta" bindtap="onGoRecipe">去菜谱页分享我的拿手菜</button>
     </view>
 
     <view class="recipe-card card" wx:for="{{recipes}}" wx:key="_id" bindtap="onViewRecipe" data-recipe="{{item}}">
@@ -67,7 +68,4 @@
     </view>
   </view>
 
-  <view class="share-fab" bindtap="onShareRecipe">
-    <text class="fab-icon">+</text>
-  </view>
 </view>

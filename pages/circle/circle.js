@@ -70,32 +70,7 @@ Page({
     })
   },
 
-  onShareRecipe: function (e) {
-    var recipe = e.currentTarget.dataset.recipe
-    wx.showModal({
-      title: '分享到菜友圈',
-      content: '确定要将这道菜分享到菜友圈吗？',
-      success: function (res) {
-        if (res.confirm) {
-          wx.cloud.callFunction({
-            name: 'shareRecipe',
-            data: {
-              recipeId: recipe._id,
-              shareMessage: ''
-            },
-            success: function (res) {
-              if (res.result.success) {
-                wx.showToast({ title: '分享成功', icon: 'success' })
-              } else {
-                wx.showToast({ title: res.result.message, icon: 'none' })
-              }
-            },
-            fail: function () {
-              wx.showToast({ title: '分享失败', icon: 'none' })
-            }
-          })
-        }
-      }
-    })
+  onGoRecipe: function () {
+    wx.switchTab({ url: '/pages/recipe/recipe' })
   }
 })

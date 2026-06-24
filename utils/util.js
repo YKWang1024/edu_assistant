@@ -125,6 +125,24 @@ function getTodayStr() {
   return formatDate(new Date())
 }
 
+// 连续打卡天数：从今天(或昨天)往前数，连续有打卡记录的天数。
+// records: [{date:'YYYY-MM-DD', ...}]（打卡/学习记录都行，有 date 即可）
+function calculateStreak(records) {
+  var days = {}
+  ;(records || []).forEach(function (r) { if (r && r.date) days[r.date] = true })
+  var d = new Date()
+  if (!days[formatDate(d)]) {
+    d.setDate(d.getDate() - 1)
+    if (!days[formatDate(d)]) return 0 // 今天和昨天都没打卡，连续中断
+  }
+  var streak = 0
+  while (days[formatDate(d)]) {
+    streak++
+    d.setDate(d.getDate() - 1)
+  }
+  return streak
+}
+
 function saveRecord(key, record) {
   try {
     var records = wx.getStorageSync(key) || []
@@ -295,6 +313,7 @@ module.exports = {
   formatDate: formatDate,
   formatTime: formatTime,
   getTodayStr: getTodayStr,
+  calculateStreak: calculateStreak,
   saveRecord: saveRecord,
   getRecords: getRecords,
   saveWrongQuestion: saveWrongQuestion,
