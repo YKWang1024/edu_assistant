@@ -269,6 +269,10 @@
   margin-bottom: 16rpx;
 }
 
+/* 小孩筛选条 */
+.child-bar { margin-bottom: 12rpx; }
+.child-chip.active { background: #00468b; border-color: #00325f; }
+
 /* 来源徽标 */
 .q-badge.src { color: #4e4634; background: #f2ede2; }
 .q-badge.src-quiz { color: #00468b; background: #d6ecff; border-color: #5b7fa6; }

@@ -4,7 +4,10 @@ App({
     userInfo: null,
     familyId: null,
     isLoggedIn: false,
-    cloudReady: false
+    cloudReady: false,
+    children: [],          // [{childId,name,grade}]，无账号小孩成员
+    currentChild: '',      // 当前选中的小孩名(错题/打分等归属)
+    myFamilyRole: ''       // admin | member | observer
   },
 
   onLaunch: function () {
@@ -118,6 +121,32 @@ App({
     })
   },
 
+  // 拉取家庭小孩列表 + 设定当前小孩。cb()
+  refreshFamily: function (cb) {
+    var that = this
+    if (!this.globalData.cloudReady) { if (cb) cb(); return }
+    this.callCloudFunction('getFamilyInfo', {}, function (res) {
+      if (res && res.success && res.data) {
+        that.globalData.children = res.data.children || []
+        that.globalData.myFamilyRole = res.data.myRole || ''
+        var names = that.globalData.children.map(function (c) { return c.name })
+        var saved = ''
+        try { saved = wx.getStorageSync('currentChild') } catch (e) {}
+        that.globalData.currentChild = (saved && names.indexOf(saved) >= 0) ? saved : (names[0] || '宝贝')
+      }
+      if (cb) cb()
+    })
+  },
+
+  setCurrentChild: function (name) {
+    this.globalData.currentChild = name
+    try { wx.setStorageSync('currentChild', name) } catch (e) {}
+  },
+
+  getCurrentChild: function () {
+    return this.globalData.currentChild || '宝贝'
+  },
+
   // 增减游戏时间（云端权威；离线兜底本地）。cb(balance)
   addGameMinutes: function (minutes, cb) {
     var that = this
@@ -153,6 +182,7 @@ App({
           that.saveUserInfo(res.result.userInfo)
           that.saveFamilyId(res.result.userInfo.familyId)
           that.refreshGameTime()
+          that.refreshFamily()
           console.log('微信自动登录成功')
         } else {
           console.log('自动登录失败:', res.result && res.result.message)

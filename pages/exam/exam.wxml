@@ -26,6 +26,10 @@
       <button class="btn-success top-btn" bindtap="onStartPractice">▶ 开始复习 ({{stats.due}})</button>
     </view>
 
+    <scroll-view wx:if="{{childChips.length}}" class="subject-bar child-bar" scroll-x="true">
+      <view class="subject-chip child-chip {{activeChild === item ? 'active' : ''}}" wx:for="{{childChips}}" wx:key="*this" data-child="{{item}}" bindtap="onSelectChild">🧒 {{item}}</view>
+    </scroll-view>
+
     <scroll-view class="subject-bar" scroll-x="true">
       <view class="subject-chip {{activeSubject === item ? 'active' : ''}}" wx:for="{{subjects}}" wx:key="*this" data-subject="{{item}}" bindtap="onSelectSubject">{{item}}</view>
     </scroll-view>

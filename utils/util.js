@@ -187,7 +187,8 @@ function saveWrongQuestion(question) {
       operator: question.operator,
       answer: question.answer,
       userAnswer: question.userAnswer,
-      subject: deriveSubject(question.operator)
+      subject: deriveSubject(question.operator),
+      childName: (app.getCurrentChild ? app.getCurrentChild() : (app.globalData.currentChild || '宝贝'))
     }, function () {})
     return true
   }

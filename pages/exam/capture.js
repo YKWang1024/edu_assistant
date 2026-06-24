@@ -337,7 +337,8 @@ Page({
       options: options,
       correctAnswer: (it.correctAnswer || '').trim(),
       analysis: buildAnalysis(it.errorPoint, it.studentAnswer, it.analysis),
-      imageFileID: fileID
+      imageFileID: fileID,
+      childName: app.getCurrentChild ? app.getCurrentChild() : '宝贝'
     }, function (res) {
       var ok = okCount + (res && res.success ? 1 : 0)
       that.setData({ multiSavedCount: i + 1 })
@@ -561,7 +562,8 @@ Page({
         options: options,
         correctAnswer: (form.correctAnswer || '').trim(),
         analysis: (form.analysis || '').trim(),
-        imageFileID: imageFileID || ''
+        imageFileID: imageFileID || '',
+        childName: app.getCurrentChild ? app.getCurrentChild() : '宝贝'
       }, function (res) {
         if (res && res.success) {
           wx.showToast({ title: '已保存到错题本', icon: 'success' })

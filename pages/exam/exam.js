@@ -35,7 +35,8 @@ function quizToItem(q) {
     consecutiveWrong: 0,
     attempts: [],
     count: q.count || 1,
-    operator: q.operator
+    operator: q.operator,
+    childName: q.childName || '宝贝'
   }
 }
 
@@ -45,6 +46,8 @@ Page({
     today: '',
     subjects: ['全部'].concat(config.SUBJECTS),
     activeSubject: '全部',
+    childChips: [],        // ['全部', 名字...]；>1 个小孩时显示
+    activeChild: '全部',
     groups: [],
     stats: { total: 0, due: 0, hard: 0, mastered: 0 },
 
@@ -73,6 +76,13 @@ Page({
   loadList: function () {
     var that = this
     that.setData({ loading: true })
+    // 小孩筛选条：多于一个小孩时显示，可看各自的错题集
+    var childNames = (app.globalData.children || []).map(function (c) { return c.name })
+    if (childNames.length > 1) {
+      that.setData({ childChips: ['全部'].concat(childNames) })
+    } else {
+      that.setData({ childChips: [] })
+    }
     // 同一个错题本：拍照错题(examQuestions) + 语数英小测错题(quizWrong) 合并展示
     app.callCloudFunction('listExamQuestions', {}, function (res) {
       var examList = (res && res.success) ? (res.data || []) : []
@@ -86,6 +96,11 @@ Page({
 
   buildGroups: function (list, today) {
     var activeSubject = this.data.activeSubject
+    var activeChild = this.data.activeChild
+    // 按小孩筛选（无 childName 视为「宝贝」）
+    if (activeChild && activeChild !== '全部') {
+      list = list.filter(function (q) { return (q.childName || '宝贝') === activeChild })
+    }
     var stats = { total: list.length, due: 0, hard: 0, mastered: 0 }
     var map = {}
     list.forEach(function (q) {
@@ -113,6 +128,10 @@ Page({
 
   onSelectSubject: function (e) {
     this.setData({ activeSubject: e.currentTarget.dataset.subject }, this.loadList)
+  },
+
+  onSelectChild: function (e) {
+    this.setData({ activeChild: e.currentTarget.dataset.child }, this.loadList)
   },
 
   onTapCapture: function () {
