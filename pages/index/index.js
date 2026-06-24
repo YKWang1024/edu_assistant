@@ -89,10 +89,12 @@ Page({
   },
 
   onTapWrong: function () {
-    wx.navigateTo({ url: '/pages/wrong/wrong' })
+    // 统一错题本(拍照错题 + 语数英小测错题)
+    wx.navigateTo({ url: '/pages/exam/exam' })
   },
 
   onTapExam: function () {
-    wx.navigateTo({ url: '/pages/exam/exam' })
+    // 直接进入拍照录题(快速添加)
+    wx.navigateTo({ url: '/pages/exam/capture' })
   }
 })

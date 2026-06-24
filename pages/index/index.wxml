@@ -64,7 +64,7 @@
       </view>
       <view class="func-info">
         <view class="func-name">错题本</view>
-        <view class="func-desc">自动收集错题</view>
+        <view class="func-desc">拍照+小测错题 · 统一复习</view>
       </view>
       <view class="func-arrow">›</view>
     </view>
@@ -73,8 +73,8 @@
         <text class="func-icon">📷</text>
       </view>
       <view class="func-info">
-        <view class="func-name">试卷错题</view>
-        <view class="func-desc">拍照识题 · AI 讲解 · 智能复习</view>
+        <view class="func-name">拍照录题</view>
+        <view class="func-desc">拍试卷照片 · AI 识别错题</view>
       </view>
       <view class="func-arrow">›</view>
     </view>

@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: #f2ede2;
+  background: #fef9ed;
 }
 
 .empty-cta {
