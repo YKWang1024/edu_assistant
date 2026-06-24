@@ -16,17 +16,17 @@
 
     <view class="recipe-card card" wx:for="{{recipes}}" wx:key="_id" bindtap="onViewRecipe" data-recipe="{{item}}">
       <view class="card-header">
-        <image wx:if="{{item.userAvatar}}" src="{{item.userAvatar}}" class="user-avatar" />
+        <image wx:if="{{item.publisher.avatarUrl}}" src="{{item.publisher.avatarUrl}}" class="user-avatar" />
         <view wx:else class="user-avatar-placeholder">👤</view>
         <view class="user-info">
-          <text class="user-name">{{item.userName || '匿名用户'}}</text>
-          <text class="share-time">{{item.createdAt ? item.createdAt.split('T')[0] : ''}}</text>
+          <text class="user-name">{{item.publisher.nickname || '匿名用户'}}</text>
+          <text class="share-time">{{item.sharedDate}}</text>
         </view>
       </view>
 
       <view class="card-body">
         <view class="recipe-images" wx:if="{{item.images && item.images.length > 0}}">
-          <image wx:for="{{item.images.slice(0, 3)}}" wx:key="index" src="{{item}}" class="recipe-image" mode="aspectFill" />
+          <image wx:for="{{item.images}}" wx:for-item="img" wx:key="index" src="{{img}}" class="recipe-image" mode="aspectFill" />
         </view>
         <view class="recipe-images" wx:elif="{{item.imageUrl}}">
           <image src="{{item.imageUrl}}" class="recipe-image" mode="aspectFill" />
@@ -37,9 +37,7 @@
           <text class="recipe-category">{{item.category}}</text>
         </view>
 
-        <view class="recipe-desc" wx:if="{{item.ingredients}}">
-          {{item.ingredients.slice(0, 100)}}{{item.ingredients.length > 100 ? '...' : ''}}
-        </view>
+        <view class="recipe-desc" wx:if="{{item.ingredients}}">{{item.ingredients}}</view>
 
         <view class="recipe-stats">
           <view class="stat-item">

@@ -22,10 +22,12 @@ Page({
     wx.cloud.callFunction({
       name: 'getFriendRecipes',
       success: function (res) {
-        if (res.result.success) {
-          this.setData({ recipes: res.result.recipes })
+        if (res.result && res.result.success) {
+          // getFriendRecipes 返回的是 data 字段（旧代码误读 recipes，导致永远为空）
+          var list = res.result.data || res.result.recipes || []
+          this.setData({ recipes: list })
         } else {
-          wx.showToast({ title: res.result.message, icon: 'none' })
+          wx.showToast({ title: (res.result && res.result.message) || '获取失败', icon: 'none' })
         }
       }.bind(this),
       fail: function () {
