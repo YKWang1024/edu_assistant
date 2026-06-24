@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "拍照识题",
-  "usingComponents": {}
+  "usingComponents": {
+    "figure-view": "/components/figure-view/figure-view"
+  }
 }

@@ -73,7 +73,9 @@
         <text class="q-badge type">{{current.subject}}</text>
         <text class="q-badge type">{{current.type === 'choice' ? '选择题' : (current.type === 'fill' ? '填空' : '题目')}}</text>
       </view>
-      <image wx:if="{{current.imageFileID}}" class="q-image" src="{{current.imageFileID}}" mode="widthFix"></image>
+      <!-- 附图：能结构化的用代码重绘清晰图；否则用原照片 -->
+      <figure-view wx:if="{{current.figure && current.figure.type !== 'image'}}" figure="{{current.figure}}"></figure-view>
+      <image wx:elif="{{current.imageFileID}}" class="q-image" src="{{current.imageFileID}}" mode="widthFix"></image>
       <view class="q-card-stem">{{current.stem}}</view>
 
       <!-- 选择题 -->

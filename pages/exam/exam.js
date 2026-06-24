@@ -408,7 +408,8 @@ Page({
         stem: item.stem || '',
         options: options,
         correctAnswer: item.correctAnswer || '',
-        analysis: item.analysis || ''
+        analysis: item.analysis || '',
+        figure: item.figure || null
       }
     })
   },
@@ -481,7 +482,8 @@ Page({
       stem: f.stem.trim(),
       options: options,
       correctAnswer: (f.correctAnswer || '').trim(),
-      analysis: (f.analysis || '').trim()
+      analysis: (f.analysis || '').trim(),
+      figure: f.figure || null
     }, function (res) {
       if (res && res.success) {
         wx.showToast({ title: '已保存', icon: 'success' })

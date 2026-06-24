@@ -246,7 +246,8 @@ Page({
         correctDisplay: correctDisplay,
         studentAnswer: q.studentAnswer || '',
         errorPoint: q.errorPoint || '',
-        analysis: q.analysis || ''
+        analysis: q.analysis || '',
+        figure: q.figure || null
       }
     })
     this.setData({
@@ -338,6 +339,7 @@ Page({
       correctAnswer: (it.correctAnswer || '').trim(),
       analysis: buildAnalysis(it.errorPoint, it.studentAnswer, it.analysis),
       imageFileID: fileID,
+      figure: it.figure || null,
       childName: app.getCurrentChild ? app.getCurrentChild() : '宝贝'
     }, function (res) {
       var ok = okCount + (res && res.success ? 1 : 0)
@@ -469,7 +471,8 @@ Page({
         stem: q.stem || '',
         options: options,
         correctAnswer: q.correctAnswer || '',
-        analysis: buildAnalysis(q.errorPoint, '', q.analysis)
+        analysis: buildAnalysis(q.errorPoint, '', q.analysis),
+        figure: q.figure || null
       }
     })
   },
@@ -563,6 +566,7 @@ Page({
         correctAnswer: (form.correctAnswer || '').trim(),
         analysis: (form.analysis || '').trim(),
         imageFileID: imageFileID || '',
+        figure: form.figure || null,
         childName: app.getCurrentChild ? app.getCurrentChild() : '宝贝'
       }, function (res) {
         if (res && res.success) {

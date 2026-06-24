@@ -1,0 +1,44 @@
+<view wx:if="{{model}}" class="fig">
+
+  <!-- 计数器 -->
+  <view wx:if="{{model.type === 'counter'}}" class="counter">
+    <view class="counter-rods">
+      <view class="rod-col" wx:for="{{model.columns}}" wx:for-item="col" wx:for-index="ci" wx:key="ci">
+        <view class="rod">
+          <view class="bead" wx:for="{{col.beads}}" wx:for-item="b" wx:for-index="bi" wx:key="bi" style="animation-delay:{{bi * 0.05}}s"></view>
+        </view>
+      </view>
+    </view>
+    <view class="counter-base"></view>
+    <view class="counter-labels">
+      <view class="rod-label" wx:for="{{model.columns}}" wx:for-item="col" wx:for-index="ci" wx:key="ci">{{col.label}}</view>
+    </view>
+  </view>
+
+  <!-- 数轴 / 线段图 -->
+  <view wx:elif="{{model.type === 'numberline'}}" class="numline">
+    <view class="nl-axis">
+      <view class="nl-arrow"></view>
+      <view class="nl-tick" wx:for="{{model.ticks}}" wx:for-item="t" wx:for-index="ti" wx:key="ti" style="left:{{t.pct}}%">
+        <view class="nl-tickmark"></view>
+        <view class="nl-ticklabel">{{t.val}}</view>
+      </view>
+      <view class="nl-mark" wx:for="{{model.marks}}" wx:for-item="m" wx:for-index="mi" wx:key="mi" style="left:{{m.pct}}%">
+        <view class="nl-marklabel">{{m.label}}</view>
+        <view class="nl-dot"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 几何图形 -->
+  <view wx:elif="{{model.type === 'shape'}}" class="shape-wrap">
+    <view class="shape-row">
+      <view wx:if="{{model.shape === 'circle'}}" class="shape-circle" style="width:{{model.w}}px;height:{{model.w}}px"></view>
+      <view wx:elif="{{model.shape === 'triangle'}}" class="shape-tri"></view>
+      <view wx:else class="shape-rect" style="width:{{model.w}}px;height:{{model.h}}px"></view>
+      <view wx:if="{{model.showH}}" class="shape-h">{{model.height}}{{model.unit}}</view>
+    </view>
+    <view wx:if="{{model.showW}}" class="shape-w">{{model.width}}{{model.unit}}</view>
+  </view>
+
+</view>

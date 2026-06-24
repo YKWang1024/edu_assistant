@@ -89,6 +89,7 @@
         </picker>
       </view>
       <view class="m-stem">{{item.stem}}</view>
+      <figure-view wx:if="{{item.figure && item.figure.type !== 'image'}}" figure="{{item.figure}}"></figure-view>
       <view wx:if="{{item.optionText}}" class="m-options">{{item.optionText}}</view>
       <view class="m-meta">
         <text wx:if="{{item.studentAnswer}}" class="m-wrong">错答：{{item.studentAnswer}}</text>
