@@ -302,18 +302,50 @@ Page({
     return found
   },
 
-  // 校验家长密码后执行 cb（密码留空则不拦截）
+  // 校验家长密码后执行 cb。密码每个用户自己设置(存云端)；未设置则首次引导设置。
+  // 本次进入错题本验证过一次后即解锁(this._pwdOk)，避免反复输入。
   requirePassword: function (cb) {
-    var pwd = config.PARENT_EDIT_PASSWORD
-    if (!pwd) { cb(); return }
+    var that = this
+    if (!app.globalData.cloudReady) { cb(); return } // 离线无法编辑云端数据，不拦截
+    if (this._pwdOk) { cb(); return }
+    app.callCloudFunction('editPassword', { action: 'status' }, function (res) {
+      if (!res || !res.success) { wx.showToast({ title: '网络异常，请重试', icon: 'none' }); return }
+      if (res.data && res.data.hasPassword) that.promptVerifyPassword(cb)
+      else that.promptSetPassword(cb)
+    })
+  },
+
+  promptSetPassword: function (cb) {
+    var that = this
+    wx.showModal({
+      title: '设置家长密码',
+      editable: true,
+      placeholderText: '首次使用请设置(至少4位)',
+      content: '',
+      success: function (m) {
+        if (!m.confirm) return
+        var pwd = (m.content || '').trim()
+        if (pwd.length < 4) { wx.showToast({ title: '密码至少 4 位', icon: 'none' }); return }
+        app.callCloudFunction('editPassword', { action: 'set', password: pwd }, function (r) {
+          if (r && r.success) { that._pwdOk = true; wx.showToast({ title: '已设置', icon: 'success' }); cb() }
+          else wx.showToast({ title: (r && r.message) || '设置失败', icon: 'none' })
+        })
+      }
+    })
+  },
+
+  promptVerifyPassword: function (cb) {
+    var that = this
     wx.showModal({
       title: '家长验证',
       editable: true,
       placeholderText: '请输入家长密码',
       success: function (m) {
         if (!m.confirm) return
-        if ((m.content || '').trim() === String(pwd)) cb()
-        else wx.showToast({ title: '密码不正确', icon: 'none' })
+        app.callCloudFunction('editPassword', { action: 'verify', password: (m.content || '').trim() }, function (r) {
+          if (r && r.success && r.data && r.data.match) { that._pwdOk = true; cb() }
+          else wx.showToast({ title: '密码不正确', icon: 'none' })
+        })
       }
     })
   },

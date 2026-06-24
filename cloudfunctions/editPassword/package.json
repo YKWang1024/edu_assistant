@@ -1,0 +1,9 @@
+{
+  "name": "editPassword",
+  "version": "1.0.0",
+  "description": "家长编辑密码(每用户自设，服务端校验)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -22,9 +22,7 @@ module.exports = {
   VISION_MODEL: 'deepseek-v4-pro',
 
   // 可保存错题的科目列表
-  SUBJECTS: ['语文', '数学', '英语', '科学', '其他'],
-
-  // 家长编辑错题(改题干/选项/答案)前需输入的密码，防止小朋友自己改答案。
-  // 留空字符串则不校验；上线可改成你自己的密码。
-  PARENT_EDIT_PASSWORD: '8888'
+  SUBJECTS: ['语文', '数学', '英语', '科学', '其他']
+  // 家长编辑密码已改为「每个用户自己设置」(首次编辑时引导设置，存云端 users.editPasswordHash)，
+  // 见云函数 editPassword，这里不再放固定密码。
 }

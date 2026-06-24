@@ -50,6 +50,14 @@
       <view class="code-hint">把这个家庭码或卡片发给家人，对方在下方「输入邀请码加入」即可加入你的家庭。邀请码 7 天有效。</view>
     </view>
 
+    <view class="card">
+      <view class="card-title flex-between">
+        <view><text class="icon">🔒</text>家长密码</view>
+        <text class="rename-link" bindtap="onEditPassword">设置 / 修改</text>
+      </view>
+      <view class="card-hint">编辑错题、改答案时需要。每个家长自己设置，孩子不知道就改不了答案。</view>
+    </view>
+
     <view class="card join-other">
       <view class="join-text">想加入别人的家庭？</view>
       <button class="btn-secondary" bindtap="onGoJoin">输入邀请码加入</button>

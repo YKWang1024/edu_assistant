@@ -176,6 +176,45 @@ Page({
     })
   },
 
+  // ---------------- 家长密码（编辑错题用，每人自己设置） ----------------
+  onEditPassword: function () {
+    app.callCloudFunction('editPassword', { action: 'status' }, function (res) {
+      if (!res || !res.success) { wx.showToast({ title: '网络异常，请重试', icon: 'none' }); return }
+      if (res.data && res.data.hasPassword) {
+        wx.showModal({
+          title: '修改家长密码', editable: true, placeholderText: '请输入原密码',
+          success: function (m1) {
+            if (!m1.confirm) return
+            var oldp = (m1.content || '').trim()
+            wx.showModal({
+              title: '设置新密码', editable: true, placeholderText: '至少 4 位',
+              success: function (m2) {
+                if (!m2.confirm) return
+                var np = (m2.content || '').trim()
+                if (np.length < 4) { wx.showToast({ title: '至少 4 位', icon: 'none' }); return }
+                app.callCloudFunction('editPassword', { action: 'set', password: np, oldPassword: oldp }, function (r) {
+                  wx.showToast({ title: (r && r.success) ? '已修改' : ((r && r.message) || '修改失败'), icon: (r && r.success) ? 'success' : 'none' })
+                })
+              }
+            })
+          }
+        })
+      } else {
+        wx.showModal({
+          title: '设置家长密码', editable: true, placeholderText: '至少 4 位（编辑错题时用）',
+          success: function (m) {
+            if (!m.confirm) return
+            var np = (m.content || '').trim()
+            if (np.length < 4) { wx.showToast({ title: '至少 4 位', icon: 'none' }); return }
+            app.callCloudFunction('editPassword', { action: 'set', password: np }, function (r) {
+              wx.showToast({ title: (r && r.success) ? '已设置' : ((r && r.message) || '设置失败'), icon: (r && r.success) ? 'success' : 'none' })
+            })
+          }
+        })
+      }
+    })
+  },
+
   // ---------------- 成员角色 ----------------
   onChangeRole: function (e) {
     var that = this
