@@ -165,7 +165,7 @@
   background: #fff;
 }
 .q-card-stem {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 700;
   color: #1d1c15;
   line-height: 1.6;
@@ -207,7 +207,7 @@
   font-family: 'PingFang SC', monospace;
 }
 .p-opt-text {
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: #1d1c15;
   flex: 1;
 }

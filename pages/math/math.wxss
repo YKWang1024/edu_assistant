@@ -151,14 +151,14 @@
 }
 
 .option-btn {
-  height: 120rpx;
+  height: 148rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fef9ed;
   border: 4rpx solid #807661;
   border-radius: 12rpx;
-  font-size: 48rpx;
+  font-size: 56rpx;
   font-weight: 700;
   color: #775a00;
   box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.4), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
@@ -192,9 +192,15 @@
   box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.3), 8rpx 8rpx 0rpx 0rpx rgba(71, 103, 44, 0.2);
 }
 
+@keyframes tipPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
 .result-tip {
   text-align: center;
   padding: 10rpx 0;
+  animation: tipPop 0.3s ease;
 }
 
 .tip-text {
