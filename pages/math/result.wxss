@@ -7,6 +7,42 @@
   padding: 40rpx 30rpx;
 }
 
+.reward-card {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 24rpx 0 8rpx;
+  padding: 28rpx 24rpx;
+  text-align: center;
+  background: #c7efa4;
+  border: 4rpx solid #47672c;
+  border-radius: 16rpx;
+  box-shadow: 6rpx 6rpx 0rpx 0rpx rgba(45, 68, 26, 0.2);
+  animation: rewardPop 0.4s ease;
+}
+.reward-card.zero {
+  background: #fbf0cf;
+  border-color: #807661;
+  box-shadow: 6rpx 6rpx 0rpx 0rpx rgba(136, 81, 32, 0.15);
+}
+@keyframes rewardPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  70% { transform: scale(1.04); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.reward-main {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0c2000;
+  font-family: 'PingFang SC', monospace;
+}
+.reward-card.zero .reward-main { color: #5e4700; }
+.reward-sub {
+  font-size: 24rpx;
+  color: #2d441a;
+  margin-top: 10rpx;
+}
+.reward-card.zero .reward-sub { color: #775a00; }
+
 .result-card {
   width: 100%;
   background: #fef9ed;

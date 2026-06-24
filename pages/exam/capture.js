@@ -9,6 +9,13 @@ var MAX_OUT = 1600 // 导出图片最长边上限(px)，过大在安卓上 canva
 var TYPE_LABELS = ['选择题', '填空/简答', '其他']
 var TYPE_KEYS = ['choice', 'fill', 'other']
 
+// 把技术错误(尤其未配置 AI 密钥)转成家长能看懂的友好提示。
+function friendlyErr(err, fallback) {
+  var m = (err && err.message) || ''
+  if (/key|密钥|未配置|api/i.test(m)) return 'AI 识别暂不可用（后端未配置密钥），已切换为手动录入'
+  return m || fallback
+}
+
 // 把错因/上次错答/解析合并进 analysis 字段一起保存（复用现有 saveExamQuestion，无需改云函数）。
 function buildAnalysis(errorPoint, studentAnswer, analysis) {
   var parts = []
@@ -212,7 +219,7 @@ Page({
       that.setData({ stage: 'pick' })
       wx.showModal({
         title: '识别失败',
-        content: (err && err.message) || '请重试，或改用「框选一道题」',
+        content: friendlyErr(err, '请重试，或改用「框选一道题」'),
         showCancel: false
       })
     })
@@ -441,8 +448,8 @@ Page({
         analysis: ''
       })
       wx.showModal({
-        title: '识别失败',
-        content: (err && err.message) || '可手动输入题目内容后保存',
+        title: '可手动录入',
+        content: friendlyErr(err, '可手动输入题目内容后保存'),
         showCancel: false
       })
     })
