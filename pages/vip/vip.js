@@ -13,10 +13,6 @@ Page({
     wx.navigateTo({ url: '/pages/family/manage' })
   },
 
-  onGoSettings: function () {
-    wx.navigateTo({ url: '/pages/settings/settings' })
-  },
-
   onClearData: function () {
     wx.showModal({
       title: '清除数据',

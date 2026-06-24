@@ -51,7 +51,9 @@ exports.main = async (event, context) => {
         seeded: true,
         inviteCode: code,
         inviteCodeExpireAt: expireAt,
-        members: [{ openid: openid, role: 'admin', joinedAt: new Date(), displayName: nickname }]
+        members: [{ openid: openid, role: 'admin', joinedAt: new Date(), displayName: nickname }],
+        // 默认一个无账号小孩成员，保证已有「错题/打分」流程有归属
+        children: [{ childId: 'c_' + Date.now() + '_' + Math.floor(Math.random() * 1000000), name: '宝贝', grade: '', isDeleted: false, createdAt: new Date() }]
       }
     })
 

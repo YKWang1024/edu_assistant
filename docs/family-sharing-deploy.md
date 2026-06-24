@@ -45,6 +45,11 @@
 **Phase 6（错题本统一+可编辑）**：新增 `updateExamQuestion`、`updateQuizWrong`（家长编辑错题/答案）。
 「我的→错题本」改为进入统一错题本 `pages/exam/exam`，同时展示拍照错题(examQuestions)与语数英小测错题(quizWrong)；家长点「✎ 编辑」需输入密码(见 `config/ai.js` 的 `PARENT_EDIT_PASSWORD`，默认 8888，上线请改)。无需新建集合。
 
+**Phase 7（家庭重构：小孩成员/角色）**：新增 `manageFamily`（一函数多动作：addChild/updateChild/removeChild软删/setMemberRole）。
+`getFamilyInfo`(改，返回 children)、`login`(改，建家庭时预置默认小孩'宝贝') 需**重新部署**。
+小孩成员(无小程序账号，妹妹/姐姐等)与角色 admin/member/observer 都存在 `families` 文档里（`children` 数组 + `members[].role`），**无需新建集合**。
+「我的→设置(本地成员名)」入口已删除，家庭管理统一走 `pages/family/manage`。
+
 **视觉识别**：`aiVision`（超时 60s；需在其环境变量配置 `AI_VISION_API_KEY` 等，见 §3）
 
 > 游戏时间余额现按 `(familyId, childName)` 存于 `gameTime`，跨设备一致；首次联网会把本地旧 `gameMinutes` 迁为初始余额一次。旧本地小测错题首次联网导入 `quizWrong` 一次。
