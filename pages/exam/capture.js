@@ -1,5 +1,6 @@
 var app = getApp()
 var examUtil = require('../../utils/exam.js')
+var imageUtil = require('../../utils/image.js')
 var config = require('../../config/ai.js')
 
 var MIN_CROP = 40 // 裁剪框最小边长(px)
@@ -8,9 +9,20 @@ var MAX_OUT = 1600 // 导出图片最长边上限(px)，过大在安卓上 canva
 var TYPE_LABELS = ['选择题', '填空/简答', '其他']
 var TYPE_KEYS = ['choice', 'fill', 'other']
 
+// 把错因/上次错答/解析合并进 analysis 字段一起保存（复用现有 saveExamQuestion，无需改云函数）。
+function buildAnalysis(errorPoint, studentAnswer, analysis) {
+  var parts = []
+  if (errorPoint) parts.push('错因：' + errorPoint)
+  if (studentAnswer) parts.push('上次错答：' + studentAnswer)
+  if (analysis) parts.push(analysis)
+  return parts.join('\n')
+}
+
 Page({
   data: {
-    stage: 'pick', // pick -> crop -> recognizing -> edit -> saving
+    // 单题：pick -> crop -> recognizing -> edit -> saving
+    // 多题：pick -> multi-recognizing -> multi-review -> multi-saving
+    stage: 'pick',
     imgSrc: '',
     natW: 0,
     natH: 0,
@@ -30,10 +42,17 @@ Page({
       options: [],
       correctAnswer: '',
       analysis: ''
-    }
+    },
+
+    // 整张试卷·多题
+    multiImg: '',
+    multiItems: [],
+    multiSelectedCount: 0,
+    multiSavedCount: 0,
+    multiTotal: 0
   },
 
-  // ---------------- 选图 ----------------
+  // ---------------- 选图（单题：框选裁剪） ----------------
   onChoose: function () {
     var that = this
     wx.chooseMedia({
@@ -154,6 +173,178 @@ Page({
     this.setData({ stage: 'pick', imgSrc: '' })
   },
 
+  // ================= 整张试卷·多题 =================
+  onChooseMulti: function () {
+    var that = this
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      sizeType: ['original', 'compressed'], // 整卷要尽量清晰，原图由我们自行压缩
+      success: function (res) {
+        that.recognizeMulti(res.tempFiles[0].tempFilePath)
+      }
+    })
+  },
+
+  recognizeMulti: function (path) {
+    var that = this
+    this.setData({ stage: 'multi-recognizing', multiImg: path, multiItems: [] })
+
+    // 整卷先压缩(省存储/加速)，再上传云存储用 fileID 识别（规避包体上限）。
+    imageUtil.compressForUpload(path, { maxEdge: 1800, quality: 0.7 }).then(function (p) {
+      that.setData({ multiImg: p })
+      that._multiUploadPath = p
+      return that.recognizeImage(p, true)
+    }).then(function (list) {
+      if (!list || !list.length) {
+        that.setData({ stage: 'pick' })
+        wx.showModal({
+          title: '未识别到错题',
+          content: '没有在这张试卷上识别到明显做错的题目。可换张更清晰的照片，或用「框选一道题」逐题录入。',
+          showCancel: false
+        })
+        return
+      }
+      that.fillMultiList(list)
+    }).catch(function (err) {
+      console.error('recognizeMulti fail', err)
+      that.setData({ stage: 'pick' })
+      wx.showModal({
+        title: '识别失败',
+        content: (err && err.message) || '请重试，或改用「框选一道题」',
+        showCancel: false
+      })
+    })
+  },
+
+  fillMultiList: function (list) {
+    var subjects = this.data.subjects
+    var items = list.map(function (q) {
+      var subjectIndex = subjects.indexOf(q.subject)
+      if (subjectIndex < 0) subjectIndex = subjects.length - 1
+      var typeIndex = TYPE_KEYS.indexOf(q.type)
+      if (typeIndex < 0) typeIndex = 2
+      var optionText = (q.options || []).map(function (o) { return o.key + '. ' + o.text }).join('   ')
+      // 选择题正确答案展示成「字母. 文本」，更直观
+      var correctDisplay = q.correctAnswer || ''
+      if (q.type === 'choice') {
+        for (var ci = 0; ci < (q.options || []).length; ci++) {
+          if (q.options[ci].key === q.correctAnswer) { correctDisplay = q.options[ci].key + '. ' + q.options[ci].text; break }
+        }
+      }
+      return {
+        selected: true,
+        subject: subjects[subjectIndex],
+        subjectIndex: subjectIndex,
+        type: TYPE_KEYS[typeIndex],
+        typeLabel: TYPE_LABELS[typeIndex],
+        stem: q.stem || '',
+        options: q.options || [],
+        optionText: optionText,
+        correctAnswer: q.correctAnswer || '',
+        correctDisplay: correctDisplay,
+        studentAnswer: q.studentAnswer || '',
+        errorPoint: q.errorPoint || '',
+        analysis: q.analysis || ''
+      }
+    })
+    this.setData({
+      stage: 'multi-review',
+      multiItems: items,
+      multiSelectedCount: items.length
+    })
+  },
+
+  onMultiToggle: function (e) {
+    var i = e.currentTarget.dataset.index
+    var sel = !this.data.multiItems[i].selected
+    var patch = {}
+    patch['multiItems[' + i + '].selected'] = sel
+    this.setData(patch, this.refreshSelectedCount)
+  },
+
+  onMultiSubject: function (e) {
+    var i = e.currentTarget.dataset.index
+    var idx = Number(e.detail.value)
+    var patch = {}
+    patch['multiItems[' + i + '].subjectIndex'] = idx
+    patch['multiItems[' + i + '].subject'] = this.data.subjects[idx]
+    this.setData(patch)
+  },
+
+  onMultiToggleAll: function () {
+    var all = this.data.multiItems.every(function (it) { return it.selected })
+    var items = this.data.multiItems.map(function (it) { it.selected = !all; return it })
+    this.setData({ multiItems: items }, this.refreshSelectedCount)
+  },
+
+  refreshSelectedCount: function () {
+    var n = this.data.multiItems.filter(function (it) { return it.selected }).length
+    this.setData({ multiSelectedCount: n })
+  },
+
+  onSaveSelected: function () {
+    var that = this
+    var selected = this.data.multiItems.filter(function (it) { return it.selected })
+    if (!selected.length) { wx.showToast({ title: '请至少选择一道题', icon: 'none' }); return }
+
+    this.setData({ stage: 'multi-saving', multiSavedCount: 0, multiTotal: selected.length })
+    // 识别阶段已上传整卷图片，所有错题共用其 fileID；若当时回退过 base64 则现场补传一次
+    if (this._lastFileID) {
+      this.saveSelectedSeq(selected, this._lastFileID, 0, 0)
+    } else if (app.globalData.cloudReady && wx.cloud && this._multiUploadPath) {
+      this.uploadMultiImage(function (fileID) { that.saveSelectedSeq(selected, fileID, 0, 0) })
+    } else {
+      this.saveSelectedSeq(selected, '', 0, 0)
+    }
+  },
+
+  uploadMultiImage: function (cb) {
+    var path = this._multiUploadPath || this.data.multiImg
+    if (!path || !app.globalData.cloudReady || !wx.cloud) { cb(''); return }
+    var cloudPath = 'exam/' + Date.now() + '_' + Math.floor(Math.random() * 1000000) + '.jpg'
+    wx.cloud.uploadFile({
+      cloudPath: cloudPath,
+      filePath: path,
+      success: function (r) { cb(r.fileID) },
+      fail: function () { cb('') }
+    })
+  },
+
+  // 依次保存选中的错题（逐条调用现有 saveExamQuestion）
+  saveSelectedSeq: function (selected, fileID, i, okCount) {
+    var that = this
+    if (i >= selected.length) {
+      if (okCount > 0) {
+        wx.showToast({ title: '已保存 ' + okCount + ' 道错题', icon: 'success' })
+        setTimeout(function () { wx.navigateBack() }, 1200)
+      } else {
+        that.setData({ stage: 'multi-review' })
+        wx.showToast({ title: '保存失败，请重试', icon: 'none' })
+      }
+      return
+    }
+    var it = selected[i]
+    var options = it.type === 'choice'
+      ? (it.options || []).filter(function (o) { return o.text && o.text.trim() })
+        .map(function (o) { return { key: o.key, text: o.text.trim() } })
+      : []
+    app.callCloudFunction('saveExamQuestion', {
+      subject: it.subject,
+      type: it.type,
+      stem: (it.stem || '').trim(),
+      options: options,
+      correctAnswer: (it.correctAnswer || '').trim(),
+      analysis: buildAnalysis(it.errorPoint, it.studentAnswer, it.analysis),
+      imageFileID: fileID
+    }, function (res) {
+      var ok = okCount + (res && res.success ? 1 : 0)
+      that.setData({ multiSavedCount: i + 1 })
+      that.saveSelectedSeq(selected, fileID, i + 1, ok)
+    })
+  },
+
   // ---------------- 裁剪 + 识别 ----------------
   onConfirmCrop: function () {
     var that = this
@@ -211,39 +402,46 @@ Page({
     })
   },
 
+  // 识别图片：优先上传云存储、用 fileID 识别（规避 callFunction 包体上限）；
+  // 仅当【上传失败】时才回退到压缩后的 base64 直传（避免重复消耗 AI 调用）。
+  // 成功后把所用 fileID 记在 this._lastFileID，保存时复用，避免二次上传。
+  recognizeImage: function (path, multi) {
+    var that = this
+    function run(src) { return multi ? examUtil.recognizeQuestions(src) : examUtil.recognizeQuestion(src) }
+    that._lastFileID = ''
+    if (app.globalData.cloudReady && wx.cloud) {
+      return imageUtil.uploadFile(path, 'exam').then(function (fileID) {
+        that._lastFileID = fileID
+        return run({ fileID: fileID, mediaType: 'image/jpeg' })
+      }, function () {
+        return imageUtil.compressForCloud(path).then(function (c) { return run(c.dataUri) })
+      })
+    }
+    return imageUtil.compressForCloud(path).then(function (c) { return run(c.dataUri) })
+  },
+
   recognize: function (croppedPath) {
     var that = this
     this.setData({ stage: 'recognizing', croppedTempPath: croppedPath })
 
-    wx.getFileSystemManager().readFile({
-      filePath: croppedPath,
-      encoding: 'base64',
-      success: function (r) {
-        var dataUri = 'data:image/jpeg;base64,' + r.data
-        examUtil.recognizeQuestion(dataUri).then(function (q) {
-          that.fillForm(q)
-        }).catch(function (err) {
-          console.error('recognize fail', err)
-          // 识别失败：进入编辑，由用户手动录入
-          that.fillForm({
-            subject: that.data.form.subject,
-            type: 'choice',
-            stem: '',
-            options: [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }],
-            correctAnswer: '',
-            analysis: ''
-          })
-          wx.showModal({
-            title: '识别失败',
-            content: (err && err.message) || '可手动输入题目内容后保存',
-            showCancel: false
-          })
-        })
-      },
-      fail: function () {
-        that.setData({ stage: 'crop' })
-        wx.showToast({ title: '读取裁剪图失败', icon: 'none' })
-      }
+    this.recognizeImage(croppedPath, false).then(function (q) {
+      that.fillForm(q)
+    }).catch(function (err) {
+      console.error('recognize fail', err)
+      // 识别失败：进入编辑，由用户手动录入
+      that.fillForm({
+        subject: that.data.form.subject,
+        type: 'choice',
+        stem: '',
+        options: [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }],
+        correctAnswer: '',
+        analysis: ''
+      })
+      wx.showModal({
+        title: '识别失败',
+        content: (err && err.message) || '可手动输入题目内容后保存',
+        showCancel: false
+      })
     })
   },
 
@@ -270,7 +468,7 @@ Page({
         stem: q.stem || '',
         options: options,
         correctAnswer: q.correctAnswer || '',
-        analysis: q.analysis || ''
+        analysis: buildAnalysis(q.errorPoint, '', q.analysis)
       }
     })
   },
@@ -379,6 +577,8 @@ Page({
       })
     }
 
+    // 识别阶段通常已把图片上传过，直接复用其 fileID，避免重复上传
+    if (that._lastFileID) { save(that._lastFileID); return }
     if (!that.data.croppedTempPath || !app.globalData.cloudReady || !wx.cloud) {
       save('')
       return
