@@ -1,0 +1,56 @@
+.add-btn {
+  width: 100%;
+  margin-bottom: 24rpx;
+}
+.empty-tip {
+  text-align: center;
+  color: #807661;
+  font-size: 26rpx;
+  padding: 60rpx 30rpx;
+  line-height: 1.6;
+}
+.w-item {
+  padding: 22rpx 24rpx;
+  margin-bottom: 18rpx;
+}
+.w-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.w-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1c15;
+  font-family: 'PingFang SC', monospace;
+}
+.w-date {
+  font-size: 22rpx;
+  color: #807661;
+}
+.w-content {
+  font-size: 27rpx;
+  color: #1d1c15;
+  line-height: 1.7;
+  margin: 14rpx 0;
+  white-space: pre-wrap;
+}
+.w-foot {
+  display: flex;
+  align-items: center;
+  border-top: 2rpx solid #ece5d6;
+  padding-top: 14rpx;
+}
+.w-public { font-size: 22rpx; color: #47672c; font-weight: 700; }
+.w-private { font-size: 22rpx; color: #807661; }
+.w-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 18rpx;
+}
+.w-action {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #775a00;
+}
+.w-action.danger { color: #ba1a1a; }

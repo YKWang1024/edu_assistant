@@ -3,12 +3,30 @@ const app = getApp()
 Page({
   data: {
     recipes: [],
+    wikis: [],
     loading: true,
     refreshing: false
   },
 
   onLoad: function () {
     this.loadFriendRecipes()
+    this.loadWikis()
+  },
+
+  loadWikis: function () {
+    var that = this
+    if (!app.globalData.cloudReady) return
+    wx.cloud.callFunction({
+      name: 'listWiki',
+      data: { scope: 'public' },
+      success: function (res) {
+        if (res.result && res.result.success) that.setData({ wikis: res.result.data || [] })
+      }
+    })
+  },
+
+  onGoWiki: function () {
+    wx.navigateTo({ url: '/pages/wiki/wiki' })
   },
 
   loadFriendRecipes: function () {
@@ -42,6 +60,7 @@ Page({
   onRefresh: function () {
     this.setData({ refreshing: true })
     this.loadFriendRecipes()
+    this.loadWikis()
   },
 
   onViewRecipe: function (e) {

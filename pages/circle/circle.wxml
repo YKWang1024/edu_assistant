@@ -2,6 +2,20 @@
   <view class="page-header">
     <view class="header-title">🍳 菜友圈</view>
     <view class="header-subtitle">发现更多美味菜谱</view>
+    <view class="wiki-entry" bindtap="onGoWiki">🛒 我的买菜心得 ›</view>
+  </view>
+
+  <!-- 买菜心得（菜友分享）-->
+  <view wx:if="{{wikis.length > 0}}" class="wiki-feed">
+    <view class="wiki-feed-title">🛒 菜友买菜心得</view>
+    <view class="wiki-feed-card card" wx:for="{{wikis}}" wx:key="_id">
+      <view class="wiki-feed-top">
+        <text class="wiki-feed-name">{{item.authorName}}</text>
+        <text class="wiki-feed-date">{{item.sharedDate}}</text>
+      </view>
+      <view wx:if="{{item.title}}" class="wiki-feed-h">{{item.title}}</view>
+      <view class="wiki-feed-body">{{item.content}}</view>
+    </view>
   </view>
 
   <view class="loading-container" wx:if="{{loading}}">

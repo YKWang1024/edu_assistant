@@ -1,0 +1,22 @@
+<view class="container">
+  <button class="btn-primary add-btn" bindtap="onAdd">🎤 记一条买菜心得</button>
+
+  <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+  <view wx:elif="{{list.length === 0}}" class="empty-tip">还没有买菜心得，点上面按钮，说说今天买菜的经验吧 🛒</view>
+
+  <view class="w-item card" wx:for="{{list}}" wx:key="_id">
+    <view class="w-top">
+      <text class="w-title">{{item.title || '买菜心得'}}</text>
+      <text class="w-date">{{item.updatedDate}}</text>
+    </view>
+    <view class="w-content">{{item.content}}</view>
+    <view class="w-foot">
+      <text wx:if="{{item.isPublic}}" class="w-public">🌿 已分享菜友圈</text>
+      <text wx:else class="w-private">仅家庭可见</text>
+      <view class="w-actions">
+        <text class="w-action" data-item="{{item}}" catchtap="onToggleShare">{{item.isPublic ? '取消分享' : '分享菜友圈'}}</text>
+        <text class="w-action danger" data-id="{{item._id}}" catchtap="onDelete">删除</text>
+      </view>
+    </view>
+  </view>
+</view>

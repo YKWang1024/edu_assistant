@@ -1,0 +1,9 @@
+{
+  "name": "saveWiki",
+  "version": "1.0.0",
+  "description": "保存/更新买菜心得",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
