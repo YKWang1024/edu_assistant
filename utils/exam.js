@@ -29,6 +29,14 @@ function statusLabel(status) { return STATUS_LABEL[status] || '' }
 
 // ---------------- AI：识别题目（视觉，非流式） ----------------
 
+// 「看拼音写字/写词」尽量转成选择题，便于小朋友点选而不是打字。复用于单题/多题 prompt。
+var PINYIN_TO_CHOICE_RULE = [
+  '【特别规则】对于「看拼音写汉字 / 看拼音写词语 / 根据拼音写字」这类题：',
+  '请把它转成选择题——type 设为 "choice"，options 给出 4 个选项',
+  '(其中 1 个是正确的字/词，另外 3 个是形近或音近的干扰项)，',
+  'correctAnswer 填正确选项的【字母】(如 "B")，让小朋友点选而不是手写。'
+].join('\n')
+
 function buildRecognizePrompt() {
   return [
     '你是一个中小学题目识别助手。请识别图片中的这一道题目，并【只输出一个 JSON 对象】，',
@@ -39,9 +47,34 @@ function buildRecognizePrompt() {
     '  "stem": 题干文字(字符串，不要包含选项内容)，',
     '  "options": 选择题选项数组，每项形如 {"key":"A","text":"选项内容"}；非选择题填 []，',
     '  "correctAnswer": 正确答案。选择题填选项字母如 "B"；其它题填答案文本；若无法判断填 ""，',
+    '  "studentAnswer": 图中小朋友写下/勾选的答案(若能看出)，否则填 ""，',
+    '  "errorPoint": 用一句话总结这道题的错因或考点(20字以内，可为空)，',
     '  "analysis": 简短解析(50字以内，可为空字符串)',
     '}',
+    PINYIN_TO_CHOICE_RULE,
     '若图片中有多道题，只识别最完整、最居中的那一道。数学公式用普通文本表示。'
+  ].join('\n')
+}
+
+// 整张试卷·多题：找出所有做错的题目，逐题归纳错因。返回 { questions: [...] }。
+function buildRecognizeManyPrompt() {
+  return [
+    '你是一个中小学错题归纳助手。下面是一张试卷的照片，请找出其中所有【做错的题目】',
+    '(有红叉/被批改为错/扣分/答案明显错误的题)，逐题归纳，并【只输出一个 JSON 对象】，',
+    '不要输出任何额外文字、解释、Markdown 代码块或反引号。格式：',
+    '{ "questions": [ {',
+    '  "subject": 科目，只能是以下之一：' + JSON.stringify(config.SUBJECTS) + '，',
+    '  "type": "choice" / "fill" / "other"，',
+    '  "stem": 题干文字(不含选项)，',
+    '  "options": 选择题选项数组 [{"key":"A","text":"..."}]；非选择题填 []，',
+    '  "correctAnswer": 正确答案(选择题填字母；其它填答案文本；无法判断填 "")，',
+    '  "studentAnswer": 小朋友这次写错/选错的答案(看不出填 "")，',
+    '  "errorPoint": 一句话总结错因或考点(20字以内)，',
+    '  "analysis": 简短解析(50字以内，可空)',
+    '} , ... ] }',
+    PINYIN_TO_CHOICE_RULE,
+    '优先收录有批改记号(红叉/扣分)或明显答错的题；若整张看不出批改痕迹，',
+    '则收录全部题目、把 studentAnswer 留空，交给家长勾选。最多 12 道。数学公式用普通文本表示。'
   ].join('\n')
 }
 
@@ -77,14 +110,50 @@ function normalizeQuestion(obj) {
     }).filter(function (o) { return o.text && o.text.trim() })
   }
   if (options.length > 0) type = 'choice'
+
+  var correct = String(obj.correctAnswer == null ? '' : obj.correctAnswer).trim()
+  // 选择题答案必须是选项字母(复习时按字母判分)。若模型给的是选项【文本】，映射回字母。
+  if (type === 'choice' && options.length > 0 && correct) {
+    var keys = options.map(function (o) { return o.key })
+    if (keys.indexOf(correct) < 0) {
+      for (var k = 0; k < options.length; k++) {
+        if (options[k].text.trim() === correct) { correct = options[k].key; break }
+      }
+    }
+  }
+
   return {
     subject: subject,
     type: type,
     stem: String(obj.stem == null ? '' : obj.stem).trim(),
     options: options,
-    correctAnswer: String(obj.correctAnswer == null ? '' : obj.correctAnswer).trim(),
+    correctAnswer: correct,
+    studentAnswer: String(obj.studentAnswer == null ? '' : obj.studentAnswer).trim(),
+    errorPoint: String(obj.errorPoint == null ? '' : obj.errorPoint).trim(),
     analysis: String(obj.analysis == null ? '' : obj.analysis).trim()
   }
+}
+
+// 解析「多题」返回：容错地取出 questions 数组并逐项 normalize。
+// 同时兼容返回对象 {questions:[...]} 或裸数组 [...]。
+function parseQuestionsJSON(text) {
+  if (!text) throw new Error('AI 未返回内容')
+  var s = String(text).trim()
+  s = s.replace(/^```[a-zA-Z]*/, '').replace(/```$/, '').trim()
+  var objStart = s.indexOf('{')
+  var arrStart = s.indexOf('[')
+  var useArray = arrStart >= 0 && (objStart < 0 || arrStart < objStart)
+  if (useArray) {
+    var ae = s.lastIndexOf(']')
+    if (ae > arrStart) s = s.slice(arrStart, ae + 1)
+  } else {
+    var oe = s.lastIndexOf('}')
+    if (objStart >= 0 && oe > objStart) s = s.slice(objStart, oe + 1)
+  }
+  var obj
+  try { obj = JSON.parse(s) } catch (e) { throw new Error('AI 返回的内容无法解析为错题列表') }
+  var arr = Array.isArray(obj) ? obj : (obj && Array.isArray(obj.questions) ? obj.questions : [])
+  return arr.map(normalizeQuestion).filter(function (q) { return q.stem })
 }
 
 function splitDataUri(dataUri) {
@@ -93,21 +162,32 @@ function splitDataUri(dataUri) {
   return { mediaType: 'image/jpeg', base64: dataUri || '' }
 }
 
+// 把「图片来源」转成 aiVision 入参。source 可为：
+//   字符串 dataUri / base64（兼容旧用法）
+//   { fileID, mediaType }  —— 推荐，云端下载，规避 callFunction 包体上限
+//   { base64, mediaType } / { dataUri }
+function buildVisionPayload(source) {
+  if (source && typeof source === 'object') {
+    if (source.fileID) return { fileID: source.fileID, mediaType: source.mediaType || 'image/jpeg' }
+    if (source.base64) return { image: source.base64, mediaType: source.mediaType || 'image/jpeg' }
+    if (source.dataUri) source = source.dataUri
+  }
+  var img = splitDataUri(source)
+  return { image: img.base64, mediaType: img.mediaType }
+}
+
 // 通过云函数 aiVision 调用视觉模型(Kimi/Anthropic 兼容)识别题目。
-function recognizeQuestion(base64DataUri) {
+function recognizeQuestion(source) {
   return new Promise(function (resolve, reject) {
     var app = getApp()
     if (!app || !app.globalData || !app.globalData.cloudReady) {
       reject(new Error('云开发未就绪，请联网后重试'))
       return
     }
-    var img = splitDataUri(base64DataUri)
-    app.callCloudFunction('aiVision', {
-      image: img.base64,
-      mediaType: img.mediaType,
-      prompt: buildRecognizePrompt(),
-      debug: !!config.DEBUG
-    }, function (res) {
+    var payload = buildVisionPayload(source)
+    payload.prompt = buildRecognizePrompt()
+    payload.debug = !!config.DEBUG
+    app.callCloudFunction('aiVision', payload, function (res) {
       if (!res || !res.success) {
         var msg = (res && res.message) || 'AI 识别失败'
         if (config.DEBUG && res && res.error) msg += '：' + res.error
@@ -115,6 +195,30 @@ function recognizeQuestion(base64DataUri) {
         return
       }
       try { resolve(parseQuestionJSON(res.text)) } catch (e) { reject(e) }
+    }, 60000)
+  })
+}
+
+// 整张试卷·多题识别：返回错题数组（每项含 studentAnswer / errorPoint）。
+function recognizeQuestions(source) {
+  return new Promise(function (resolve, reject) {
+    var app = getApp()
+    if (!app || !app.globalData || !app.globalData.cloudReady) {
+      reject(new Error('云开发未就绪，请联网后重试'))
+      return
+    }
+    var payload = buildVisionPayload(source)
+    payload.prompt = buildRecognizeManyPrompt()
+    payload.maxTokens = 4000
+    payload.debug = !!config.DEBUG
+    app.callCloudFunction('aiVision', payload, function (res) {
+      if (!res || !res.success) {
+        var msg = (res && res.message) || 'AI 识别失败'
+        if (config.DEBUG && res && res.error) msg += '：' + res.error
+        reject(new Error(msg))
+        return
+      }
+      try { resolve(parseQuestionsJSON(res.text)) } catch (e) { reject(e) }
     }, 60000)
   })
 }
@@ -171,5 +275,6 @@ module.exports = {
   statusLabel: statusLabel,
   STATUS_LABEL: STATUS_LABEL,
   recognizeQuestion: recognizeQuestion,
+  recognizeQuestions: recognizeQuestions,
   generateCourse: generateCourse
 }

@@ -64,6 +64,17 @@
 
 部署 `aiVision`（超时已配 60s）。菜谱「AI识别菜谱」与「拍照识题」都走它，返回做法/配料/热量/题干等结构化 JSON。
 
+> ⚠️ **本次 `aiVision` 改了代码，务必重新部署。** 新增按 **云存储 fileID** 下载图片的能力：
+> 客户端会先把（压缩后的）图片上传云存储，再把 `fileID` 传给 `aiVision`，云端下载后转 base64 再识别。
+> 这样**彻底规避了 `cloud.callFunction:fail Error:data exceed max size`**（大图直传 base64 超过 callFunction 包体上限）。
+> base64 直传仍兼容（小图/上传失败时回退）。识别会在云存储 `exam/`、`recipe/` 下产生图片，正常占用存储。
+
+### 本次客户端新增能力（随小程序发布即可，无需额外云资源）
+- **大图自动压缩**：新增 `utils/image.js`（`compressForCloud` / `compressForUpload` / `uploadFile`），全局复用；
+  iPhone Pro Max 等大图先缩放+jpg 压缩再上云（微信端不支持生成 webp，照片用 jpg 体积最小）。
+- **整张试卷·多题**：拍整张卷子，AI 一次找出所有做错的题、逐题归纳「错因」，用户勾选后批量入库（逐条调 `saveExamQuestion`，错因/上次错答并入 `analysis`，无需改云函数）。
+- **看拼音写字→选择题**：识别时这类题自动转成选择题（4 选项），复习时点选而非打字。
+
 > ⚠️ **Kimi Code 是编程产品，官方文档未声明支持图片输入。** 若识别报错或模型“看不到图”，说明该模型不支持视觉，需改用真正的视觉模型（如 Moonshot 开放平台的 `moonshot-v1-*-vision`，但那要用开放平台 API Key，把 `AI_VISION_*` 改成对应值），或改走 OCR。
 
 ### 文本（错题 AI 讲解课程）

@@ -10,8 +10,14 @@
 //   AI_VISION_ENDPOINT  可选：直接给完整请求 URL，覆盖 BASE_URL 拼接
 //   AI_VISION_MODEL     模型名，默认 kimi-for-coding (Kimi Code 固定模型, 自动映射到最新版)
 // ⚠️ Kimi Code 是编程产品，官方文档未说明支持图片输入；若识别失败(模型不看图)，需改用支持视觉的模型/服务。
+//
+// 入参图片支持两种方式：
+//   event.fileID  —— 云存储 fileID（推荐！客户端先上传再传 ID，可规避 callFunction 包体上限）
+//   event.image   —— base64 字符串（小图直传，兼容旧调用）
 const https = require('https')
 const { URL } = require('url')
+const cloud = require('wx-server-sdk')
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const PROTOCOL = process.env.AI_VISION_PROTOCOL || 'anthropic'
 const BASE_URL = process.env.AI_VISION_BASE_URL || 'https://api.kimi.com/coding'
@@ -57,10 +63,20 @@ exports.main = async (event, context) => {
     if (!API_KEY) {
       return { success: false, message: '未配置视觉模型 API Key：请在云函数 aiVision 的环境变量 AI_VISION_API_KEY 中设置' }
     }
-    const image = event.image // 原始 base64（不含 data: 前缀）
+    let image = event.image // 原始 base64（不含 data: 前缀）
     const prompt = event.prompt || '请描述这张图片。'
     const mediaType = event.mediaType || 'image/jpeg'
     const maxTokens = event.maxTokens || 2000
+
+    // 优先用云存储 fileID：在云端下载后转 base64，规避客户端 callFunction 包体大小限制。
+    if (!image && event.fileID) {
+      try {
+        const dl = await cloud.downloadFile({ fileID: event.fileID })
+        image = dl.fileContent.toString('base64')
+      } catch (e) {
+        return { success: false, message: '读取云端图片失败', error: DEBUG ? e.message : undefined }
+      }
+    }
     if (!image) return { success: false, message: '缺少图片' }
 
     let text = ''

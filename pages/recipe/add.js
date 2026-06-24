@@ -1,5 +1,6 @@
 var app = getApp()
 var recipeUtil = require('../../utils/recipe.js')
+var imageUtil = require('../../utils/image.js')
 
 function extractUrl(text) {
   if (!text) return ''
@@ -109,24 +110,16 @@ Page({
     var that = this
     if (this.data.images.length === 0) { wx.showToast({ title: '请先添加成品照片', icon: 'none' }); return }
     this.setData({ recognizing: true })
-    wx.getFileSystemManager().readFile({
-      filePath: this.data.images[0],
-      encoding: 'base64',
-      success: function (r) {
-        var dataUri = 'data:image/jpeg;base64,' + r.data
-        recipeUtil.recognizeRecipe(dataUri, that.data.name).then(function (rp) {
-          that.applyRecognized(rp)
-          that.setData({ recognizing: false })
-          wx.showToast({ title: '已识别，可修改', icon: 'success' })
-        }).catch(function (err) {
-          that.setData({ recognizing: false })
-          wx.showModal({ title: '识别失败', content: (err && err.message) || '请手动填写', showCancel: false })
-        })
-      },
-      fail: function () {
-        that.setData({ recognizing: false })
-        wx.showToast({ title: '读取图片失败', icon: 'none' })
-      }
+    // 统一走压缩，避免大图触发 callFunction "data exceed max size"
+    imageUtil.compressForCloud(this.data.images[0]).then(function (c) {
+      return recipeUtil.recognizeRecipe(c.dataUri, that.data.name)
+    }).then(function (rp) {
+      that.applyRecognized(rp)
+      that.setData({ recognizing: false })
+      wx.showToast({ title: '已识别，可修改', icon: 'success' })
+    }).catch(function (err) {
+      that.setData({ recognizing: false })
+      wx.showModal({ title: '识别失败', content: (err && err.message) || '请手动填写', showCancel: false })
     })
   },
 

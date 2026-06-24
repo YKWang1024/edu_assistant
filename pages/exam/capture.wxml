@@ -5,8 +5,10 @@
     <view class="card pick-card">
       <view class="pick-emoji">📷</view>
       <view class="pick-title">拍照识题</view>
-      <view class="pick-tip">给试卷上的一道题拍照或从相册选择，框选题目区域后由 AI 自动识别录入错题本。</view>
-      <button class="btn-primary pick-btn" bindtap="onChoose">拍照 / 选择图片</button>
+      <view class="pick-tip">「框选一道题」：拍一道题，框住后 AI 识别录入。</view>
+      <view class="pick-tip">「整张试卷·多题」：拍整张卷子，AI 自动找出做错的题、归纳错因，你勾选后一次入库。</view>
+      <button class="btn-primary pick-btn" bindtap="onChoose">✂️ 框选一道题</button>
+      <button class="btn-success pick-btn" bindtap="onChooseMulti">🗂️ 整张试卷·多题</button>
     </view>
   </view>
 
@@ -48,6 +50,56 @@
     <view class="card loading-card">
       <view class="loading-emoji">🤖</view>
       <view class="loading-text">AI 正在识别题目…</view>
+    </view>
+  </view>
+
+  <!-- 多题：识别中 -->
+  <view wx:if="{{stage === 'multi-recognizing'}}" class="loading-stage">
+    <view class="card loading-card">
+      <view class="loading-emoji">🔎</view>
+      <view class="loading-text">AI 正在通读整张试卷，找出做错的题…</view>
+      <view class="loading-sub">题目较多时需要十几秒，请稍候</view>
+    </view>
+  </view>
+
+  <!-- 多题：保存中 -->
+  <view wx:if="{{stage === 'multi-saving'}}" class="loading-stage">
+    <view class="card loading-card">
+      <view class="loading-emoji">💾</view>
+      <view class="loading-text">正在保存错题 {{multiSavedCount}} / {{multiTotal}}…</view>
+    </view>
+  </view>
+
+  <!-- 多题：勾选确认 -->
+  <view wx:if="{{stage === 'multi-review'}}" class="multi-stage">
+    <view class="multi-head">
+      <text class="multi-head-title">AI 找出 {{multiItems.length}} 道错题</text>
+      <text class="multi-selectall" bindtap="onMultiToggleAll">全选 / 全不选</text>
+    </view>
+    <view class="multi-tip">勾选要收入错题本的题目，确认科目后保存。看拼音写字类已自动转成选择题。</view>
+
+    <view class="m-item card {{item.selected ? '' : 'off'}}" wx:for="{{multiItems}}" wx:key="index">
+      <view class="m-row1">
+        <view class="m-check {{item.selected ? 'on' : ''}}" data-index="{{index}}" bindtap="onMultiToggle">
+          {{item.selected ? '✓' : ''}}
+        </view>
+        <text class="m-badge">{{item.typeLabel}}</text>
+        <picker class="m-subject" mode="selector" range="{{subjects}}" value="{{item.subjectIndex}}" data-index="{{index}}" bindchange="onMultiSubject">
+          <view class="m-subject-val">{{item.subject}} ▾</view>
+        </picker>
+      </view>
+      <view class="m-stem">{{item.stem}}</view>
+      <view wx:if="{{item.optionText}}" class="m-options">{{item.optionText}}</view>
+      <view class="m-meta">
+        <text wx:if="{{item.studentAnswer}}" class="m-wrong">错答：{{item.studentAnswer}}</text>
+        <text wx:if="{{item.correctDisplay}}" class="m-right">正确：{{item.correctDisplay}}</text>
+      </view>
+      <view wx:if="{{item.errorPoint}}" class="m-errorpoint">💡 {{item.errorPoint}}</view>
+    </view>
+
+    <view class="multi-actions">
+      <button class="btn-secondary multi-action-btn" bindtap="onRetake">重新选图</button>
+      <button class="btn-primary multi-action-btn" bindtap="onSaveSelected">保存选中（{{multiSelectedCount}}）</button>
     </view>
   </view>
 
