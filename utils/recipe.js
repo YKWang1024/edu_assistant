@@ -118,21 +118,32 @@ function splitDataUri(dataUri) {
   return { mediaType: 'image/jpeg', base64: dataUri || '' }
 }
 
-// 通过云函数 aiVision 调用视觉模型(Kimi/Anthropic 兼容)。base64DataUri 可带或不带 data: 前缀。
-function recognizeRecipe(base64DataUri, nameHint) {
+// 把「图片来源」转成 aiVision 入参。source 可为：
+//   { fileID, mediaType } —— 推荐，云端下载，规避 callFunction 包体上限
+//   字符串 dataUri / base64（兼容旧用法）/ { base64, mediaType } / { dataUri }
+function buildVisionPayload(source) {
+  if (source && typeof source === 'object') {
+    if (source.fileID) return { fileID: source.fileID, mediaType: source.mediaType || 'image/jpeg' }
+    if (source.base64) return { image: source.base64, mediaType: source.mediaType || 'image/jpeg' }
+    if (source.dataUri) source = source.dataUri
+  }
+  var img = splitDataUri(source)
+  return { image: img.base64, mediaType: img.mediaType }
+}
+
+// 通过云函数 aiVision 调用视觉模型(Kimi/Anthropic 兼容)。
+// source 推荐传 { fileID }（先上云再识别）；也兼容 dataUri / base64。
+function recognizeRecipe(source, nameHint) {
   return new Promise(function (resolve, reject) {
     var app = getApp()
     if (!app || !app.globalData || !app.globalData.cloudReady) {
       reject(new Error('云开发未就绪，请联网后重试'))
       return
     }
-    var img = splitDataUri(base64DataUri)
-    app.callCloudFunction('aiVision', {
-      image: img.base64,
-      mediaType: img.mediaType,
-      prompt: buildRecipePrompt(nameHint),
-      debug: !!config.DEBUG
-    }, function (res) {
+    var payload = buildVisionPayload(source)
+    payload.prompt = buildRecipePrompt(nameHint)
+    payload.debug = !!config.DEBUG
+    app.callCloudFunction('aiVision', payload, function (res) {
       if (!res || !res.success) {
         var msg = (res && res.message) || 'AI 识别失败'
         if (config.DEBUG && res && res.error) msg += '：' + res.error

@@ -106,14 +106,37 @@ Page({
     this.setData({ referenceInput: raw, referenceLink: link, referenceType: type, referenceLabel: label })
   },
 
+  // 上传一张本地图片到云存储，按本地路径缓存 fileID（识别与保存复用，避免重复上传）。
+  uploadImageCached: function (localPath) {
+    var that = this
+    if (!this._fileIDCache) this._fileIDCache = {}
+    if (this._fileIDCache[localPath]) return Promise.resolve(this._fileIDCache[localPath])
+    return recipeUtil.uploadImage(localPath).then(function (fid) {
+      that._fileIDCache[localPath] = fid
+      return fid
+    })
+  },
+
   onAIRecognize: function () {
     var that = this
     if (this.data.images.length === 0) { wx.showToast({ title: '请先添加成品照片', icon: 'none' }); return }
     this.setData({ recognizing: true })
-    // 统一走压缩，避免大图触发 callFunction "data exceed max size"
-    imageUtil.compressForCloud(this.data.images[0]).then(function (c) {
-      return recipeUtil.recognizeRecipe(c.dataUri, that.data.name)
-    }).then(function (rp) {
+    var path = this.data.images[0]
+
+    // 优先「先上云存储拿 fileID → aiVision 云端下载识别」，规避 callFunction 包体上限；
+    // 上传失败再回退压缩 base64 直传。识别所用 fileID 缓存复用，保存时不再重传。
+    var p
+    if (app.globalData.cloudReady && wx.cloud) {
+      p = this.uploadImageCached(path).then(function (fid) {
+        return recipeUtil.recognizeRecipe({ fileID: fid, mediaType: 'image/jpeg' }, that.data.name)
+      }, function () {
+        return imageUtil.compressForCloud(path).then(function (c) { return recipeUtil.recognizeRecipe(c.dataUri, that.data.name) })
+      })
+    } else {
+      p = imageUtil.compressForCloud(path).then(function (c) { return recipeUtil.recognizeRecipe(c.dataUri, that.data.name) })
+    }
+
+    p.then(function (rp) {
       that.applyRecognized(rp)
       that.setData({ recognizing: false })
       wx.showToast({ title: '已识别，可修改', icon: 'success' })
@@ -173,7 +196,8 @@ Page({
 
     function uploadNext(i) {
       if (i >= imgs.length) { doSave(); return }
-      recipeUtil.uploadImage(imgs[i])
+      // 复用识别阶段已上传的 fileID（命中缓存则不重传）
+      that.uploadImageCached(imgs[i])
         .then(function (fid) { fileIDs.push(fid); uploadNext(i + 1) })
         .catch(function () { uploadNext(i + 1) }) // 单张失败跳过
     }
