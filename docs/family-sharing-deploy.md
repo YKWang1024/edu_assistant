@@ -42,6 +42,9 @@
 
 **Phase 5（旧小测错题/记录上云）**：`saveQuizWrong`、`listQuizWrong`、`deleteQuizWrong`、`clearQuizWrong`、`saveQuizRecord`（`utils/util.js`/`wrong`/`math`/`pinyin`/`english` 随小程序发布）
 
+**Phase 6（错题本统一+可编辑）**：新增 `updateExamQuestion`、`updateQuizWrong`（家长编辑错题/答案）。
+「我的→错题本」改为进入统一错题本 `pages/exam/exam`，同时展示拍照错题(examQuestions)与语数英小测错题(quizWrong)；家长点「✎ 编辑」需输入密码(见 `config/ai.js` 的 `PARENT_EDIT_PASSWORD`，默认 8888，上线请改)。无需新建集合。
+
 **视觉识别**：`aiVision`（超时 60s；需在其环境变量配置 `AI_VISION_API_KEY` 等，见 §3）
 
 > 游戏时间余额现按 `(familyId, childName)` 存于 `gameTime`，跨设备一致；首次联网会把本地旧 `gameMinutes` 迁为初始余额一次。旧本地小测错题首次联网导入 `quizWrong` 一次。

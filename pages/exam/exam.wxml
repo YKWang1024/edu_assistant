@@ -40,17 +40,20 @@
       </view>
       <view class="q-item card" wx:for="{{group.items}}" wx:for-item="q" wx:key="_id">
         <view class="q-top">
+          <text class="q-badge src src-{{q.source}}">{{q.sourceLabel}}</text>
           <text class="q-badge type">{{q.type === 'choice' ? '选择题' : (q.type === 'fill' ? '填空' : '题目')}}</text>
           <text class="q-badge status status-{{q.status}}">{{q.statusText}}</text>
           <text class="q-badge due-badge" wx:if="{{q.due}}">待做</text>
         </view>
         <view class="q-stem">{{q.stemBrief}}</view>
         <view class="q-foot">
-          <text class="q-meta" wx:if="{{q.consecutiveWrong > 0}}">连错 {{q.consecutiveWrong}} 次</text>
-          <text class="q-meta">已做 {{q.attemptCount}} 次</text>
+          <text class="q-meta" wx:if="{{q.source === 'quiz'}}">错 {{q.count}} 次</text>
+          <text class="q-meta" wx:if="{{q.source !== 'quiz' && q.consecutiveWrong > 0}}">连错 {{q.consecutiveWrong}} 次</text>
+          <text class="q-meta" wx:if="{{q.source !== 'quiz'}}">已做 {{q.attemptCount}} 次</text>
           <view class="q-foot-actions">
-            <text class="q-action" wx:if="{{q.status === 'hard'}}" data-id="{{q._id}}" catchtap="onViewCourse">AI 讲解</text>
-            <text class="q-action danger" data-id="{{q._id}}" catchtap="onDeleteOne">删除</text>
+            <text class="q-action" wx:if="{{q.status === 'hard' && q.source !== 'quiz'}}" data-id="{{q._id}}" catchtap="onViewCourse">AI 讲解</text>
+            <text class="q-action" data-id="{{q._id}}" data-source="{{q.source}}" catchtap="onEditOne">✎ 编辑</text>
+            <text class="q-action danger" data-id="{{q._id}}" data-source="{{q.source}}" catchtap="onDeleteOne">删除</text>
           </view>
         </view>
       </view>
@@ -104,6 +107,49 @@
       <button wx:if="{{!showResult && !needSelfReport}}" class="btn-primary pa-btn" bindtap="onSubmitAnswer" loading="{{submitting}}" disabled="{{submitting}}">提交答案</button>
       <button wx:if="{{showResult}}" class="btn-primary pa-btn" bindtap="onNext">{{practiceIndex < practiceList.length - 1 ? '下一题' : '完成复习'}}</button>
       <button class="btn-secondary pa-btn" bindtap="onExitPractice">退出复习</button>
+    </view>
+  </block>
+
+  <!-- ============ 编辑模式（家长） ============ -->
+  <block wx:elif="{{mode === 'edit' && editForm}}">
+    <view class="edit-head">编辑错题</view>
+    <view class="card">
+      <view class="field-label">科目</view>
+      <picker mode="selector" range="{{editSubjects}}" value="{{editForm.subjectIndex}}" bindchange="onEditSubjectChange">
+        <view class="picker-value">{{editForm.subject}} ▾</view>
+      </picker>
+
+      <view class="field-label">题型</view>
+      <picker mode="selector" range="{{typeLabels}}" value="{{editForm.typeIndex}}" bindchange="onEditTypeChange">
+        <view class="picker-value">{{typeLabels[editForm.typeIndex]}} ▾</view>
+      </picker>
+
+      <view class="field-label">题干</view>
+      <textarea class="textarea-field" value="{{editForm.stem}}" bindinput="onEditStemInput" placeholder="题目内容" auto-height></textarea>
+
+      <block wx:if="{{editForm.type === 'choice'}}">
+        <view class="field-label">选项（点击「设为正确」标记答案）</view>
+        <view class="opt-row" wx:for="{{editForm.options}}" wx:key="key">
+          <view class="opt-key">{{item.key}}</view>
+          <input class="opt-input" value="{{item.text}}" data-index="{{index}}" bindinput="onEditOptionInput" placeholder="选项内容" />
+          <view class="opt-correct {{editForm.correctAnswer === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="onEditSetCorrect">{{editForm.correctAnswer === item.key ? '✓正确' : '设为正确'}}</view>
+          <view class="opt-del" data-index="{{index}}" bindtap="onRemoveEditOption">✕</view>
+        </view>
+        <view class="opt-add" bindtap="onAddEditOption">+ 添加选项</view>
+      </block>
+
+      <block wx:else>
+        <view class="field-label">正确答案（可留空，复习时自评）</view>
+        <input class="input-field" value="{{editForm.correctAnswer}}" bindinput="onEditCorrectInput" placeholder="正确答案" />
+      </block>
+
+      <view class="field-label">解析（可选）</view>
+      <textarea class="textarea-field" value="{{editForm.analysis}}" bindinput="onEditAnalysisInput" placeholder="简要解析" auto-height></textarea>
+    </view>
+
+    <view class="edit-actions">
+      <button class="btn-secondary edit-act-btn" bindtap="onCancelEdit">取消</button>
+      <button class="btn-primary edit-act-btn" bindtap="onSaveEdit">保存</button>
     </view>
   </block>
 </view>

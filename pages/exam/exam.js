@@ -4,6 +4,41 @@ var config = require('../../config/ai.js')
 
 var STATUS_LABEL = examUtil.STATUS_LABEL
 
+var TYPE_LABELS = ['选择题', '填空/简答', '其他']
+var TYPE_KEYS = ['choice', 'fill', 'other']
+
+// 小测错题(quizWrong)归到哪个科目
+function quizSubject(op) {
+  op = op || ''
+  if (op.indexOf('english_') === 0) return '英语'
+  if (op.indexOf('pinyin') >= 0 || op === 'char2pinyin' || op === 'pinyin2char' || op === 'pinyin2write' || op === 'hanzi2pinyin') return '语文'
+  return '数学'
+}
+
+// 把一条小测错题转成与拍照错题统一的展示结构
+function quizToItem(q) {
+  var subject = quizSubject(q.operator)
+  var stem = subject === '数学'
+    ? (q.a + ' ' + (q.operator || '') + ' ' + q.b + ' = ?')
+    : String(q.a == null ? '' : q.a)
+  return {
+    _id: q._id,
+    source: 'quiz',
+    subject: subject,
+    type: 'fill',
+    stem: stem,
+    options: [],
+    correctAnswer: String(q.answer == null ? '' : q.answer),
+    analysis: '',
+    status: 'new',
+    due: true,
+    consecutiveWrong: 0,
+    attempts: [],
+    count: q.count || 1,
+    operator: q.operator
+  }
+}
+
 Page({
   data: {
     loading: true,
@@ -13,7 +48,7 @@ Page({
     groups: [],
     stats: { total: 0, due: 0, hard: 0, mastered: 0 },
 
-    mode: 'list', // list | practice
+    mode: 'list', // list | practice | edit
     practiceList: [],
     practiceIndex: 0,
     current: null,
@@ -23,7 +58,12 @@ Page({
     lastCorrect: false,
     submitting: false,
     needSelfReport: false,
-    pendingAnswer: ''
+    pendingAnswer: '',
+
+    // 编辑
+    typeLabels: TYPE_LABELS,
+    editSubjects: config.SUBJECTS,
+    editForm: null
   },
 
   onShow: function () {
@@ -33,13 +73,14 @@ Page({
   loadList: function () {
     var that = this
     that.setData({ loading: true })
+    // 同一个错题本：拍照错题(examQuestions) + 语数英小测错题(quizWrong) 合并展示
     app.callCloudFunction('listExamQuestions', {}, function (res) {
-      if (!res || !res.success) {
-        that.setData({ loading: false })
-        wx.showToast({ title: (res && res.message) || '加载失败', icon: 'none' })
-        return
-      }
-      that.buildGroups(res.data || [], res.today || examUtil.todayStrUTC8(0))
+      var examList = (res && res.success) ? (res.data || []) : []
+      var today = (res && res.today) || examUtil.todayStrUTC8(0)
+      app.callCloudFunction('listQuizWrong', {}, function (res2) {
+        var quizList = (res2 && res2.success) ? (res2.data || []).map(quizToItem) : []
+        that.buildGroups(examList.concat(quizList), today)
+      })
     })
   },
 
@@ -48,6 +89,8 @@ Page({
     var stats = { total: list.length, due: 0, hard: 0, mastered: 0 }
     var map = {}
     list.forEach(function (q) {
+      q.source = q.source || 'exam'
+      q.sourceLabel = q.source === 'quiz' ? '小测' : '试卷'
       q.statusText = STATUS_LABEL[q.status] || ''
       var stem = q.stem || ''
       q.stemBrief = stem.length > 42 ? (stem.slice(0, 42) + '…') : stem
@@ -128,12 +171,28 @@ Page({
       if (!answer) { wx.showToast({ title: '请输入答案', icon: 'none' }); return }
     }
 
+    // 小测错题：本地判分，做对则从小测错题本移除(不走间隔复习)
+    if (q.source === 'quiz') {
+      this.submitQuiz(q, answer)
+      return
+    }
+
     // 无标准答案的题：让用户自评
     if (!q.correctAnswer) {
       this.setData({ needSelfReport: true, pendingAnswer: answer })
       return
     }
     this.submit({ questionId: q._id, answer: answer })
+  },
+
+  submitQuiz: function (q, answer) {
+    var correct = q.subject === '数学'
+      ? (parseInt(answer, 10) === parseInt(q.correctAnswer, 10))
+      : (answer === q.correctAnswer)
+    this.setData({ showResult: true, lastCorrect: correct })
+    if (correct && q._id) {
+      app.callCloudFunction('deleteQuizWrong', { id: q._id }, function () {})
+    }
   },
 
   onSelfReport: function (e) {
@@ -193,6 +252,7 @@ Page({
 
   onDeleteOne: function (e) {
     var id = e.currentTarget.dataset.id
+    var source = e.currentTarget.dataset.source
     var that = this
     wx.showModal({
       title: '删除错题',
@@ -200,7 +260,9 @@ Page({
       confirmColor: '#ba1a1a',
       success: function (m) {
         if (!m.confirm) return
-        app.callCloudFunction('deleteExamQuestion', { questionId: id }, function (res) {
+        var fn = source === 'quiz' ? 'deleteQuizWrong' : 'deleteExamQuestion'
+        var payload = source === 'quiz' ? { id: id } : { questionId: id }
+        app.callCloudFunction(fn, payload, function (res) {
           if (res && res.success) {
             wx.showToast({ title: '已删除', icon: 'success' })
             that.loadList()
@@ -208,6 +270,174 @@ Page({
             wx.showToast({ title: (res && res.message) || '删除失败', icon: 'none' })
           }
         })
+      }
+    })
+  },
+
+  // ---------------- 家长编辑（密码保护） ----------------
+  findItem: function (id) {
+    var found = null
+    this.data.groups.forEach(function (g) {
+      g.items.forEach(function (i) { if (i._id === id) found = i })
+    })
+    return found
+  },
+
+  // 校验家长密码后执行 cb（密码留空则不拦截）
+  requirePassword: function (cb) {
+    var pwd = config.PARENT_EDIT_PASSWORD
+    if (!pwd) { cb(); return }
+    wx.showModal({
+      title: '家长验证',
+      editable: true,
+      placeholderText: '请输入家长密码',
+      success: function (m) {
+        if (!m.confirm) return
+        if ((m.content || '').trim() === String(pwd)) cb()
+        else wx.showToast({ title: '密码不正确', icon: 'none' })
+      }
+    })
+  },
+
+  onEditOne: function (e) {
+    var id = e.currentTarget.dataset.id
+    var source = e.currentTarget.dataset.source
+    var that = this
+    this.requirePassword(function () {
+      if (source === 'quiz') that.editQuizAnswer(id)
+      else that.openEditor(id)
+    })
+  },
+
+  // 小测错题只改正确答案（题面是自动生成的）
+  editQuizAnswer: function (id) {
+    var that = this
+    var item = this.findItem(id)
+    wx.showModal({
+      title: '修改正确答案',
+      editable: true,
+      placeholderText: '正确答案',
+      content: item ? item.correctAnswer : '',
+      success: function (m) {
+        if (!m.confirm) return
+        var ans = (m.content || '').trim()
+        if (!ans) { wx.showToast({ title: '答案不能为空', icon: 'none' }); return }
+        app.callCloudFunction('updateQuizWrong', { id: id, answer: ans }, function (res) {
+          if (res && res.success) { wx.showToast({ title: '已保存', icon: 'success' }); that.loadList() }
+          else wx.showToast({ title: (res && res.message) || '保存失败', icon: 'none' })
+        })
+      }
+    })
+  },
+
+  // 拍照错题：进入完整编辑表单
+  openEditor: function (id) {
+    var item = this.findItem(id)
+    if (!item) return
+    var subjects = config.SUBJECTS
+    var subjectIndex = subjects.indexOf(item.subject)
+    if (subjectIndex < 0) subjectIndex = subjects.length - 1
+    var typeIndex = TYPE_KEYS.indexOf(item.type)
+    if (typeIndex < 0) typeIndex = 2
+    var type = TYPE_KEYS[typeIndex]
+    var options = (item.options && item.options.length)
+      ? item.options.map(function (o) { return { key: o.key, text: o.text } })
+      : []
+    if (type === 'choice' && options.length === 0) {
+      options = [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }]
+    }
+    this.setData({
+      mode: 'edit',
+      editForm: {
+        _id: id,
+        subject: subjects[subjectIndex],
+        subjectIndex: subjectIndex,
+        type: type,
+        typeIndex: typeIndex,
+        stem: item.stem || '',
+        options: options,
+        correctAnswer: item.correctAnswer || '',
+        analysis: item.analysis || ''
+      }
+    })
+  },
+
+  onEditSubjectChange: function (e) {
+    var idx = Number(e.detail.value)
+    this.setData({ 'editForm.subjectIndex': idx, 'editForm.subject': this.data.editSubjects[idx] })
+  },
+
+  onEditTypeChange: function (e) {
+    var idx = Number(e.detail.value)
+    var type = TYPE_KEYS[idx]
+    var patch = { 'editForm.typeIndex': idx, 'editForm.type': type }
+    if (type === 'choice' && (!this.data.editForm.options || this.data.editForm.options.length === 0)) {
+      patch['editForm.options'] = [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }]
+    }
+    this.setData(patch)
+  },
+
+  onEditStemInput: function (e) { this.setData({ 'editForm.stem': e.detail.value }) },
+  onEditAnalysisInput: function (e) { this.setData({ 'editForm.analysis': e.detail.value }) },
+  onEditCorrectInput: function (e) { this.setData({ 'editForm.correctAnswer': e.detail.value }) },
+
+  onEditOptionInput: function (e) {
+    var i = e.currentTarget.dataset.index
+    this.setData({ ['editForm.options[' + i + '].text']: e.detail.value })
+  },
+
+  onEditSetCorrect: function (e) {
+    this.setData({ 'editForm.correctAnswer': e.currentTarget.dataset.key })
+  },
+
+  onAddEditOption: function () {
+    var options = this.data.editForm.options.slice()
+    if (options.length >= 8) { wx.showToast({ title: '最多 8 个选项', icon: 'none' }); return }
+    options.push({ key: String.fromCharCode(65 + options.length), text: '' })
+    this.setData({ 'editForm.options': options })
+  },
+
+  onRemoveEditOption: function (e) {
+    var i = e.currentTarget.dataset.index
+    var options = this.data.editForm.options.slice()
+    var removedKey = options[i] ? options[i].key : ''
+    options.splice(i, 1)
+    options = options.map(function (o, idx) { return { key: String.fromCharCode(65 + idx), text: o.text } })
+    var patch = { 'editForm.options': options }
+    if (this.data.editForm.correctAnswer === removedKey) patch['editForm.correctAnswer'] = ''
+    this.setData(patch)
+  },
+
+  onCancelEdit: function () {
+    this.setData({ mode: 'list', editForm: null })
+  },
+
+  onSaveEdit: function () {
+    var f = this.data.editForm
+    if (!f.stem || !f.stem.trim()) { wx.showToast({ title: '请填写题干', icon: 'none' }); return }
+    var options = []
+    if (f.type === 'choice') {
+      options = (f.options || []).filter(function (o) { return o.text && o.text.trim() })
+        .map(function (o) { return { key: o.key, text: o.text.trim() } })
+      if (options.length < 2) { wx.showToast({ title: '选择题至少 2 个选项', icon: 'none' }); return }
+      if (!f.correctAnswer) { wx.showToast({ title: '请标记正确答案', icon: 'none' }); return }
+    }
+    var that = this
+    app.callCloudFunction('updateExamQuestion', {
+      questionId: f._id,
+      subject: f.subject,
+      type: f.type,
+      stem: f.stem.trim(),
+      options: options,
+      correctAnswer: (f.correctAnswer || '').trim(),
+      analysis: (f.analysis || '').trim()
+    }, function (res) {
+      if (res && res.success) {
+        wx.showToast({ title: '已保存', icon: 'success' })
+        that.setData({ mode: 'list', editForm: null })
+        that.loadList()
+      } else {
+        wx.showToast({ title: (res && res.message) || '保存失败', icon: 'none' })
       }
     })
   }
