@@ -169,7 +169,16 @@
   width: calc(33.33% - 6rpx);
   height: 200rpx;
   border-radius: 8rpx;
+  border: 3rpx solid #807661;
+  box-sizing: border-box;
 }
+
+/* 列表卡片依次淡入(只动 opacity，不影响按下反馈) */
+@keyframes feedIn { from { opacity: 0; } to { opacity: 1; } }
+.recipe-card, .wiki-feed-card { animation: feedIn 0.4s ease both; }
+.recipe-card:nth-child(2) { animation-delay: 0.05s; }
+.recipe-card:nth-child(3) { animation-delay: 0.10s; }
+.recipe-card:nth-child(4) { animation-delay: 0.15s; }
 
 .recipe-info {
   display: flex;
