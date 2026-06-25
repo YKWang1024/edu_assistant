@@ -132,6 +132,24 @@
   margin-bottom: 8rpx;
 }
 
+/* 入场动效：卡片依次淡入，页面更有生气。
+   只动 opacity，不动 transform —— 避免覆盖 .card:active 的按下位移反馈 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.today-card,
+.func-item,
+.habit-item {
+  animation: fadeIn 0.4s ease both;
+}
+.func-item:nth-child(2) { animation-delay: 0.05s; }
+.func-item:nth-child(3) { animation-delay: 0.10s; }
+.func-item:nth-child(4) { animation-delay: 0.15s; }
+.func-item:nth-child(5) { animation-delay: 0.20s; }
+.habit-item:nth-child(2) { animation-delay: 0.05s; }
+.habit-item:nth-child(3) { animation-delay: 0.10s; }
+
 .func-item {
   display: flex;
   align-items: center;
