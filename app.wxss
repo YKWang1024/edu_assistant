@@ -4,8 +4,8 @@
    说明：保留原有类名，仅整体换肤，避免逐页破坏。
    ============================================================ */
 page {
-  background: linear-gradient(180deg, #eaf3fb 0%, #f3f6fb 26%, #f6f8fb 100%);
-  background-attachment: fixed;
+  background: linear-gradient(180deg, #eaf3fb 0%, #f3f6fb 26%, #f6f8fb 60%, #f6f8fb 100%);
+  min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   color: #2b2b33;
   font-size: 28rpx;
