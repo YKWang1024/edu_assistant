@@ -155,6 +155,14 @@
   height: 160rpx;
   border-radius: 8rpx;
   border: 4rpx solid #807661;
+  box-sizing: border-box;
+}
+.recipe-thumb-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72rpx;
+  background: #f2ede2;
 }
 
 .recipe-body {
@@ -193,6 +201,11 @@
   font-size: 24rpx;
   color: #4e4634;
   font-family: 'PingFang SC', monospace;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .recipe-actions {

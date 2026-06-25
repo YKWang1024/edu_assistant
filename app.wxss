@@ -138,7 +138,9 @@ page {
   font-weight: 700;
   color: #1d1c15;
   margin-bottom: 24rpx;
-  padding-left: 8rpx;
+  padding-left: 18rpx;
+  border-left: 10rpx solid #e6b325;
+  line-height: 1.1;
   font-family: 'PingFang SC', monospace;
   letter-spacing: -0.02em;
 }
