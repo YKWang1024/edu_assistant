@@ -1,8 +1,18 @@
 <view class="container">
   <view class="page-header">
     <view class="header-title">🍳 菜友圈</view>
-    <view class="header-subtitle">发现更多美味菜谱</view>
-    <view class="wiki-entry" bindtap="onGoWiki">🛒 我的买菜心得 ›</view>
+    <view class="header-subtitle">公共菜友圈 · 发现大家分享的菜与买菜心得</view>
+  </view>
+
+  <view class="wiki-entry-card" bindtap="onGoWiki">
+    <view class="wiki-entry-left">
+      <text class="wiki-entry-icon">🛒</text>
+      <view>
+        <view class="wiki-entry-title">我的买菜心得</view>
+        <view class="wiki-entry-sub">语音记一笔，还能分享到菜友圈</view>
+      </view>
+    </view>
+    <text class="wiki-entry-arrow">›</text>
   </view>
 
   <!-- 买菜心得（菜友分享）-->

@@ -130,6 +130,27 @@ Page({
     wx.navigateTo({ url: '/pages/recipe/rate?id=' + id })
   },
 
+  // 一键分享到菜友圈(公共池)
+  onShareCircle: function (e) {
+    var that = this
+    var id = e.currentTarget.dataset.id
+    if (e.currentTarget.dataset.public) {
+      wx.showToast({ title: '这道菜已在菜友圈', icon: 'none' })
+      return
+    }
+    wx.showModal({
+      title: '分享到菜友圈',
+      content: '把这道菜分享到公共菜友圈，大家都能看到它的做法和评分。',
+      success: function (m) {
+        if (!m.confirm) return
+        app.callCloudFunction('shareRecipe', { recipeId: id, shareMessage: '' }, function (res) {
+          if (res && res.success) { wx.showToast({ title: '已分享到菜友圈', icon: 'success' }); that.loadRecipes() }
+          else wx.showToast({ title: (res && res.message) || '分享失败', icon: 'none' })
+        })
+      }
+    })
+  },
+
   getFilteredRecipes: function (recipes, filter) {
     recipes = recipes || []
     if (filter === 'all') return recipes

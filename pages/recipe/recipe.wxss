@@ -239,6 +239,13 @@
   box-shadow: 4rpx 4rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
 }
 
+.share-btn {
+  background: #c7efa4;
+  color: #2d441a;
+  border-color: #47672c;
+  box-shadow: 4rpx 4rpx 0rpx 0rpx rgba(71, 103, 44, 0.2);
+}
+
 .fab-btn {
   position: fixed;
   right: 40rpx;

@@ -9,17 +9,22 @@
 }
 
 /* 买菜心得入口 + 信息流 */
-.wiki-entry {
-  margin-top: 16rpx;
-  display: inline-block;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #fef9ed;
-  background: rgba(255,255,255,0.18);
-  border: 2rpx solid rgba(255,255,255,0.5);
-  border-radius: 30rpx;
-  padding: 8rpx 22rpx;
+.wiki-entry-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20rpx 24rpx 0;
+  padding: 22rpx 24rpx;
+  background: #fbf0cf;
+  border: 4rpx solid #807661;
+  border-radius: 16rpx;
+  box-shadow: 6rpx 6rpx 0rpx 0rpx rgba(136, 81, 32, 0.18);
 }
+.wiki-entry-left { display: flex; align-items: center; gap: 16rpx; }
+.wiki-entry-icon { font-size: 48rpx; }
+.wiki-entry-title { font-size: 30rpx; font-weight: 700; color: #1d1c15; font-family: 'PingFang SC', monospace; }
+.wiki-entry-sub { font-size: 22rpx; color: #807661; margin-top: 4rpx; }
+.wiki-entry-arrow { font-size: 40rpx; color: #807661; font-weight: 700; }
 .wiki-feed {
   padding: 20rpx 24rpx 0;
 }

@@ -72,9 +72,8 @@
           <text class="recipe-ingredients">{{item.ingredients}}</text>
         </view>
         <view class="recipe-actions">
-          <view class="action-btn rate-btn" catchtap="onRateRecipe" data-id="{{item.id}}">
-            打分
-          </view>
+          <view class="action-btn rate-btn" catchtap="onRateRecipe" data-id="{{item.id}}">打分</view>
+          <view class="action-btn share-btn" catchtap="onShareCircle" data-id="{{item.id}}" data-public="{{item.isPublic}}">{{item.isPublic ? '✓已在菜友圈' : '分享菜友圈'}}</view>
         </view>
       </view>
     </view>
