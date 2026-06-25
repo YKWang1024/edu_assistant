@@ -281,6 +281,70 @@
       "timeout": 60,
       "memorySize": 256,
       "installDependency": true
+    },
+    {
+      "name": "aiVoice",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 30,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "deleteWiki",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "editPassword",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "listWiki",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "manageFamily",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "saveWiki",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "updateExamQuestion",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
+    },
+    {
+      "name": "updateQuizWrong",
+      "handler": "index.main",
+      "runtime": "Nodejs16.13",
+      "timeout": 10,
+      "memorySize": 256,
+      "installDependency": true
     }
   ]
 }
