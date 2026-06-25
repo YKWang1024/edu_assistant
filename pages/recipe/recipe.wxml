@@ -21,15 +21,19 @@
     </view>
   </view>
 
-  <view class="section-title">推荐菜谱</view>
-  <scroll-view class="recommend-scroll" scroll-x="{{true}}" wx:if="{{recommendations.length > 0}}">
-    <view class="recommend-list">
-      <view class="recommend-item" wx:for="{{recommendations}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
-        <view class="recommend-name">{{item.name}}</view>
-        <view class="recommend-score">⭐ {{item.avgScore}}</view>
+  <block wx:if="{{recommendations.length > 0}}">
+    <view class="section-title">今日推荐</view>
+    <view class="meal-list">
+      <view class="meal-card" wx:for="{{recommendations}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
+        <view class="meal-emoji">{{item.mealEmoji}}</view>
+        <view class="meal-body">
+          <view class="meal-label">{{item.mealLabel}}</view>
+          <view class="meal-name">{{item.name}}</view>
+        </view>
+        <view class="meal-score">⭐ {{item.avgScore}}</view>
       </view>
     </view>
-  </scroll-view>
+  </block>
 
   <view class="section-title flex-between">
     <text>全部菜谱</text>

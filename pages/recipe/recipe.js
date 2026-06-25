@@ -100,7 +100,14 @@ Page({
     topRecipes = topRecipes.slice(0, 10)
 
     var analysis = util.analyzeNutrition(recipes)
-    var recommendations = util.getRecipeRecommendations(recipes)
+    var recommendations = util.getRecipeRecommendations(recipes).slice(0, 3)
+    // 模板「今日推荐」三餐：给前几条推荐贴上餐段标签(纯展示)
+    var MEALS = [{ l: '早餐', e: '🌅' }, { l: '午餐', e: '☀️' }, { l: '晚餐', e: '🌙' }]
+    recommendations.forEach(function (r, i) {
+      var m = MEALS[i] || { l: '推荐', e: '🍽️' }
+      r.mealLabel = m.l
+      r.mealEmoji = m.e
+    })
 
     this.setData({
       recipes: recipes,
