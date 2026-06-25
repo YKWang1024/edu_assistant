@@ -1,7 +1,7 @@
 <view class="container" wx:if="{{recipe}}">
   <view class="detail-card card">
     <view class="detail-images" wx:if="{{displayImages.length > 0}}">
-      <swiper class="image-swiper" indicator-dots="{{displayImages.length > 1}}" indicator-color="rgba(128,118,97,0.3)" indicator-active-color="#e6b325" current="{{currentImageIndex}}" bindchange="onSwiperChange">
+      <swiper class="image-swiper" indicator-dots="{{displayImages.length > 1}}" indicator-color="rgba(160,160,173,0.35)" indicator-active-color="#f5a623" current="{{currentImageIndex}}" bindchange="onSwiperChange">
         <swiper-item wx:for="{{displayImages}}" wx:key="*this">
           <image class="detail-img" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
         </swiper-item>
