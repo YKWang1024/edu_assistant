@@ -1,9 +1,10 @@
 {
   "name": "aiVoice",
   "version": "1.0.0",
-  "description": "语音转文字(OpenAI 兼容 /audio/transcriptions)",
+  "description": "语音转文字(腾讯云一句话识别 SentenceRecognition)",
   "main": "index.js",
   "dependencies": {
-    "wx-server-sdk": "~2.6.3"
+    "wx-server-sdk": "~2.6.3",
+    "tencentcloud-sdk-nodejs-asr": "^4.0.0"
   }
 }
