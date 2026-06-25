@@ -6,6 +6,8 @@ Page({
     correct: 0,
     total: 5,
     time: 0,
+    scorePct: 0,
+    scoreColor: '#4ca85f',
     scoreLevel: '',
     scoreEmoji: '',
     scoreMsg: '',
@@ -29,29 +31,36 @@ Page({
     var level = ''
     var emoji = ''
     var msg = ''
+    var color = '#4ca85f'
 
     if (correct === total) {
       level = 'perfect'
       emoji = '🎉'
       msg = '太棒了！全对！'
+      color = '#4ca85f'
     } else if (correct >= total * 0.8) {
       level = 'great'
       emoji = '👍'
       msg = '非常棒！继续加油！'
+      color = '#4ca85f'
     } else if (correct >= total * 0.6) {
       level = 'good'
       emoji = '💪'
       msg = '还不错，再练练！'
+      color = '#f5a623'
     } else {
       level = 'tryagain'
       emoji = '😊'
       msg = '别灰心，多练习就会进步！'
+      color = '#f5a623'
     }
 
     this.setData({
       correct: correct,
       total: total,
       time: time,
+      scorePct: total > 0 ? Math.round(correct / total * 100) : 0,
+      scoreColor: color,
       scoreLevel: level,
       scoreEmoji: emoji,
       scoreMsg: msg

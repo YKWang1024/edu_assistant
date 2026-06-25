@@ -1,7 +1,13 @@
 <view class="container result-page">
-  <view class="result-card {{scoreLevel}}">
+  <view class="result-card">
     <view class="result-emoji">{{scoreEmoji}}</view>
-    <view class="result-score">{{correct}} / {{total}}</view>
+    <!-- 成绩环：模板「85分 优秀」 -->
+    <view class="score-ring" style="background: conic-gradient({{scoreColor}} {{scorePct}}%, #eef1f6 {{scorePct}}%);">
+      <view class="score-ring-inner">
+        <view class="score-pct" style="color: {{scoreColor}};">{{scorePct}}<text class="score-unit">分</text></view>
+        <view class="score-frac">{{correct}}/{{total}} 题</view>
+      </view>
+    </view>
     <view class="result-msg">{{scoreMsg}}</view>
     <view class="result-time">用时 {{time}} 秒</view>
   </view>
