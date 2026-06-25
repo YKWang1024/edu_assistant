@@ -1,184 +1,81 @@
+/* ========== 习惯打卡 · 柔和绿色风 ========== */
+/* 分段控制器(到校/作业/睡觉) */
 .tab-bar {
   display: flex;
-  background: #fef9ed;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 6rpx;
-  margin-bottom: 24rpx;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
+  background: #eef1f6;
+  border: none;
+  border-radius: 999rpx;
+  padding: 8rpx;
+  margin-bottom: 26rpx;
 }
-
 .tab-item {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 18rpx 0;
-  border-radius: 8rpx;
-  transition: all 0.15s;
-  font-family: 'PingFang SC', monospace;
+  padding: 16rpx 0;
+  border-radius: 999rpx;
+  transition: all 0.15s ease;
+  color: #8a8a97;
 }
-
 .tab-item.active {
-  background: #e6b325;
-  color: #5e4700;
-  border: 4rpx solid #807661;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.4), 4rpx 4rpx 0rpx 0rpx rgba(136, 81, 32, 0.15);
-  padding: 14rpx 0;
+  background: linear-gradient(135deg, #6cc06f, #4ca85f);
+  color: #ffffff;
+  box-shadow: 0 8rpx 18rpx rgba(76, 168, 95, 0.28);
 }
+.tab-item:active { transform: scale(0.97); }
+.tab-icon { font-size: 36rpx; margin-bottom: 6rpx; }
+.tab-name { font-size: 24rpx; font-weight: 700; }
 
-.tab-icon {
-  font-size: 36rpx;
-  margin-bottom: 6rpx;
-}
+.rule-card { border-left: none; background: linear-gradient(160deg, #ffffff 0%, #f4faf3 100%); }
+.target-time { font-size: 28rpx; color: #6b6b7a; margin-bottom: 12rpx; }
+.highlight { color: #4ca85f; font-weight: 800; font-size: 32rpx; }
+.rule-text { font-size: 24rpx; color: #8a8a97; line-height: 1.8; white-space: pre-line; }
 
-.tab-name {
-  font-size: 24rpx;
-  font-weight: 700;
-}
-
-.rule-card {
-  border-left: 8rpx solid #775a00;
-}
-
-.target-time {
-  font-size: 28rpx;
-  color: #4e4634;
-  margin-bottom: 12rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.highlight {
-  color: #775a00;
-  font-weight: 700;
-  font-size: 32rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.rule-text {
-  font-size: 24rpx;
-  color: #4e4634;
-  line-height: 1.8;
-  white-space: pre-line;
-  font-family: 'PingFang SC', monospace;
-}
-
-.form-group {
-  margin-bottom: 24rpx;
-}
-
-.form-label {
-  display: block;
-  font-size: 28rpx;
-  color: #4e4634;
-  margin-bottom: 12rpx;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
+.form-group { margin-bottom: 24rpx; }
+.form-label { display: block; font-size: 28rpx; color: #6b6b7a; margin-bottom: 12rpx; font-weight: 700; }
 .time-picker {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
+  border: 2rpx solid #eceef4;
+  border-radius: 16rpx;
   padding: 24rpx;
   font-size: 32rpx;
-  color: #1d1c15;
-  background: #fef9ed;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
-  font-family: 'PingFang SC', monospace;
+  color: #2b2b33;
+  background: #f7f8fb;
 }
+.picker-arrow { font-size: 20rpx; color: #a0a0ad; }
+.checkin-btn { width: 100%; margin-top: 10rpx; }
 
-.picker-arrow {
-  font-size: 20rpx;
-  color: #807661;
-}
+.tab-item:active { transform: scale(0.97); }
+@keyframes rewardIn { from { opacity: 0; transform: translateY(12rpx); } to { opacity: 1; transform: translateY(0); } }
+.rule-card, .checkin-card, .done-card, .result-card { animation: rewardIn 0.35s ease both; }
 
-.checkin-btn {
-  width: 100%;
-  margin-top: 10rpx;
-}
+.done-info { padding: 10rpx 0; }
+.done-row { padding: 14rpx 0; border-bottom: 2rpx solid #f4f6fa; }
+.done-row:last-child { border-bottom: none; }
+.done-label { color: #8a8a97; font-size: 26rpx; }
+.done-value { font-weight: 700; font-size: 28rpx; color: #2b2b33; }
+.done-value.positive { color: #4ca85f; }
+.done-value.negative { color: #f5a623; }
 
-/* 切页签按下反馈 + 卡片淡入，和全站一致 */
-.tab-item:active { transform: translate(2rpx, 2rpx); }
-@keyframes rewardIn { from { opacity: 0; } to { opacity: 1; } }
-.rule-card, .checkin-card, .done-card, .result-card {
-  animation: rewardIn 0.35s ease both;
-}
-
-.done-info {
-  padding: 10rpx 0;
-}
-
-.done-row {
-  padding: 12rpx 0;
-}
-
-.done-label {
-  color: #4e4634;
-  font-size: 26rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.done-value {
-  font-weight: 700;
-  font-size: 28rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.done-value.positive {
-  color: #47672c;
-}
-
-.done-value.negative {
-  color: #885120;
-}
-
-.result-card {
-  text-align: center;
-  padding: 30rpx;
-}
-
-.result-msg {
-  font-size: 32rpx;
-  font-weight: 700;
-  margin-bottom: 16rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.result-msg.early {
-  color: #47672c;
-}
-
-.result-msg.late {
-  color: #885120;
-}
-
-.result-msg.ontime {
-  color: #775a00;
-}
-
-.result-total {
-  font-size: 26rpx;
-  color: #4e4634;
-  font-family: 'PingFang SC', monospace;
-}
+.result-card { text-align: center; padding: 32rpx; }
+.result-msg { font-size: 32rpx; font-weight: 800; margin-bottom: 16rpx; }
+.result-msg.early { color: #4ca85f; }
+.result-msg.late { color: #f5a623; }
+.result-msg.ontime { color: #4b86ef; }
+.result-total { font-size: 26rpx; color: #8a8a97; }
 
 .record-link {
   text-align: center;
-  padding: 30rpx;
-  color: #775a00;
+  padding: 26rpx;
+  color: #4ca85f;
   font-size: 28rpx;
   font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  background: #f2ede2;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  border: none;
+  border-radius: 20rpx;
+  background: #ffffff;
+  box-shadow: 0 8rpx 22rpx rgba(80, 95, 130, 0.07);
 }
-
-.record-link:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: none;
-}
+.record-link:active { transform: scale(0.98); }
