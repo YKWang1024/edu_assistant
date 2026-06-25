@@ -1,0 +1,48 @@
+.field-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #5e4700;
+  margin: 16rpx 0 12rpx;
+  font-family: 'PingFang SC', monospace;
+}
+.voice-btn {
+  width: 100%;
+  margin-top: 18rpx;
+  background: #47672c;
+  color: #fef9ed;
+  border: 4rpx solid #2d441a;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  padding: 20rpx 0;
+}
+.voice-btn.on {
+  background: #ba1a1a;
+  border-color: #93000a;
+}
+.voice-tip {
+  font-size: 24rpx;
+  color: #807661;
+  margin-top: 14rpx;
+}
+.organize-btn {
+  width: 100%;
+  margin-top: 18rpx;
+}
+.share-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #ece5d6;
+}
+.share-label {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1d1c15;
+}
+.save-btn {
+  width: 100%;
+  margin-top: 28rpx;
+}

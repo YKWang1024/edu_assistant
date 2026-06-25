@@ -125,6 +125,33 @@ function getTodayStr() {
   return formatDate(new Date())
 }
 
+// 小测奖励的游戏时间(分钟)：答对率 >=80% 给 5 分钟，>=60% 给 2 分钟，否则 0。
+function quizRewardMinutes(correct, total) {
+  if (!total || total <= 0) return 0
+  var rate = correct / total
+  if (rate >= 0.8) return 5
+  if (rate >= 0.6) return 2
+  return 0
+}
+
+// 连续打卡天数：从今天(或昨天)往前数，连续有打卡记录的天数。
+// records: [{date:'YYYY-MM-DD', ...}]（打卡/学习记录都行，有 date 即可）
+function calculateStreak(records) {
+  var days = {}
+  ;(records || []).forEach(function (r) { if (r && r.date) days[r.date] = true })
+  var d = new Date()
+  if (!days[formatDate(d)]) {
+    d.setDate(d.getDate() - 1)
+    if (!days[formatDate(d)]) return 0 // 今天和昨天都没打卡，连续中断
+  }
+  var streak = 0
+  while (days[formatDate(d)]) {
+    streak++
+    d.setDate(d.getDate() - 1)
+  }
+  return streak
+}
+
 function saveRecord(key, record) {
   try {
     var records = wx.getStorageSync(key) || []
@@ -187,7 +214,8 @@ function saveWrongQuestion(question) {
       operator: question.operator,
       answer: question.answer,
       userAnswer: question.userAnswer,
-      subject: deriveSubject(question.operator)
+      subject: deriveSubject(question.operator),
+      childName: (app.getCurrentChild ? app.getCurrentChild() : (app.globalData.currentChild || '宝贝'))
     }, function () {})
     return true
   }
@@ -294,6 +322,8 @@ module.exports = {
   formatDate: formatDate,
   formatTime: formatTime,
   getTodayStr: getTodayStr,
+  quizRewardMinutes: quizRewardMinutes,
+  calculateStreak: calculateStreak,
   saveRecord: saveRecord,
   getRecords: getRecords,
   saveWrongQuestion: saveWrongQuestion,

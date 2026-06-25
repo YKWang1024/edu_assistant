@@ -37,11 +37,44 @@
   color: #5e4700;
   background: #e6b325;
 }
+.member-role.observer {
+  color: #00468b;
+  background: #d6ecff;
+  border-color: #5b7fa6;
+}
+.member-edit {
+  font-size: 22rpx;
+  color: #775a00;
+  font-weight: 700;
+  margin-left: 14rpx;
+}
+.member-edit.danger { color: #ba1a1a; }
+.child-grade {
+  font-size: 22rpx;
+  color: #47672c;
+  background: #c7efa4;
+  border: 2rpx solid #47672c;
+  border-radius: 4rpx;
+  padding: 4rpx 14rpx;
+  font-weight: 700;
+  margin-left: auto;
+  margin-right: 6rpx;
+}
+.child-actions {
+  display: flex;
+  align-items: center;
+}
 
 .rename-link {
   font-size: 24rpx;
   color: #775a00;
   font-weight: 700;
+}
+.card-hint {
+  font-size: 24rpx;
+  color: #807661;
+  line-height: 1.5;
+  padding: 8rpx 4rpx 0;
 }
 
 .code-box {

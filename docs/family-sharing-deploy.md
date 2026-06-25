@@ -23,6 +23,7 @@
 | ☐ `gameTime` | 游戏时间余额 | 每 `familyId`+`childName` 一条 |
 | ☐ `quizWrong` | 自动小测错题（数学/拼音/英语） | |
 | ☐ `quizRecords` | 自动小测整局记录 | |
+| ☐ `wikis` | 买菜心得（可分享到菜友圈） | Phase 8 新增 |
 
 **权限说明**：所有读写都走云函数（以管理员身份运行，绕过集合 ACL），客户端不再直接读库，所以统一「仅创建者可读写」最安全。`examQuestions` 跨成员查看走云函数 `getExamQuestion`，不需放开 ACL。
 
@@ -41,6 +42,24 @@
 **Phase 4（时间管理上云）**：`getGameTime`、`addGameTime`、`spendGameTime`（`app.js`/`reward`/`account`/`index` 随小程序发布）
 
 **Phase 5（旧小测错题/记录上云）**：`saveQuizWrong`、`listQuizWrong`、`deleteQuizWrong`、`clearQuizWrong`、`saveQuizRecord`（`utils/util.js`/`wrong`/`math`/`pinyin`/`english` 随小程序发布）
+
+**Phase 6（错题本统一+可编辑）**：新增 `updateExamQuestion`、`updateQuizWrong`（家长编辑错题/答案）、`editPassword`（家长密码：每个用户自己设置，存 `users.editPasswordHash`，服务端 sha256 校验）。
+「我的→错题本」改为进入统一错题本 `pages/exam/exam`，同时展示拍照错题(examQuestions)与语数英小测错题(quizWrong)；家长点「✎ 编辑」时：**未设密码→首次引导设置；已设→输入校验**（本次进入校验一次即解锁）。家庭管理页也可「设置/修改家长密码」。无需新建集合。
+
+**Phase 7（家庭重构：小孩成员/角色）**：新增 `manageFamily`（一函数多动作：addChild/updateChild/removeChild软删/setMemberRole）。
+`getFamilyInfo`(改，返回 children)、`login`(改，建家庭时预置默认小孩'宝贝') 需**重新部署**。
+小孩成员(无小程序账号，妹妹/姐姐等)与角色 admin/member/observer 都存在 `families` 文档里（`children` 数组 + `members[].role`），**无需新建集合**。
+「我的→设置(本地成员名)」入口已删除，家庭管理统一走 `pages/family/manage`。
+> 拍照错题/小测错题/菜谱评分会按「当前小孩」归属(`childName`)；统一错题本顶部可按小孩筛选(>1 个小孩时显示)。
+
+**Phase 9（错题附图程序重绘）**：识别时把附图结构化到 `figure` 字段(计数器/数轴/几何/其它=用原图)；
+错题本复习与拍照确认页用组件 `components/figure-view` 把图【重新画清晰】(计数器珠子/数轴/长方形等)，无法结构化的回退原照片。
+`saveExamQuestion`、`updateExamQuestion` 已加存 `figure` 字段，需**重新部署**；无需新建集合。
+
+**Phase 8（买菜心得 Wiki + 语音）**：新增集合 `wikis`(权限「仅创建者可读写」)；新增云函数 `saveWiki`、`listWiki`、`deleteWiki`。
+菜友圈页新增「我的买菜心得」入口与「菜友买菜心得」信息流(`listWiki` scope=public)。
+**语音输入用「微信同声传译」插件**：需在 微信公众平台(mp.weixin.qq.com) → 小程序 → 「设置→第三方设置→插件管理」**添加并启用插件「微信同声传译」(appid `wx069ba97219f66d99`)**，否则语音按钮不可用(可改用打字)。
+`app.json` 已声明该插件(version 0.3.5)；AI 整理走小程序端 `wx.cloud.extend.AI` 文本模型(同错题课程)。
 
 **视觉识别**：`aiVision`（超时 60s；需在其环境变量配置 `AI_VISION_API_KEY` 等，见 §3）
 

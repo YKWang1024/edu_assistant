@@ -23,7 +23,7 @@ exports.main = async (event, context) => {
 
   try {
     const ctx = await resolveFamily(openid)
-    const { subject, type, stem, options, correctAnswer, analysis, imageFileID } = event
+    const { subject, type, stem, options, correctAnswer, analysis, imageFileID, figure } = event
 
     if (!stem || !String(stem).trim()) {
       return { success: false, message: '题干不能为空' }
@@ -43,6 +43,7 @@ exports.main = async (event, context) => {
       correctAnswer: correctAnswer == null ? '' : String(correctAnswer),
       analysis: analysis ? String(analysis) : '',
       imageFileID: imageFileID || '',
+      figure: (figure && typeof figure === 'object') ? figure : null,
       status: 'new',
       consecutiveWrong: 0,
       firstCorrectDate: null,

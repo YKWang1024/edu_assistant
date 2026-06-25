@@ -5,15 +5,12 @@ Page({
   },
 
   onViewWrong: function () {
-    wx.navigateTo({ url: '/pages/wrong/wrong' })
+    // 统一错题本：拍照错题 + 语数英小测错题都在这里
+    wx.navigateTo({ url: '/pages/exam/exam' })
   },
 
   onGoFamily: function () {
     wx.navigateTo({ url: '/pages/family/manage' })
-  },
-
-  onGoSettings: function () {
-    wx.navigateTo({ url: '/pages/settings/settings' })
   },
 
   onClearData: function () {

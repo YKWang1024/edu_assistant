@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "试卷错题",
-  "usingComponents": {}
+  "usingComponents": {
+    "figure-view": "/components/figure-view/figure-view"
+  }
 }

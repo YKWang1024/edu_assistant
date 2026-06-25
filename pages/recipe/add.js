@@ -142,7 +142,9 @@ Page({
       wx.showToast({ title: '已识别，可修改', icon: 'success' })
     }).catch(function (err) {
       that.setData({ recognizing: false })
-      wx.showModal({ title: '识别失败', content: (err && err.message) || '请手动填写', showCancel: false })
+      var m = (err && err.message) || ''
+      if (/key|密钥|未配置|api/i.test(m)) m = 'AI 识别暂不可用（后端未配置密钥），请手动填写菜谱'
+      wx.showModal({ title: '识别失败', content: m || '请手动填写', showCancel: false })
     })
   },
 

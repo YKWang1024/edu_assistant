@@ -1,0 +1,120 @@
+.fig {
+  background: #fffdf6;
+  border: 3rpx solid #807661;
+  border-radius: 16rpx;
+  padding: 28rpx 20rpx 20rpx;
+  margin: 12rpx 0 20rpx;
+}
+
+/* ---------- 计数器 ---------- */
+.counter { display: flex; flex-direction: column; align-items: center; }
+.counter-rods {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 72rpx;
+  min-height: 220rpx;
+}
+.rod-col {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+.rod {
+  width: 10rpx;
+  min-height: 200rpx;
+  background: #807661;
+  border-radius: 6rpx;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  padding-bottom: 4rpx;
+}
+.bead {
+  width: 46rpx;
+  height: 46rpx;
+  margin-bottom: -6rpx;
+  border-radius: 50%;
+  background: #e6b325;
+  border: 3rpx solid #5e4700;
+  box-shadow: inset -4rpx -4rpx 0 0 rgba(94,71,0,0.18);
+  transform: scale(0);
+  animation: beadPop 0.3s ease forwards;
+}
+@keyframes beadPop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.counter-base {
+  width: 320rpx;
+  height: 16rpx;
+  background: #775a00;
+  border-radius: 8rpx;
+  margin-top: -4rpx;
+}
+.counter-labels {
+  display: flex;
+  justify-content: center;
+  gap: 72rpx;
+  margin-top: 12rpx;
+}
+.rod-label {
+  min-width: 80rpx;
+  text-align: center;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #4e4634;
+  background: #f2ede2;
+  border: 2rpx solid #807661;
+  border-radius: 6rpx;
+  padding: 4rpx 0;
+}
+
+/* ---------- 数轴 ---------- */
+.numline { padding: 40rpx 30rpx 36rpx; }
+.nl-axis {
+  position: relative;
+  height: 4rpx;
+  background: #807661;
+  margin: 30rpx 10rpx;
+}
+.nl-arrow {
+  position: absolute;
+  right: -10rpx;
+  top: -7rpx;
+  width: 0; height: 0;
+  border-top: 9rpx solid transparent;
+  border-bottom: 9rpx solid transparent;
+  border-left: 16rpx solid #807661;
+}
+.nl-tick { position: absolute; top: 0; transform: translateX(-50%); }
+.nl-tickmark { width: 3rpx; height: 18rpx; background: #807661; margin: -7rpx auto 0; }
+.nl-ticklabel { font-size: 20rpx; color: #4e4634; margin-top: 8rpx; text-align: center; }
+.nl-mark { position: absolute; top: 0; transform: translateX(-50%); }
+.nl-dot {
+  width: 18rpx; height: 18rpx; border-radius: 50%;
+  background: #ba1a1a; margin: -9rpx auto 0;
+}
+.nl-marklabel {
+  position: absolute; bottom: 22rpx; left: 50%; transform: translateX(-50%);
+  font-size: 26rpx; font-weight: 700; color: #ba1a1a; white-space: nowrap;
+}
+
+/* ---------- 几何图形 ---------- */
+.shape-wrap { display: flex; flex-direction: column; align-items: center; padding: 10rpx; }
+.shape-row { display: flex; align-items: center; gap: 14rpx; }
+.shape-rect, .shape-circle {
+  background: rgba(199,239,164,0.5);
+  border: 4rpx solid #47672c;
+}
+.shape-rect { border-radius: 4rpx; }
+.shape-circle { border-radius: 50%; }
+.shape-tri {
+  width: 0; height: 0;
+  border-left: 90rpx solid transparent;
+  border-right: 90rpx solid transparent;
+  border-bottom: 156rpx solid rgba(199,239,164,0.6);
+}
+.shape-h { font-size: 24rpx; font-weight: 700; color: #1d1c15; }
+.shape-w { font-size: 24rpx; font-weight: 700; color: #1d1c15; margin-top: 10rpx; }

@@ -1,0 +1,9 @@
+{
+  "name": "manageFamily",
+  "version": "1.0.0",
+  "description": "家庭管理(增减小孩/软删除/设置成员角色)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

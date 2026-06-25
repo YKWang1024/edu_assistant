@@ -16,14 +16,7 @@
     <view class="action-item card" bindtap="onGoFamily">
       <view class="flex-row">
         <text class="action-icon">👨‍👩‍👧</text>
-        <text class="action-name">家庭管理（邀请家人共享）</text>
-      </view>
-      <text class="action-arrow">›</text>
-    </view>
-    <view class="action-item card" bindtap="onGoSettings">
-      <view class="flex-row">
-        <text class="action-icon">⚙️</text>
-        <text class="action-name">设置（本地成员名）</text>
+        <text class="action-name">家庭管理（成员/小孩/邀请家人）</text>
       </view>
       <text class="action-arrow">›</text>
     </view>

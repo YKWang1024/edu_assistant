@@ -60,6 +60,7 @@ Page({
     var questions = this.data.questions
     var selected = questions[idx].options[optionIdx]
     var isCorrect = (selected === questions[idx].answer)
+    wx.vibrateShort({ type: isCorrect ? 'light' : 'heavy' })
 
     questions[idx].userAnswer = selected
     questions[idx].isCorrect = isCorrect

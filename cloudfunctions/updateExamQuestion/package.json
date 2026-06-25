@@ -1,0 +1,9 @@
+{
+  "name": "updateExamQuestion",
+  "version": "1.0.0",
+  "description": "编辑拍照错题内容(题干/选项/答案/解析)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

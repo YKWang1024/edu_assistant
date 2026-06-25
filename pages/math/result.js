@@ -1,3 +1,6 @@
+var util = require('../../utils/util.js')
+var app = getApp()
+
 Page({
   data: {
     correct: 0,
@@ -5,13 +8,23 @@ Page({
     time: 0,
     scoreLevel: '',
     scoreEmoji: '',
-    scoreMsg: ''
+    scoreMsg: '',
+    reward: 0,
+    gameMinutes: 0
   },
 
   onLoad: function (options) {
+    var that = this
     var correct = parseInt(options.correct) || 0
     var total = parseInt(options.total) || 5
     var time = parseInt(options.time) || 0
+
+    // 学习即奖励：答得越好，赚到越多游戏时间（每日打开的核心动机）
+    var reward = util.quizRewardMinutes(correct, total)
+    this.setData({ reward: reward, gameMinutes: app.globalData.gameMinutes || 0 })
+    if (reward > 0) {
+      app.addGameMinutes(reward, function (balance) { that.setData({ gameMinutes: balance }) })
+    }
 
     var level = ''
     var emoji = ''

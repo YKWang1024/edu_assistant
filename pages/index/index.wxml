@@ -2,13 +2,28 @@
   <view class="header-card">
     <view class="header-top flex-between">
       <view class="header-brand">宝贝成长</view>
-      <view class="streak-badge">
-        <text class="streak-icon">🔥</text>
-        <text class="streak-num">{{gameMinutes}}</text>
-        <text class="streak-unit">分钟</text>
+      <view class="header-chips">
+        <view class="chip streak-chip"><text class="chip-icon">🔥</text>连续{{streak}}天</view>
+        <view class="chip game-chip"><text class="chip-icon">🎮</text>{{gameMinutes}}分钟</view>
+        <view class="chip family-chip" bindtap="onTapFamily">👨‍👩‍👧</view>
       </view>
     </view>
     <view class="header-sub">每天进步一点点，一块一块搭未来</view>
+  </view>
+
+  <!-- 今日任务：一眼看到今天做什么 -->
+  <view class="today-card card">
+    <view class="today-top flex-between">
+      <view class="today-title">🎯 今日任务</view>
+      <view class="today-count">{{doneCount}}/3 完成</view>
+    </view>
+    <view class="today-bar"><view class="today-bar-fill" style="width:{{progressPct}}%"></view></view>
+    <view class="today-tasks">
+      <view class="today-task {{todayChecked.school ? 'ok' : ''}}">{{todayChecked.school ? '✓' : '○'}} 到校</view>
+      <view class="today-task {{todayChecked.homework ? 'ok' : ''}}">{{todayChecked.homework ? '✓' : '○'}} 作业</view>
+      <view class="today-task {{todayChecked.sleep ? 'ok' : ''}}">{{todayChecked.sleep ? '✓' : '○'}} 睡觉</view>
+    </view>
+    <button class="btn-primary daily-quiz-btn" bindtap="onTapDailyQuiz">🚀 今日一键小测（约 3 分钟）</button>
   </view>
 
   <view class="section-title">学习练习</view>
@@ -49,7 +64,7 @@
       </view>
       <view class="func-info">
         <view class="func-name">错题本</view>
-        <view class="func-desc">自动收集错题</view>
+        <view class="func-desc">拍照+小测错题 · 统一复习</view>
       </view>
       <view class="func-arrow">›</view>
     </view>
@@ -58,8 +73,8 @@
         <text class="func-icon">📷</text>
       </view>
       <view class="func-info">
-        <view class="func-name">试卷错题</view>
-        <view class="func-desc">拍照识题 · AI 讲解 · 智能复习</view>
+        <view class="func-name">拍照录题</view>
+        <view class="func-desc">拍试卷照片 · AI 识别错题</view>
       </view>
       <view class="func-arrow">›</view>
     </view>

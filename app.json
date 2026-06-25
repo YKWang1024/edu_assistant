@@ -23,8 +23,16 @@
     "pages/webview/webview",
     "pages/auth/auth",
     "pages/circle/circle",
-    "pages/circle/detail"
+    "pages/circle/detail",
+    "pages/wiki/wiki",
+    "pages/wiki/add"
   ],
+  "plugins": {
+    "WechatSI": {
+      "version": "0.3.5",
+      "provider": "wx069ba97219f66d99"
+    }
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#775a00",

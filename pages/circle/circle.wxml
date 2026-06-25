@@ -2,6 +2,20 @@
   <view class="page-header">
     <view class="header-title">🍳 菜友圈</view>
     <view class="header-subtitle">发现更多美味菜谱</view>
+    <view class="wiki-entry" bindtap="onGoWiki">🛒 我的买菜心得 ›</view>
+  </view>
+
+  <!-- 买菜心得（菜友分享）-->
+  <view wx:if="{{wikis.length > 0}}" class="wiki-feed">
+    <view class="wiki-feed-title">🛒 菜友买菜心得</view>
+    <view class="wiki-feed-card card" wx:for="{{wikis}}" wx:key="_id">
+      <view class="wiki-feed-top">
+        <text class="wiki-feed-name">{{item.authorName}}</text>
+        <text class="wiki-feed-date">{{item.sharedDate}}</text>
+      </view>
+      <view wx:if="{{item.title}}" class="wiki-feed-h">{{item.title}}</view>
+      <view class="wiki-feed-body">{{item.content}}</view>
+    </view>
   </view>
 
   <view class="loading-container" wx:if="{{loading}}">
@@ -11,22 +25,23 @@
 
   <view class="recipe-list" wx:else>
     <view class="empty-tip" wx:if="{{recipes.length === 0}}">
-      暂无分享的菜谱，快来分享你的拿手菜吧！
+      <view>还没有菜友分享的菜谱～</view>
+      <button class="btn-primary empty-cta" bindtap="onGoRecipe">去菜谱页分享我的拿手菜</button>
     </view>
 
     <view class="recipe-card card" wx:for="{{recipes}}" wx:key="_id" bindtap="onViewRecipe" data-recipe="{{item}}">
       <view class="card-header">
-        <image wx:if="{{item.userAvatar}}" src="{{item.userAvatar}}" class="user-avatar" />
+        <image wx:if="{{item.publisher.avatarUrl}}" src="{{item.publisher.avatarUrl}}" class="user-avatar" />
         <view wx:else class="user-avatar-placeholder">👤</view>
         <view class="user-info">
-          <text class="user-name">{{item.userName || '匿名用户'}}</text>
-          <text class="share-time">{{item.createdAt ? item.createdAt.split('T')[0] : ''}}</text>
+          <text class="user-name">{{item.publisher.nickname || '匿名用户'}}</text>
+          <text class="share-time">{{item.sharedDate}}</text>
         </view>
       </view>
 
       <view class="card-body">
         <view class="recipe-images" wx:if="{{item.images && item.images.length > 0}}">
-          <image wx:for="{{item.images.slice(0, 3)}}" wx:key="index" src="{{item}}" class="recipe-image" mode="aspectFill" />
+          <image wx:for="{{item.images}}" wx:for-item="img" wx:key="index" src="{{img}}" class="recipe-image" mode="aspectFill" />
         </view>
         <view class="recipe-images" wx:elif="{{item.imageUrl}}">
           <image src="{{item.imageUrl}}" class="recipe-image" mode="aspectFill" />
@@ -37,9 +52,7 @@
           <text class="recipe-category">{{item.category}}</text>
         </view>
 
-        <view class="recipe-desc" wx:if="{{item.ingredients}}">
-          {{item.ingredients.slice(0, 100)}}{{item.ingredients.length > 100 ? '...' : ''}}
-        </view>
+        <view class="recipe-desc" wx:if="{{item.ingredients}}">{{item.ingredients}}</view>
 
         <view class="recipe-stats">
           <view class="stat-item">
@@ -55,7 +68,4 @@
     </view>
   </view>
 
-  <view class="share-fab" bindtap="onShareRecipe">
-    <text class="fab-icon">+</text>
-  </view>
 </view>

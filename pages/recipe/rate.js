@@ -35,8 +35,11 @@ Page({
     }
     if (!app.globalData.cloudReady) { fallback(); return }
     app.callCloudFunction('getFamilyInfo', {}, function (res) {
-      if (res && res.success && res.data.members && res.data.members.length) {
-        var names = res.data.members.map(function (m) { return m.displayName })
+      if (res && res.success && res.data) {
+        // 评分人 = 家长成员 + 无账号小孩（小孩也能给菜谱打分）
+        var names = (res.data.members || []).map(function (m) { return m.displayName })
+        ;(res.data.children || []).forEach(function (c) { if (names.indexOf(c.name) < 0) names.push(c.name) })
+        if (!names.length) { fallback(); return }
         that.setData({ familyMembers: names, selectedMember: names[0], selectedMemberIndex: 0 })
         that.updateMemberRated()
       } else {

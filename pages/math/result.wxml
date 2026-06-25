@@ -6,6 +6,15 @@
     <view class="result-time">用时 {{time}} 秒</view>
   </view>
 
+  <view wx:if="{{reward > 0}}" class="reward-card">
+    <view class="reward-main">🎮 本次奖励 +{{reward}} 分钟游戏时间！</view>
+    <view class="reward-sub">游戏时间余额：{{gameMinutes}} 分钟</view>
+  </view>
+  <view wx:else class="reward-card zero">
+    <view class="reward-main">这次没拿到游戏时间 😊</view>
+    <view class="reward-sub">答对 6 成以上就能赚到，再来一轮试试！</view>
+  </view>
+
   <view class="btn-group">
     <button class="btn-primary" bindtap="onTapRestart">再来一轮</button>
     <button class="btn-secondary" bindtap="onTapBack">返回首页</button>

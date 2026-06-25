@@ -117,6 +117,30 @@ Page({
         }
       })
     })
+
+    this.maybeCelebrateAllDone()
+  },
+
+  // 今日三项打卡全完成时庆祝并把孩子引导去学习(形成日内循环)
+  maybeCelebrateAllDone: function () {
+    var today = util.getTodayStr()
+    var recs = util.getRecords('rewardRecords')
+    var types = {}
+    recs.forEach(function (r) { if (r.date === today) types[r.type] = true })
+    if (Object.keys(types).length < 3) return
+    var streak = util.calculateStreak(recs)
+    setTimeout(function () {
+      wx.showModal({
+        title: '🎉 今日三项全完成！',
+        content: '已连续打卡 ' + streak + ' 天，再来一轮小测赚游戏时间？',
+        confirmText: '去小测',
+        cancelText: '返回首页',
+        success: function (m) {
+          if (m.confirm) wx.redirectTo({ url: '/pages/math/math' })
+          else wx.switchTab({ url: '/pages/index/index' })
+        }
+      })
+    }, 1200)
   },
 
   onViewRecords: function () {

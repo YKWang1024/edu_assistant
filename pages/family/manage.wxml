@@ -12,9 +12,28 @@
         <view><text class="icon">👨‍👩‍👧</text>家庭成员（{{members.length}}）</view>
         <text class="rename-link" bindtap="onRename">改我的称呼</text>
       </view>
-      <view class="member-item" wx:for="{{members}}" wx:key="openid">
+      <view class="member-item" wx:for="{{members}}" wx:key="openid" data-member="{{item}}" bindtap="{{isAdmin && !item.isMe ? 'onChangeRole' : ''}}">
         <text class="member-name">{{item.displayName}}{{item.isMe ? '（我）' : ''}}</text>
-        <text class="member-role {{item.role === 'admin' ? 'admin' : ''}}">{{item.role === 'admin' ? '管理员' : '成员'}}</text>
+        <text class="member-role {{item.role === 'admin' ? 'admin' : (item.role === 'observer' ? 'observer' : '')}}">{{item.roleLabel}}</text>
+        <text wx:if="{{isAdmin && !item.isMe}}" class="member-edit">改角色 ›</text>
+      </view>
+      <view wx:if="{{isAdmin}}" class="card-hint">点成员可设为 管理员 / 成员 / 旁观者(只读)。</view>
+    </view>
+
+    <!-- 无账号小孩成员（妹妹/姐姐等）-->
+    <view class="card">
+      <view class="card-title flex-between">
+        <view><text class="icon">🧒</text>小孩（{{children.length}}）</view>
+        <text wx:if="{{isAdmin}}" class="rename-link" bindtap="onAddChild">+ 添加小孩</text>
+      </view>
+      <view wx:if="{{children.length === 0}}" class="card-hint">还没有小孩成员。{{isAdmin ? '点右上角添加（无需小程序账号），可记录他/她的错题、年级、菜谱评分。' : ''}}</view>
+      <view class="member-item" wx:for="{{children}}" wx:key="childId">
+        <text class="member-name">{{item.name}}</text>
+        <text class="child-grade" wx:if="{{item.grade}}">{{item.grade}}</text>
+        <view wx:if="{{isAdmin}}" class="child-actions">
+          <text class="member-edit" data-child="{{item}}" catchtap="onEditChild">编辑</text>
+          <text class="member-edit danger" data-child="{{item}}" catchtap="onRemoveChild">移除</text>
+        </view>
       </view>
     </view>
 
@@ -29,6 +48,14 @@
         <button wx:if="{{isAdmin}}" class="btn-secondary code-btn" bindtap="onGenerateCode">重新生成</button>
       </view>
       <view class="code-hint">把这个家庭码或卡片发给家人，对方在下方「输入邀请码加入」即可加入你的家庭。邀请码 7 天有效。</view>
+    </view>
+
+    <view class="card">
+      <view class="card-title flex-between">
+        <view><text class="icon">🔒</text>家长密码</view>
+        <text class="rename-link" bindtap="onEditPassword">设置 / 修改</text>
+      </view>
+      <view class="card-hint">编辑错题、改答案时需要。每个家长自己设置，孩子不知道就改不了答案。</view>
     </view>
 
     <view class="card join-other">

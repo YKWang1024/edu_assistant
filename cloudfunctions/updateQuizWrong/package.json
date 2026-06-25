@@ -1,0 +1,9 @@
+{
+  "name": "updateQuizWrong",
+  "version": "1.0.0",
+  "description": "编辑自动小测错题(正确答案)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

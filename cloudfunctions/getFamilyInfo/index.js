@@ -49,6 +49,11 @@ exports.main = async (event, context) => {
       }
     })
 
+    // 无账号的小孩成员（妹妹/姐姐等），软删除的不返回
+    const children = (family.children || [])
+      .filter(function (c) { return c && !c.isDeleted })
+      .map(function (c) { return { childId: c.childId, name: c.name, grade: c.grade || '' } })
+
     // 补全家庭码：无论谁查看、家庭如何创建，都保证有码可见
     let inviteCode = family.inviteCode || ''
     let inviteExpire = family.inviteCodeExpireAt || null
@@ -70,6 +75,7 @@ exports.main = async (event, context) => {
         familyId: ctx.familyId,
         myRole: ctx.role,
         members: members,
+        children: children,
         inviteCode: inviteCode,
         inviteCodeExpireAt: inviteExpire
       }

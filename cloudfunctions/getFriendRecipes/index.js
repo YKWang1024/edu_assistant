@@ -46,10 +46,21 @@ exports.main = async (event, context) => {
       })
     }
 
+    // 把日期格式化成 UTC+8 的 YYYY-MM-DD 字符串（Date 经 callFunction 序列化不可靠）
+    const pad = n => (n < 10 ? '0' : '') + n
+    const toDateStr = d => {
+      if (!d) return ''
+      const t = new Date(d).getTime()
+      if (isNaN(t)) return ''
+      const x = new Date(t + 8 * 3600 * 1000)
+      return x.getUTCFullYear() + '-' + pad(x.getUTCMonth() + 1) + '-' + pad(x.getUTCDate())
+    }
+
     // 添加发布者信息
     const recipesWithPublisher = recipesResult.data.map(r => ({
       ...r,
-      publisher: publishers[r.userId] || {}
+      publisher: publishers[r.userId] || {},
+      sharedDate: toDateStr(r.sharedAt || r.createdAt)
     }))
 
     return {

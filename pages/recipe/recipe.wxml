@@ -54,8 +54,9 @@
 
   <view class="recipe-list">
     <view class="recipe-item card" wx:for="{{displayRecipes}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
-      <view class="recipe-thumb" wx:if="{{item.images[0] || item.imageUrl}}">
-        <image class="recipe-thumb-img" src="{{item.images[0] || item.imageUrl}}" mode="aspectFill" />
+      <view class="recipe-thumb">
+        <image wx:if="{{item.images[0] || item.imageUrl}}" class="recipe-thumb-img" src="{{item.images[0] || item.imageUrl}}" mode="aspectFill" />
+        <view wx:else class="recipe-thumb-img recipe-thumb-ph">{{item.thumbEmoji}}</view>
       </view>
       <view class="recipe-body">
         <view class="recipe-header flex-between">

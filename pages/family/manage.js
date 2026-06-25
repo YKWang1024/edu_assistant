@@ -7,7 +7,9 @@ Page({
     familyId: '',
     myRole: '',
     isAdmin: false,
+    isObserver: false,
     members: [],
+    children: [],
     inviteCode: ''
   },
 
@@ -24,13 +26,19 @@ Page({
     }
     app.callCloudFunction('getFamilyInfo', {}, function (res) {
       if (res && res.success) {
+        var members = (res.data.members || []).map(function (m) {
+          m.roleLabel = m.role === 'admin' ? '管理员' : (m.role === 'observer' ? '旁观' : '成员')
+          return m
+        })
         that.setData({
           loading: false,
           needLogin: false,
           familyId: res.data.familyId,
           myRole: res.data.myRole,
           isAdmin: res.data.myRole === 'admin',
-          members: res.data.members || [],
+          isObserver: res.data.myRole === 'observer',
+          members: members,
+          children: res.data.children || [],
           inviteCode: res.data.inviteCode || ''
         })
         // 管理员若还没有家庭码，自动生成一个，保证「看得到家庭码」
@@ -99,6 +107,125 @@ Page({
         app.callCloudFunction('setMemberName', { displayName: m.content.trim() }, function (r) {
           if (r && r.success) { wx.showToast({ title: '已修改', icon: 'success' }); that.load() }
           else wx.showToast({ title: (r && r.message) || '修改失败', icon: 'none' })
+        })
+      }
+    })
+  },
+
+  // ---------------- 小孩成员（无账号） ----------------
+  // 先问称呼再问年级，最后提交
+  promptChild: function (presetName, presetGrade, cb) {
+    wx.showModal({
+      title: '小孩称呼',
+      editable: true,
+      placeholderText: '如 妹妹 / 姐姐',
+      content: presetName || '',
+      success: function (m1) {
+        if (!m1.confirm) return
+        var name = (m1.content || '').trim()
+        if (!name) { wx.showToast({ title: '请填写称呼', icon: 'none' }); return }
+        wx.showModal({
+          title: '年级（可留空）',
+          editable: true,
+          placeholderText: '如 一年级',
+          content: presetGrade || '',
+          success: function (m2) {
+            if (!m2.confirm) return
+            cb(name, (m2.content || '').trim())
+          }
+        })
+      }
+    })
+  },
+
+  onAddChild: function () {
+    var that = this
+    this.promptChild('', '', function (name, grade) {
+      app.callCloudFunction('manageFamily', { action: 'addChild', name: name, grade: grade }, function (r) {
+        if (r && r.success) { wx.showToast({ title: '已添加', icon: 'success' }); that.load() }
+        else wx.showToast({ title: (r && r.message) || '添加失败', icon: 'none' })
+      })
+    })
+  },
+
+  onEditChild: function (e) {
+    var that = this
+    var c = e.currentTarget.dataset.child
+    this.promptChild(c.name, c.grade, function (name, grade) {
+      app.callCloudFunction('manageFamily', { action: 'updateChild', childId: c.childId, name: name, grade: grade }, function (r) {
+        if (r && r.success) { wx.showToast({ title: '已保存', icon: 'success' }); that.load() }
+        else wx.showToast({ title: (r && r.message) || '保存失败', icon: 'none' })
+      })
+    })
+  },
+
+  onRemoveChild: function (e) {
+    var that = this
+    var c = e.currentTarget.dataset.child
+    wx.showModal({
+      title: '移除小孩',
+      content: '确定移除「' + c.name + '」吗？(数据会保留，不再显示)',
+      confirmColor: '#ba1a1a',
+      success: function (m) {
+        if (!m.confirm) return
+        app.callCloudFunction('manageFamily', { action: 'removeChild', childId: c.childId }, function (r) {
+          if (r && r.success) { wx.showToast({ title: '已移除', icon: 'success' }); that.load() }
+          else wx.showToast({ title: (r && r.message) || '移除失败', icon: 'none' })
+        })
+      }
+    })
+  },
+
+  // ---------------- 家长密码（编辑错题用，每人自己设置） ----------------
+  onEditPassword: function () {
+    app.callCloudFunction('editPassword', { action: 'status' }, function (res) {
+      if (!res || !res.success) { wx.showToast({ title: '网络异常，请重试', icon: 'none' }); return }
+      if (res.data && res.data.hasPassword) {
+        wx.showModal({
+          title: '修改家长密码', editable: true, placeholderText: '请输入原密码',
+          success: function (m1) {
+            if (!m1.confirm) return
+            var oldp = (m1.content || '').trim()
+            wx.showModal({
+              title: '设置新密码', editable: true, placeholderText: '至少 4 位',
+              success: function (m2) {
+                if (!m2.confirm) return
+                var np = (m2.content || '').trim()
+                if (np.length < 4) { wx.showToast({ title: '至少 4 位', icon: 'none' }); return }
+                app.callCloudFunction('editPassword', { action: 'set', password: np, oldPassword: oldp }, function (r) {
+                  wx.showToast({ title: (r && r.success) ? '已修改' : ((r && r.message) || '修改失败'), icon: (r && r.success) ? 'success' : 'none' })
+                })
+              }
+            })
+          }
+        })
+      } else {
+        wx.showModal({
+          title: '设置家长密码', editable: true, placeholderText: '至少 4 位（编辑错题时用）',
+          success: function (m) {
+            if (!m.confirm) return
+            var np = (m.content || '').trim()
+            if (np.length < 4) { wx.showToast({ title: '至少 4 位', icon: 'none' }); return }
+            app.callCloudFunction('editPassword', { action: 'set', password: np }, function (r) {
+              wx.showToast({ title: (r && r.success) ? '已设置' : ((r && r.message) || '设置失败'), icon: (r && r.success) ? 'success' : 'none' })
+            })
+          }
+        })
+      }
+    })
+  },
+
+  // ---------------- 成员角色 ----------------
+  onChangeRole: function (e) {
+    var that = this
+    var m = e.currentTarget.dataset.member
+    wx.showActionSheet({
+      itemList: ['设为管理员', '设为成员', '设为旁观者(只读)'],
+      success: function (r) {
+        var role = ['admin', 'member', 'observer'][r.tapIndex]
+        app.callCloudFunction('manageFamily', { action: 'setMemberRole', targetOpenid: m.openid, role: role }, function (res) {
+          if (res && res.success) { wx.showToast({ title: '已设置', icon: 'success' }); that.load() }
+          else wx.showToast({ title: (res && res.message) || '设置失败', icon: 'none' })
         })
       }
     })

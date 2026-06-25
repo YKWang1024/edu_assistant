@@ -87,10 +87,12 @@ Page({
   },
 
   processRecipes: function (recipes) {
+    var EMOJI = { '荤菜': '🍖', '素菜': '🥬', '汤类': '🍲', '主食': '🍚', '水果': '🍎', '其他': '🍽️' }
     recipes.forEach(function (r) {
       if (r._id) r.id = r._id // 兼容旧 wxml 与 util(按 id 聚合)
       if (!r.ratings) r.ratings = []
       if (!r.avgScore) r.avgScore = 0
+      r.thumbEmoji = EMOJI[r.category] || '🍽️' // 无图时的分类占位
     })
 
     var topRecipes = recipes.filter(function (r) { return r.avgScore > 0 })

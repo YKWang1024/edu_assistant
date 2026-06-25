@@ -227,9 +227,15 @@
   box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(199, 239, 164, 0.6), inset -4rpx -4rpx 0rpx 0rpx #47672c, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
 }
 
+@keyframes tipPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
 .result-tip {
   text-align: center;
   padding: 10rpx 0;
+  animation: tipPop 0.3s ease;
 }
 
 .tip-text {

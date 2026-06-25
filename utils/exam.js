@@ -29,12 +29,20 @@ function statusLabel(status) { return STATUS_LABEL[status] || '' }
 
 // ---------------- AI：识别题目（视觉，非流式） ----------------
 
-// 「看拼音写字/写词」尽量转成选择题，便于小朋友点选而不是打字。复用于单题/多题 prompt。
-var PINYIN_TO_CHOICE_RULE = [
-  '【特别规则】对于「看拼音写汉字 / 看拼音写词语 / 根据拼音写字」这类题：',
-  '请把它转成选择题——type 设为 "choice"，options 给出 4 个选项',
-  '(其中 1 个是正确的字/词，另外 3 个是形近或音近的干扰项)，',
-  'correctAnswer 填正确选项的【字母】(如 "B")，让小朋友点选而不是手写。'
+// 识别通用规则（单题/多题复用）：附图结构化、尽量出选择题、选项不重复。
+var COMMON_RULES = [
+  '【附图规则】若题目带插图/附图，请把图【结构化】到 figure 字段，便于 App 重新画清晰图(没有图则 figure 为 null)：',
+  '· 计数器：{"type":"counter","columns":[{"label":"十位","beads":1},{"label":"个位","beads":6}]}（从高位到低位）',
+  '· 数轴/线段图：{"type":"numberline","min":0,"max":10,"step":1,"marks":[{"value":7,"label":"?"}]}',
+  '· 几何图形：{"type":"shape","shape":"rectangle|square|triangle|circle","width":6,"height":4,"unit":"厘米"}',
+  '· 算盘、看图写话、实物照片等无法结构化的图：{"type":"image"}（App 用原图）',
+  '不要再把图的内容塞进 stem 文字里。',
+  '【尽量出选择题】凡是能用选择题表达的(填空/判断/拼音写字/比大小等)，请尽量 type 设为 "choice"，',
+  '给出 4 个选项，correctAnswer 填正确选项的【字母】(如 "B")。看拼音写汉字/写词语：',
+  '正确选项放正确的字/词，另外 3 个用形近或音近的干扰项。',
+  '【选项不重复】4 个选项的内容必须【互不相同】，有且只有一个正确；',
+  '严禁把正确答案重复成多个选项，也不要出现内容一样的选项。',
+  '真正无法转成选择题的(如需要动手画、计算过程题)才用 type "fill" 或 "other"。'
 ].join('\n')
 
 function buildRecognizePrompt() {
@@ -49,9 +57,10 @@ function buildRecognizePrompt() {
     '  "correctAnswer": 正确答案。选择题填选项字母如 "B"；其它题填答案文本；若无法判断填 ""，',
     '  "studentAnswer": 图中小朋友写下/勾选的答案(若能看出)，否则填 ""，',
     '  "errorPoint": 用一句话总结这道题的错因或考点(20字以内，可为空)，',
-    '  "analysis": 简短解析(50字以内，可为空字符串)',
+    '  "analysis": 简短解析(50字以内，可为空字符串)，',
+    '  "figure": 附图结构化对象(见下方附图规则)，没有图填 null',
     '}',
-    PINYIN_TO_CHOICE_RULE,
+    COMMON_RULES,
     '若图片中有多道题，只识别最完整、最居中的那一道。数学公式用普通文本表示。'
   ].join('\n')
 }
@@ -70,11 +79,14 @@ function buildRecognizeManyPrompt() {
     '  "correctAnswer": 正确答案(选择题填字母；其它填答案文本；无法判断填 "")，',
     '  "studentAnswer": 小朋友这次写错/选错的答案(看不出填 "")，',
     '  "errorPoint": 一句话总结错因或考点(20字以内)，',
-    '  "analysis": 简短解析(50字以内，可空)',
+    '  "analysis": 简短解析(50字以内，可空)，',
+    '  "figure": 附图结构化对象(见下方附图规则)，没有图填 null',
     '} , ... ] }',
-    PINYIN_TO_CHOICE_RULE,
+    '【拆小题】把同一道大题里的每个小题(1)(2)(3)…拆成【独立的一条】，stem 带上必要的大题背景；',
+    '只收录【做错的】小题，做对的小题不要收录（例如大题里第2小题做对了就跳过，只列第1、3小题）。',
+    COMMON_RULES,
     '优先收录有批改记号(红叉/扣分)或明显答错的题；若整张看不出批改痕迹，',
-    '则收录全部题目、把 studentAnswer 留空，交给家长勾选。最多 12 道。数学公式用普通文本表示。'
+    '则收录全部题目、把 studentAnswer 留空，交给家长勾选。最多 16 道。数学公式用普通文本表示。'
   ].join('\n')
 }
 
@@ -99,26 +111,41 @@ function normalizeQuestion(obj) {
   obj = obj || {}
   var subject = config.SUBJECTS.indexOf(obj.subject) >= 0 ? obj.subject : '其他'
   var type = (obj.type === 'choice' || obj.type === 'fill' || obj.type === 'other') ? obj.type : 'other'
-  var options = []
+
+  // 原始选项(保留模型给的 key 以便定位正确答案)
+  var raw = []
   if (Array.isArray(obj.options)) {
-    options = obj.options.map(function (o, i) {
+    raw = obj.options.map(function (o, i) {
       var key = String.fromCharCode(65 + i)
-      if (o && typeof o === 'object') {
-        return { key: String(o.key || key), text: String(o.text == null ? '' : o.text) }
-      }
-      return { key: key, text: String(o == null ? '' : o) }
-    }).filter(function (o) { return o.text && o.text.trim() })
+      if (o && typeof o === 'object') return { key: String(o.key || key), text: String(o.text == null ? '' : o.text).trim() }
+      return { key: key, text: String(o == null ? '' : o).trim() }
+    }).filter(function (o) { return o.text })
   }
+
+  var rawCorrect = String(obj.correctAnswer == null ? '' : obj.correctAnswer).trim()
+  // 先确定正确选项的【文本】(答案可能给的是字母，也可能直接给文本)
+  var correctText = ''
+  for (var i = 0; i < raw.length; i++) {
+    if (raw[i].key === rawCorrect || raw[i].text === rawCorrect) { correctText = raw[i].text; break }
+  }
+
+  // 选项去重(按文本)，避免重复选项/重复正确答案；去重后重新编号 A/B/C…
+  var seen = {}, texts = []
+  raw.forEach(function (o) { if (o.text && !seen[o.text]) { seen[o.text] = 1; texts.push(o.text) } })
+  var options = texts.map(function (t, idx) { return { key: String.fromCharCode(65 + idx), text: t } })
+
   if (options.length > 0) type = 'choice'
 
-  var correct = String(obj.correctAnswer == null ? '' : obj.correctAnswer).trim()
-  // 选择题答案必须是选项字母(复习时按字母判分)。若模型给的是选项【文本】，映射回字母。
-  if (type === 'choice' && options.length > 0 && correct) {
-    var keys = options.map(function (o) { return o.key })
-    if (keys.indexOf(correct) < 0) {
-      for (var k = 0; k < options.length; k++) {
-        if (options[k].text.trim() === correct) { correct = options[k].key; break }
-      }
+  // 正确答案映射到去重后选项的字母
+  var correct = rawCorrect
+  if (type === 'choice' && options.length > 0) {
+    correct = ''
+    for (var j = 0; j < options.length; j++) {
+      if (options[j].text === correctText) { correct = options[j].key; break }
+    }
+    if (!correct && /^[A-Ha-h]$/.test(rawCorrect)) {
+      var k = rawCorrect.toUpperCase().charCodeAt(0) - 65
+      if (k >= 0 && k < options.length) correct = options[k].key
     }
   }
 
@@ -130,8 +157,41 @@ function normalizeQuestion(obj) {
     correctAnswer: correct,
     studentAnswer: String(obj.studentAnswer == null ? '' : obj.studentAnswer).trim(),
     errorPoint: String(obj.errorPoint == null ? '' : obj.errorPoint).trim(),
-    analysis: String(obj.analysis == null ? '' : obj.analysis).trim()
+    analysis: String(obj.analysis == null ? '' : obj.analysis).trim(),
+    figure: normalizeFigure(obj.figure)
   }
+}
+
+// 校验/清洗附图结构，剔除非法字段，保证只存我们能渲染的几种。
+function normalizeFigure(f) {
+  if (!f || typeof f !== 'object' || !f.type) return null
+  if (f.type === 'counter') {
+    var columns = (Array.isArray(f.columns) ? f.columns : []).slice(0, 5).map(function (c) {
+      c = c || {}
+      var beads = Number(c.beads); if (isNaN(beads) || beads < 0) beads = 0; if (beads > 18) beads = 18
+      return { label: String(c.label == null ? '' : c.label).slice(0, 6), beads: Math.round(beads) }
+    })
+    if (!columns.length) return null
+    return { type: 'counter', columns: columns }
+  }
+  if (f.type === 'numberline') {
+    var min = Number(f.min), max = Number(f.max), step = Number(f.step) || 1
+    if (isNaN(min) || isNaN(max) || max <= min) return null
+    var marks = (Array.isArray(f.marks) ? f.marks : []).slice(0, 6).map(function (m) {
+      m = m || {}
+      return { value: Number(m.value), label: m.label == null ? '' : String(m.label).slice(0, 8) }
+    })
+    return { type: 'numberline', min: min, max: max, step: step, marks: marks }
+  }
+  if (f.type === 'shape') {
+    var shape = (['rectangle', 'square', 'triangle', 'circle'].indexOf(f.shape) >= 0) ? f.shape : 'rectangle'
+    var fig = { type: 'shape', shape: shape, unit: String(f.unit == null ? '' : f.unit).slice(0, 4) }
+    if (f.width != null && !isNaN(Number(f.width))) fig.width = Number(f.width)
+    if (f.height != null && !isNaN(Number(f.height))) fig.height = Number(f.height)
+    return fig
+  }
+  if (f.type === 'image') return { type: 'image' }
+  return null
 }
 
 // 解析「多题」返回：容错地取出 questions 数组并逐项 normalize。
