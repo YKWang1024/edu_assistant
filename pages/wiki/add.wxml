@@ -6,11 +6,12 @@
     <view class="field-label">说说今天买菜的心得</view>
     <textarea class="textarea-field" value="{{rawText}}" bindinput="onRawInput" placeholder="可以按住下面的话筒说，也可以直接打字" auto-height></textarea>
 
-    <button class="voice-btn {{recording ? 'on' : ''}}" wx:if="{{voiceAvailable}}"
-      bindtouchstart="onVoiceStart" bindtouchend="onVoiceEnd" bindtouchcancel="onVoiceEnd">
-      {{recording ? '🔴 松开结束' : '🎤 按住说话'}}
+    <button class="voice-btn {{recording ? 'on' : ''}}"
+      bindtouchstart="onVoiceStart" bindtouchend="onVoiceEnd" bindtouchcancel="onVoiceEnd"
+      disabled="{{transcribing}}">
+      {{recording ? '🔴 松开结束' : (transcribing ? '⏳ 转写中…' : '🎤 按住说话')}}
     </button>
-    <view wx:else class="voice-tip">（未启用语音插件，直接打字即可）</view>
+    <view class="voice-tip">按住说话，松开自动转成文字；也可以直接打字</view>
 
     <button class="btn-secondary organize-btn" bindtap="onOrganize" loading="{{organizing}}" disabled="{{organizing}}">✨ AI 整理成小记</button>
 
