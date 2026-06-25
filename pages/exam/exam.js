@@ -36,8 +36,20 @@ function quizToItem(q) {
     attempts: [],
     count: q.count || 1,
     operator: q.operator,
+    date: q.date || q.lastDate || '',
     childName: q.childName || '宝贝'
   }
+}
+
+// 由 today(YYYY-MM-DD) 回退 n 天，得到日期串，用于「本周新增」统计
+function daysAgoStr(today, n) {
+  var p = (today || '').split('-')
+  if (p.length !== 3) return ''
+  var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]))
+  d.setDate(d.getDate() - n)
+  var m = d.getMonth() + 1
+  var day = d.getDate()
+  return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day)
 }
 
 Page({
@@ -50,6 +62,9 @@ Page({
     activeChild: '全部',
     groups: [],
     stats: { total: 0, due: 0, hard: 0, mastered: 0 },
+    masteredPct: 0,
+    weekAdded: 0,
+    chartBars: [],
 
     mode: 'list', // list | practice | edit
     practiceList: [],
@@ -103,6 +118,8 @@ Page({
       list = list.filter(function (q) { return (q.childName || '宝贝') === activeChild })
     }
     var stats = { total: list.length, due: 0, hard: 0, mastered: 0 }
+    var weekThreshold = daysAgoStr(today, 6) // 近 7 天(含今日)
+    var weekAdded = 0
     var map = {}
     list.forEach(function (q) {
       q.source = q.source || 'exam'
@@ -114,6 +131,9 @@ Page({
       if (q.due) stats.due++
       if (q.status === 'hard') stats.hard++
       if (q.status === 'mastered') stats.mastered++
+      // 本周新增：尽力从可用日期字段判断
+      var d = q.date || (q.createdAt ? String(q.createdAt).slice(0, 10) : (q.lastDate || ''))
+      if (weekThreshold && d && d >= weekThreshold) weekAdded++
       if (!map[q.subject]) map[q.subject] = []
       map[q.subject].push(q)
     })
@@ -124,7 +144,19 @@ Page({
       var dueCount = items.filter(function (i) { return i.due }).length
       groups.push({ subject: subject, items: items, dueCount: dueCount })
     })
-    this.setData({ groups: groups, stats: stats, today: today, loading: false })
+    // 各科错题分布柱状图（按 config.SUBJECTS 稳定排序，仅含有错题的科目）
+    var maxCount = 0
+    Object.keys(map).forEach(function (s) { if (map[s].length > maxCount) maxCount = map[s].length })
+    var chartBars = []
+    config.SUBJECTS.forEach(function (s) {
+      var c = map[s] ? map[s].length : 0
+      if (c > 0) chartBars.push({ subject: s, count: c, pct: maxCount ? Math.max(8, Math.round(c / maxCount * 100)) : 0 })
+    })
+    var masteredPct = stats.total ? Math.round(stats.mastered / stats.total * 100) : 0
+    this.setData({
+      groups: groups, stats: stats, today: today, loading: false,
+      weekAdded: weekAdded, masteredPct: masteredPct, chartBars: chartBars
+    })
   },
 
   onSelectSubject: function (e) {

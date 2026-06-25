@@ -1,23 +1,53 @@
 /* ========== 错题本（错题归纳）柔和风 · 紫色主题 ========== */
 
-/* 统计卡 */
+/* 统计卡（错题统计） */
 .stats-card {
-  display: flex;
-  justify-content: space-around;
-  padding: 30rpx 12rpx;
+  padding: 30rpx 30rpx 26rpx;
   background: linear-gradient(160deg, #ffffff 0%, #f6f3fd 100%);
 }
-.stat-item { text-align: center; flex: 1; }
-.stat-num {
-  font-size: 48rpx;
-  font-weight: 800;
-  color: #2b2b33;
-  letter-spacing: -0.02em;
+.stats-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26rpx;
 }
-.stat-num.due { color: #f5a623; }
-.stat-num.hard { color: #e5484d; }
-.stat-num.mastered { color: #4ca85f; }
-.stat-label { font-size: 22rpx; color: #a0a0ad; margin-top: 8rpx; }
+.stats-left { display: flex; flex-direction: column; }
+.stats-total { font-size: 64rpx; font-weight: 800; color: #2b2b33; line-height: 1; letter-spacing: -0.02em; }
+.stats-total-label { font-size: 23rpx; color: #a0a0ad; margin-top: 12rpx; }
+.stats-right { display: flex; flex-direction: column; gap: 14rpx; align-items: flex-end; }
+.stats-kv { display: flex; align-items: center; gap: 14rpx; }
+.kv-label { font-size: 24rpx; color: #8a8a97; }
+.kv-val { font-size: 28rpx; font-weight: 800; color: #8b6fd6; min-width: 48rpx; text-align: right; }
+.kv-badge {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #3f8d57;
+  background: #e3f4e0;
+  border-radius: 999rpx;
+  padding: 4rpx 18rpx;
+}
+
+/* 各科分布柱状图 */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 18rpx;
+  height: 200rpx;
+  padding-top: 10rpx;
+  border-top: 2rpx solid #f1f3f7;
+}
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+.bar-track { width: 40rpx; height: 130rpx; display: flex; align-items: flex-end; }
+.bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #b9a4f5, #8b6fd6);
+  border-radius: 10rpx 10rpx 4rpx 4rpx;
+  min-height: 8rpx;
+  transition: height 0.5s ease;
+}
+.bar-count { font-size: 22rpx; font-weight: 700; color: #8b6fd6; margin-top: 8rpx; }
+.bar-x { font-size: 22rpx; color: #8a8a97; margin-top: 4rpx; }
 
 /* 顶部操作 */
 .top-actions { display: flex; gap: 16rpx; margin-bottom: 24rpx; }
