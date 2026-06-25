@@ -100,6 +100,13 @@
   margin-top: 10rpx;
 }
 
+/* 切页签按下反馈 + 卡片淡入，和全站一致 */
+.tab-item:active { transform: translate(2rpx, 2rpx); }
+@keyframes rewardIn { from { opacity: 0; } to { opacity: 1; } }
+.rule-card, .checkin-card, .done-card, .result-card {
+  animation: rewardIn 0.35s ease both;
+}
+
 .done-info {
   padding: 10rpx 0;
 }

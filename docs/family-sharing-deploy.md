@@ -57,9 +57,16 @@
 `saveExamQuestion`、`updateExamQuestion` 已加存 `figure` 字段，需**重新部署**；无需新建集合。
 
 **Phase 8（买菜心得 Wiki + 语音）**：新增集合 `wikis`(权限「仅创建者可读写」)；新增云函数 `saveWiki`、`listWiki`、`deleteWiki`。
-菜友圈页新增「我的买菜心得」入口与「菜友买菜心得」信息流(`listWiki` scope=public)。
-**语音输入用「微信同声传译」插件**：需在 微信公众平台(mp.weixin.qq.com) → 小程序 → 「设置→第三方设置→插件管理」**添加并启用插件「微信同声传译」(appid `wx069ba97219f66d99`)**，否则语音按钮不可用(可改用打字)。
-`app.json` 已声明该插件(version 0.3.5)；AI 整理走小程序端 `wx.cloud.extend.AI` 文本模型(同错题课程)。
+菜友圈页新增「我的买菜心得」入口与「菜友买菜心得」信息流(`listWiki` scope=public)。AI 整理走小程序端 `wx.cloud.extend.AI` 文本模型(同错题课程)。
+
+**语音输入（个人账号无需插件）**：录音(mp3,16k单声道,≤60s) → 上传云存储 → 云函数 `aiVoice` 用**腾讯云「一句话识别」**转文字（与本 CloudBase 同生态，已验证 Kimi 接口不吃音频，故改用腾讯云 ASR）。
+准备步骤：
+1. 腾讯云控制台**开通「语音识别 ASR」**服务。
+2. **访问管理 CAM** → 新建子用户/密钥，授予 `QcloudASRFullAccess`，拿到 **SecretId / SecretKey**。
+3. **部署云函数 `aiVoice`**（务必勾「云端安装依赖」，会装 `tencentcloud-sdk-nodejs-asr`），并配环境变量：
+   - `TENCENT_SECRET_ID`、`TENCENT_SECRET_KEY`（必填）
+   - `TENCENT_ASR_REGION`（默认 `ap-guangzhou`）、`TENCENT_ASR_ENGINE`（默认 `16k_zh`）
+> 无论语音是否配好，**文字输入始终可用**。`app.json` 已移除「微信同声传译」插件声明（个人账号用不了）。
 
 **视觉识别**：`aiVision`（超时 60s；需在其环境变量配置 `AI_VISION_API_KEY` 等，见 §3）
 

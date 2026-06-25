@@ -1,16 +1,9 @@
 var app = getApp()
 var wikiUtil = require('../../utils/wiki.js')
+var config = require('../../config/ai.js')
 
-// 语音识别：微信同声传译插件（需在小程序后台「插件管理」添加并通过）
-var recordManager = null
-var voiceAvailable = false
-try {
-  var plugin = requirePlugin('WechatSI')
-  recordManager = plugin.getRecordRecognitionManager()
-  voiceAvailable = true
-} catch (e) {
-  voiceAvailable = false
-}
+// 录音转写方案：录音 → 上传云存储 → 云函数 aiVoice 转文字（个人账号无需任何插件）
+var recorderManager = wx.getRecorderManager()
 
 Page({
   data: {
@@ -18,27 +11,27 @@ Page({
     rawText: '',      // 口述/输入的原始内容
     content: '',      // AI 整理后的内容（保存这个）
     isPublic: false,
-    voiceAvailable: voiceAvailable,
     recording: false,
+    transcribing: false,
     organizing: false,
     saving: false
   },
 
   onLoad: function () {
     var that = this
-    if (!voiceAvailable || !recordManager) return
-    recordManager.onStart = function () { that.setData({ recording: true }) }
-    recordManager.onRecognize = function (res) {
-      if (res && res.result) that.setData({ rawText: (that._base || '') + res.result })
-    }
-    recordManager.onStop = function (res) {
-      var text = (that._base || '') + ((res && res.result) || '')
-      that.setData({ recording: false, rawText: text })
-    }
-    recordManager.onError = function () {
+    recorderManager.onStart(function () { that.setData({ recording: true }) })
+    recorderManager.onError(function () {
       that.setData({ recording: false })
-      wx.showToast({ title: '没听清，可直接打字', icon: 'none' })
-    }
+      wx.showToast({ title: '录音失败，可直接打字', icon: 'none' })
+    })
+    recorderManager.onStop(function (res) {
+      that.setData({ recording: false })
+      if (res && res.tempFilePath && (res.duration || 0) > 800) {
+        that.transcribe(res.tempFilePath)
+      } else {
+        wx.showToast({ title: '说话太短啦，再来一次', icon: 'none' })
+      }
+    })
   },
 
   onTitleInput: function (e) { this.setData({ title: e.detail.value }) },
@@ -46,17 +39,48 @@ Page({
   onContentInput: function (e) { this.setData({ content: e.detail.value }) },
   onTogglePublic: function (e) { this.setData({ isPublic: e.detail.value }) },
 
-  // 按住说话
+  // 按住说话（松开即转写）
   onVoiceStart: function () {
-    if (!voiceAvailable || !recordManager) {
-      wx.showToast({ title: '未启用语音，请打字', icon: 'none' })
-      return
-    }
+    if (!app.globalData.cloudReady) { wx.showToast({ title: '请联网后再用语音', icon: 'none' }); return }
+    if (this.data.transcribing) return
     this._base = this.data.rawText ? (this.data.rawText + ' ') : ''
-    recordManager.start({ lang: 'zh_CN', duration: 60000 })
+    recorderManager.start({
+      format: 'mp3',
+      duration: 60000,
+      sampleRate: 16000,
+      numberOfChannels: 1,
+      encodeBitRate: 48000
+    })
   },
   onVoiceEnd: function () {
-    if (voiceAvailable && recordManager && this.data.recording) recordManager.stop()
+    if (this.data.recording) recorderManager.stop()
+  },
+
+  // 上传录音并调用云函数转文字
+  transcribe: function (tempFilePath) {
+    var that = this
+    this.setData({ transcribing: true })
+    var cloudPath = 'voice/' + Date.now() + '_' + Math.floor(Math.random() * 1000000) + '.mp3'
+    wx.cloud.uploadFile({
+      cloudPath: cloudPath,
+      filePath: tempFilePath,
+      success: function (up) {
+        app.callCloudFunction('aiVoice', { fileID: up.fileID, language: 'zh', debug: !!config.DEBUG }, function (res) {
+          that.setData({ transcribing: false })
+          if (res && res.success && res.text) {
+            that.setData({ rawText: (that._base || '') + res.text })
+          } else {
+            var m = (res && res.message) || '识别失败'
+            if (config.DEBUG && res && res.error) m += '：' + res.error
+            wx.showModal({ title: '语音识别失败', content: m + '（可直接打字）', showCancel: false })
+          }
+        }, 60000)
+      },
+      fail: function () {
+        that.setData({ transcribing: false })
+        wx.showToast({ title: '上传失败，可直接打字', icon: 'none' })
+      }
+    })
   },
 
   // AI 整理
@@ -69,7 +93,6 @@ Page({
       that.setData({ organizing: false, content: (text || '').trim() })
       wx.showToast({ title: '已整理，可修改', icon: 'success' })
     }).catch(function (err) {
-      // AI 不可用时退回原文
       that.setData({ organizing: false, content: raw })
       wx.showModal({ title: 'AI 整理失败', content: (err && err.message) || '已用原文，可手动编辑', showCancel: false })
     })
