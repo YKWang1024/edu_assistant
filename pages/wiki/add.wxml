@@ -22,7 +22,7 @@
 
     <view class="share-row">
       <text class="share-label">分享到菜友圈</text>
-      <switch checked="{{isPublic}}" bindchange="onTogglePublic" color="#47672c" />
+      <switch checked="{{isPublic}}" bindchange="onTogglePublic" color="#4ca85f" />
     </view>
   </view>
 

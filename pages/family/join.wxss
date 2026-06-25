@@ -1,34 +1,14 @@
-.field-label {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #5e4700;
-  margin: 16rpx 0 12rpx;
-  font-family: 'PingFang SC', monospace;
-}
-.code-input {
-  letter-spacing: 8rpx;
-  font-size: 36rpx;
-  font-weight: 700;
-  text-align: center;
-}
+.field-label { font-size: 26rpx; font-weight: 700; color: #6b6b7a; margin: 18rpx 0 12rpx; }
+.code-input { letter-spacing: 8rpx; font-size: 36rpx; font-weight: 700; text-align: center; }
 .from-card-tip {
   font-size: 26rpx;
-  color: #47672c;
-  background: #c7efa4;
-  border: 2rpx solid #47672c;
-  border-radius: 8rpx;
-  padding: 16rpx 18rpx;
+  color: #3f8d57;
+  background: #e8f6e7;
+  border: none;
+  border-radius: 16rpx;
+  padding: 18rpx 20rpx;
   margin-bottom: 12rpx;
-  line-height: 1.5;
+  line-height: 1.55;
 }
-.join-btn {
-  width: 100%;
-  margin-top: 28rpx;
-}
-.join-hint {
-  font-size: 24rpx;
-  color: #807661;
-  text-align: center;
-  margin-top: 18rpx;
-  line-height: 1.5;
-}
+.join-btn { width: 100%; margin-top: 28rpx; }
+.join-hint { font-size: 24rpx; color: #a0a0ad; text-align: center; margin-top: 18rpx; line-height: 1.55; }
