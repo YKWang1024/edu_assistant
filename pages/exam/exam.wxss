@@ -85,10 +85,15 @@
 }
 
 /* 题目项 */
+@keyframes examIn { from { opacity: 0; } to { opacity: 1; } }
 .q-item {
   padding: 20rpx 24rpx;
   margin-bottom: 16rpx;
+  animation: examIn 0.32s ease both;
 }
+.q-item:nth-child(2) { animation-delay: 0.04s; }
+.q-item:nth-child(3) { animation-delay: 0.08s; }
+.q-item:nth-child(4) { animation-delay: 0.12s; }
 .q-top {
   display: flex;
   align-items: center;
