@@ -66,7 +66,8 @@ Page({
     // 编辑
     typeLabels: TYPE_LABELS,
     editSubjects: config.SUBJECTS,
-    editForm: null
+    editForm: null,
+    savingEdit: false
   },
 
   onShow: function () {
@@ -461,11 +462,12 @@ Page({
   },
 
   onCancelEdit: function () {
-    this.setData({ mode: 'list', editForm: null })
+    this.setData({ mode: 'list', editForm: null, savingEdit: false })
   },
 
   onSaveEdit: function () {
     var f = this.data.editForm
+    if (!f || this.data.savingEdit) return // 表单已关闭或正在保存，防重复提交导致空指针
     if (!f.stem || !f.stem.trim()) { wx.showToast({ title: '请填写题干', icon: 'none' }); return }
     var options = []
     if (f.type === 'choice') {
@@ -475,6 +477,7 @@ Page({
       if (!f.correctAnswer) { wx.showToast({ title: '请标记正确答案', icon: 'none' }); return }
     }
     var that = this
+    this.setData({ savingEdit: true })
     app.callCloudFunction('updateExamQuestion', {
       questionId: f._id,
       subject: f.subject,
@@ -487,9 +490,10 @@ Page({
     }, function (res) {
       if (res && res.success) {
         wx.showToast({ title: '已保存', icon: 'success' })
-        that.setData({ mode: 'list', editForm: null })
+        that.setData({ mode: 'list', editForm: null, savingEdit: false })
         that.loadList()
       } else {
+        that.setData({ savingEdit: false })
         wx.showToast({ title: (res && res.message) || '保存失败', icon: 'none' })
       }
     })

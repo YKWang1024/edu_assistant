@@ -154,8 +154,8 @@
     </view>
 
     <view class="edit-actions">
-      <button class="btn-secondary edit-act-btn" bindtap="onCancelEdit">取消</button>
-      <button class="btn-primary edit-act-btn" bindtap="onSaveEdit">保存</button>
+      <button class="btn-secondary edit-act-btn" bindtap="onCancelEdit" disabled="{{savingEdit}}">取消</button>
+      <button class="btn-primary edit-act-btn" bindtap="onSaveEdit" loading="{{savingEdit}}" disabled="{{savingEdit}}">保存</button>
     </view>
   </block>
 </view>
