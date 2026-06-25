@@ -1,31 +1,47 @@
-<view class="container">
-  <view class="profile-header">
-    <view class="app-icon">🏠</view>
-    <view class="app-name">{{appName}}</view>
-    <view class="app-version">v{{version}}</view>
+<view class="profile">
+  <!-- 用户头 -->
+  <view class="p-hero">
+    <view class="p-hero-blob p-hero-blob-1"></view>
+    <view class="p-hero-blob p-hero-blob-2"></view>
+    <view class="p-avatar">🧒</view>
+    <view class="p-info">
+      <view class="p-name">{{childName}}</view>
+      <view class="p-meta">Lv.{{level}}<text class="p-dot">·</text>成长值 {{gameMinutes}}</view>
+    </view>
   </view>
 
-  <view class="action-list">
-    <view class="action-item card" bindtap="onViewWrong">
-      <view class="flex-row">
-        <text class="action-icon">📝</text>
-        <text class="action-name">错题本</text>
-      </view>
-      <text class="action-arrow">›</text>
+  <!-- 成长档案高亮卡 -->
+  <view class="archive" bindtap="onViewWrong">
+    <view class="archive-blob"></view>
+    <view class="archive-text">
+      <view class="archive-title">成长档案</view>
+      <view class="archive-sub">记录你的成长点滴 · 错题与练习</view>
     </view>
-    <view class="action-item card" bindtap="onGoFamily">
-      <view class="flex-row">
-        <text class="action-icon">👨‍👩‍👧</text>
-        <text class="action-name">家庭管理（成员/小孩/邀请家人）</text>
-      </view>
-      <text class="action-arrow">›</text>
+    <view class="archive-emoji">📈</view>
+  </view>
+
+  <!-- 设置列表 -->
+  <view class="menu card">
+    <view class="menu-item" bindtap="onViewWrong">
+      <view class="menu-left"><view class="menu-ic ic-purple">📒</view><text class="menu-name">我的错题本</text></view>
+      <text class="menu-arrow">›</text>
     </view>
-    <view class="action-item card" bindtap="onClearData">
-      <view class="flex-row">
-        <text class="action-icon">🗑️</text>
-        <text class="action-name danger-text">清除数据</text>
-      </view>
-      <text class="action-arrow">›</text>
+    <view class="menu-sep"></view>
+    <view class="menu-item" bindtap="onGoFamily">
+      <view class="menu-left"><view class="menu-ic ic-green">👨‍👩‍👧</view><text class="menu-name">家庭管理</text></view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-sep"></view>
+    <view class="menu-item" bindtap="onGoRecipe">
+      <view class="menu-left"><view class="menu-ic ic-orange">🍽️</view><text class="menu-name">我的菜谱</text></view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-sep"></view>
+    <view class="menu-item" bindtap="onClearData">
+      <view class="menu-left"><view class="menu-ic ic-red">🗑️</view><text class="menu-name danger-text">清除数据</text></view>
+      <text class="menu-arrow">›</text>
     </view>
   </view>
+
+  <view class="p-version">{{appName}} · v{{version}}</view>
 </view>

@@ -3,6 +3,8 @@ var util = require('../../utils/util.js')
 
 Page({
   data: {
+    childName: '宝贝',
+    level: 1,
     gameMinutes: 0,
     streak: 0,
     doneCount: 0,
@@ -17,9 +19,21 @@ Page({
   onShow: function () {
     var that = this
     // 先用缓存值显示，避免首屏闪现 0
-    this.setData({ gameMinutes: app.globalData.gameMinutes || 0 })
-    app.refreshGameTime(function (balance) { that.setData({ gameMinutes: balance }) })
+    var cached = app.globalData.gameMinutes || 0
+    this.setData({
+      childName: app.getCurrentChild(),
+      gameMinutes: cached,
+      level: this.calcLevel(cached)
+    })
+    app.refreshGameTime(function (balance) {
+      that.setData({ gameMinutes: balance, level: that.calcLevel(balance) })
+    })
     this.checkTodayStatus()
+  },
+
+  // 由成长值(累计游戏时间)粗略折算等级，纯展示用
+  calcLevel: function (val) {
+    return Math.max(1, Math.floor((val || 0) / 50) + 1)
   },
 
   applyChecked: function (checked, records) {

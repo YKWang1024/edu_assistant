@@ -1,9 +1,30 @@
+/* ============================================================
+   全局设计系统 ——「少年成长营」柔和现代风
+   柔和渐变背景 · 圆角白卡 · 弥散阴影 · 胶囊按钮 · 彩色徽章
+   说明：保留原有类名，仅整体换肤，避免逐页破坏。
+   ============================================================ */
 page {
-  background-color: #fef9ed;
+  background: linear-gradient(180deg, #eaf3fb 0%, #f3f6fb 26%, #f6f8fb 100%);
+  background-attachment: fixed;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  color: #1d1c15;
+  color: #2b2b33;
   font-size: 28rpx;
   box-sizing: border-box;
+  /* 设计 token */
+  --brand: #4ca85f;
+  --brand-2: #6cc06f;
+  --orange: #f5a623;
+  --orange-2: #f9b94e;
+  --purple: #8b6fd6;
+  --purple-2: #a78bfa;
+  --blue: #4b86ef;
+  --blue-2: #6fa8f5;
+  --ink: #2b2b33;
+  --ink-2: #6b6b7a;
+  --ink-3: #a0a0ad;
+  --line: #eef0f4;
+  --card: #ffffff;
+  --shadow: 0 10rpx 30rpx rgba(80, 95, 130, 0.08);
 }
 
 .container {
@@ -11,255 +32,211 @@ page {
   min-height: 100vh;
 }
 
+/* 卡片：圆角白底 + 弥散阴影，无硬边框 */
 .card {
-  background: #fef9ed;
-  border: 4rpx solid #807661;
-  border-radius: 16rpx;
-  padding: 24rpx;
+  background: #ffffff;
+  border: none;
+  border-radius: 28rpx;
+  padding: 32rpx;
   margin-bottom: 24rpx;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  box-shadow: 0 10rpx 30rpx rgba(80, 95, 130, 0.08);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-/* 卡片按下反馈：像素风「下沉」，让每个可点元素都有手感 */
+/* 轻微按下反馈，保持点按手感但不喧宾夺主 */
 .card:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: 4rpx 4rpx 0rpx 0rpx rgba(136, 81, 32, 0.18);
+  transform: scale(0.99);
+  box-shadow: 0 6rpx 18rpx rgba(80, 95, 130, 0.10);
 }
 
 .card-title {
   font-size: 32rpx;
   font-weight: 700;
-  color: #1d1c15;
-  margin-bottom: 20rpx;
+  color: #2b2b33;
+  margin-bottom: 24rpx;
   display: flex;
   align-items: center;
-  font-family: 'PingFang SC', monospace;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .card-title .icon {
   margin-right: 12rpx;
-  font-size: 36rpx;
+  font-size: 34rpx;
 }
 
+/* ---------- 按钮：渐变胶囊 ---------- */
 .btn-primary {
-  background: #e6b325;
-  color: #5e4700;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 20rpx 60rpx;
-  font-size: 28rpx;
+  background: linear-gradient(135deg, #6cc06f 0%, #4ca85f 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 999rpx;
+  padding: 24rpx 60rpx;
+  font-size: 30rpx;
   font-weight: 700;
   text-align: center;
-  line-height: 1.5;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.4), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  font-family: 'PingFang SC', monospace;
+  line-height: 1.4;
+  box-shadow: 0 12rpx 24rpx rgba(76, 168, 95, 0.28);
 }
+.btn-primary::after { border: none; }
+.btn-primary:active { transform: translateY(2rpx); box-shadow: 0 6rpx 14rpx rgba(76, 168, 95, 0.22); }
 
-.btn-primary::after {
-  border: none;
+/* 紫色 / 橙色主按钮变体（错题、营养等场景） */
+.btn-purple {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b6fd6 100%);
+  color: #ffffff; border: none; border-radius: 999rpx;
+  padding: 24rpx 60rpx; font-size: 30rpx; font-weight: 700; text-align: center; line-height: 1.4;
+  box-shadow: 0 12rpx 24rpx rgba(139, 111, 214, 0.28);
 }
+.btn-purple::after { border: none; }
+.btn-purple:active { transform: translateY(2rpx); box-shadow: 0 6rpx 14rpx rgba(139, 111, 214, 0.22); }
 
-.btn-primary:active {
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(0, 0, 0, 0.1);
-  transform: translate(4rpx, 4rpx);
+.btn-orange {
+  background: linear-gradient(135deg, #f9b94e 0%, #f5a623 100%);
+  color: #ffffff; border: none; border-radius: 999rpx;
+  padding: 24rpx 60rpx; font-size: 30rpx; font-weight: 700; text-align: center; line-height: 1.4;
+  box-shadow: 0 12rpx 24rpx rgba(245, 166, 35, 0.28);
 }
+.btn-orange::after { border: none; }
+.btn-orange:active { transform: translateY(2rpx); box-shadow: 0 6rpx 14rpx rgba(245, 166, 35, 0.22); }
 
 .btn-secondary {
-  background: #f2ede2;
-  color: #1d1c15;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 18rpx 60rpx;
-  font-size: 28rpx;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.5;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  font-family: 'PingFang SC', monospace;
-}
-
-.btn-secondary::after {
+  background: #f1f3f7;
+  color: #4b4b57;
   border: none;
+  border-radius: 999rpx;
+  padding: 22rpx 60rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
 }
-
-.btn-secondary:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: none;
-}
+.btn-secondary::after { border: none; }
+.btn-secondary:active { background: #e7eaf1; }
 
 .btn-danger {
-  background: #ffdad6;
-  color: #93000a;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 20rpx 60rpx;
+  background: #ffe9e6;
+  color: #e5484d;
+  border: none;
+  border-radius: 999rpx;
+  padding: 22rpx 60rpx;
   font-size: 28rpx;
   font-weight: 700;
   text-align: center;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  font-family: 'PingFang SC', monospace;
 }
-
-.btn-danger::after {
-  border: none;
-}
-
-.btn-danger:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: none;
-}
+.btn-danger::after { border: none; }
+.btn-danger:active { background: #ffdbd6; }
 
 .btn-success {
-  background: #c7efa4;
-  color: #0c2000;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 20rpx 60rpx;
+  background: linear-gradient(135deg, #6cc06f 0%, #4ca85f 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 999rpx;
+  padding: 22rpx 60rpx;
   font-size: 28rpx;
   font-weight: 700;
   text-align: center;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  font-family: 'PingFang SC', monospace;
+  box-shadow: 0 12rpx 24rpx rgba(76, 168, 95, 0.28);
 }
+.btn-success::after { border: none; }
+.btn-success:active { transform: translateY(2rpx); box-shadow: 0 6rpx 14rpx rgba(76, 168, 95, 0.22); }
 
-.btn-success::after {
-  border: none;
-}
-
-.btn-success:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: none;
-}
-
+/* ---------- 章节标题：干净的粗体，配小色点 ---------- */
 .section-title {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 700;
-  color: #1d1c15;
-  margin-bottom: 24rpx;
-  padding-left: 18rpx;
-  border-left: 10rpx solid #e6b325;
-  line-height: 1.1;
-  font-family: 'PingFang SC', monospace;
-  letter-spacing: -0.02em;
+  color: #2b2b33;
+  margin: 12rpx 6rpx 20rpx;
+  padding-left: 0;
+  border-left: none;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
 }
+
+/* 彩色胶囊徽章（模板里的 学习习惯/错题归纳 那类标签） */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10rpx 28rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+.pill-green { background: linear-gradient(135deg, #6cc06f, #4ca85f); }
+.pill-orange { background: linear-gradient(135deg, #f9b94e, #f5a623); }
+.pill-purple { background: linear-gradient(135deg, #a78bfa, #8b6fd6); }
+.pill-blue { background: linear-gradient(135deg, #6fa8f5, #4b86ef); }
 
 .empty-tip {
   text-align: center;
-  color: #4e4634;
+  color: #9a9aa7;
   font-size: 28rpx;
   padding: 60rpx 0;
 }
 
 .badge {
   display: inline-block;
-  padding: 4rpx 16rpx;
-  border-radius: 4rpx;
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
   font-size: 22rpx;
   font-weight: 700;
-  border: 2rpx solid #807661;
-  font-family: 'PingFang SC', monospace;
+  border: none;
 }
+.badge-vip { background: #fff3d6; color: #b07a00; }
+.badge-free { background: #eef0f4; color: #8a8a99; }
 
-.badge-vip {
-  background: #e6b325;
-  color: #5e4700;
-}
-
-.badge-free {
-  background: #f2ede2;
-  color: #4e4634;
-}
-
+/* ---------- 表单 ---------- */
 .input-field {
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 20rpx 24rpx;
+  border: 2rpx solid #eceef4;
+  border-radius: 16rpx;
+  padding: 22rpx 24rpx;
   font-size: 28rpx;
-  background: #fef9ed;
+  background: #f7f8fb;
   margin-bottom: 20rpx;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
-  color: #1d1c15;
+  box-shadow: none;
+  color: #2b2b33;
 }
 
 .textarea-field {
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 20rpx 24rpx;
+  border: 2rpx solid #eceef4;
+  border-radius: 16rpx;
+  padding: 22rpx 24rpx;
   font-size: 28rpx;
-  background: #fef9ed;
+  background: #f7f8fb;
   margin-bottom: 20rpx;
   width: 100%;
   min-height: 160rpx;
   box-sizing: border-box;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
-  color: #1d1c15;
+  box-shadow: none;
+  color: #2b2b33;
 }
 
 .divider {
-  height: 4rpx;
-  background: #d2c5ad;
-  margin: 20rpx 0;
+  height: 2rpx;
+  background: #eef0f4;
+  margin: 24rpx 0;
 }
 
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+/* ---------- 布局辅助 ---------- */
+.flex-row { display: flex; flex-direction: row; align-items: center; }
+.flex-between { display: flex; flex-direction: row; align-items: center; justify-content: space-between; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+.flex-1 { flex: 1; }
 
-.flex-between {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-1 {
-  flex: 1;
-}
-
-.pixel-shadow {
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-}
-
-.pixel-border {
-  border: 4rpx solid #807661;
-}
-
-.pixel-btn-shadow {
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #e7e2d6, inset -4rpx -4rpx 0rpx 0rpx #807661;
-  border: 4rpx solid #807661;
-}
-
-.pixel-btn-active:active {
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #807661, inset -4rpx -4rpx 0rpx 0rpx #e7e2d6;
-  transform: translate(4rpx, 4rpx);
-}
+/* ---------- 旧像素类：软化以兼容历史用法 ---------- */
+.pixel-shadow { box-shadow: 0 10rpx 30rpx rgba(80, 95, 130, 0.08); }
+.pixel-border { border: 2rpx solid #eef0f4; }
+.pixel-btn-shadow { box-shadow: 0 8rpx 20rpx rgba(80, 95, 130, 0.10); border: none; }
+.pixel-btn-active:active { transform: translateY(2rpx); }
 
 .progress-block {
   flex: 1;
   height: 100%;
-  border-right: 4rpx solid #807661;
+  border-right: 4rpx solid #ffffff;
   box-sizing: border-box;
 }
-
-.progress-block:last-child {
-  border-right: none;
-}
-
-.progress-block.filled {
-  background-color: #47672c;
-}
-
-.progress-block.empty {
-  background-color: #dedace;
-  border-color: #d2c5ad;
-}
+.progress-block:last-child { border-right: none; }
+.progress-block.filled { background-color: #4ca85f; }
+.progress-block.empty { background-color: #e7ebf2; border-color: #ffffff; }

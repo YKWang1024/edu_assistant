@@ -28,16 +28,17 @@
     "pages/wiki/add"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#775a00",
+    "backgroundTextStyle": "dark",
+    "backgroundColor": "#f3f6fb",
+    "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTitleText": "宝贝成长助手",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "#807661",
-    "selectedColor": "#47672c",
-    "backgroundColor": "#fef9ed",
-    "borderStyle": "black",
+    "color": "#a0a0ad",
+    "selectedColor": "#4ca85f",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",
