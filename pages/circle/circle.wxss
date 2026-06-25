@@ -1,77 +1,98 @@
 .container {
   min-height: 100vh;
-  background: #fef9ed;
+  padding: 0 0 40rpx;
 }
 
-.empty-cta {
-  margin-top: 24rpx;
-  display: inline-block;
+/* ---------- 顶部渐变 banner ---------- */
+.page-header {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6cc06f 0%, #4ca85f 60%, #4b86ef 130%);
+  border-radius: 0 0 36rpx 36rpx;
+  padding: 50rpx 36rpx 40rpx;
+  color: #ffffff;
+  box-shadow: 0 12rpx 30rpx rgba(76, 168, 95, 0.24);
+}
+.page-header::after {
+  content: '';
+  position: absolute;
+  width: 240rpx;
+  height: 240rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  top: -100rpx;
+  right: -50rpx;
+}
+.header-title {
+  position: relative;
+  font-size: 44rpx;
+  font-weight: 800;
+  margin-bottom: 10rpx;
+  text-shadow: 0 2rpx 6rpx rgba(40, 110, 70, 0.25);
+}
+.header-subtitle {
+  position: relative;
+  font-size: 25rpx;
+  opacity: 0.92;
 }
 
-/* 买菜心得入口 + 信息流 */
+/* ---------- 买菜心得入口 ---------- */
 .wiki-entry-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20rpx 24rpx 0;
-  padding: 22rpx 24rpx;
-  background: #fbf0cf;
-  border: 4rpx solid #807661;
-  border-radius: 16rpx;
-  box-shadow: 6rpx 6rpx 0rpx 0rpx rgba(136, 81, 32, 0.18);
+  margin: 24rpx 24rpx 0;
+  padding: 26rpx 28rpx;
+  background: linear-gradient(160deg, #fdf0d9 0%, #fbe3bd 100%);
+  border: none;
+  border-radius: 24rpx;
+  box-shadow: 0 10rpx 26rpx rgba(245, 166, 35, 0.16);
+  transition: transform 0.12s ease;
 }
-.wiki-entry-left { display: flex; align-items: center; gap: 16rpx; }
-.wiki-entry-icon { font-size: 48rpx; }
-.wiki-entry-title { font-size: 30rpx; font-weight: 700; color: #1d1c15; font-family: 'PingFang SC', monospace; }
-.wiki-entry-sub { font-size: 22rpx; color: #807661; margin-top: 4rpx; }
-.wiki-entry-arrow { font-size: 40rpx; color: #807661; font-weight: 700; }
-.wiki-feed {
-  padding: 20rpx 24rpx 0;
+.wiki-entry-card:active { transform: scale(0.98); }
+.wiki-entry-left { display: flex; align-items: center; gap: 18rpx; }
+.wiki-entry-icon {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42rpx;
 }
+.wiki-entry-title { font-size: 30rpx; font-weight: 800; color: #7a5410; }
+.wiki-entry-sub { font-size: 22rpx; color: #b08838; margin-top: 4rpx; }
+.wiki-entry-arrow { font-size: 40rpx; color: #d2a86a; font-weight: 300; }
+
+/* ---------- 心得信息流 ---------- */
+.wiki-feed { padding: 24rpx 24rpx 0; }
 .wiki-feed-title {
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: 700;
-  color: #5e4700;
-  margin-bottom: 12rpx;
-  font-family: 'PingFang SC', monospace;
+  color: #2b2b33;
+  margin: 8rpx 4rpx 16rpx;
 }
 .wiki-feed-card {
-  padding: 20rpx 24rpx;
-  margin-bottom: 16rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 26rpx 28rpx;
+  margin-bottom: 18rpx;
+  box-shadow: 0 8rpx 22rpx rgba(80, 95, 130, 0.07);
 }
-.wiki-feed-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-.wiki-feed-name { font-size: 26rpx; font-weight: 700; color: #1d1c15; }
-.wiki-feed-date { font-size: 22rpx; color: #807661; }
-.wiki-feed-h { font-size: 27rpx; font-weight: 700; color: #1d1c15; margin-top: 8rpx; }
+.wiki-feed-top { display: flex; align-items: baseline; justify-content: space-between; }
+.wiki-feed-name { font-size: 26rpx; font-weight: 700; color: #2b2b33; }
+.wiki-feed-date { font-size: 22rpx; color: #a0a0ad; }
+.wiki-feed-h { font-size: 28rpx; font-weight: 700; color: #2b2b33; margin-top: 10rpx; }
 .wiki-feed-body {
   font-size: 26rpx;
-  color: #1d1c15;
+  color: #5a5a66;
   line-height: 1.7;
   margin-top: 8rpx;
   white-space: pre-wrap;
 }
 
-.page-header {
-  background: linear-gradient(135deg, #775a00 0%, #47672c 100%);
-  padding: 60rpx 30rpx 40rpx;
-  color: #fef9ed;
-}
-
-.header-title {
-  font-size: 48rpx;
-  font-weight: 700;
-  margin-bottom: 10rpx;
-}
-
-.header-subtitle {
-  font-size: 26rpx;
-  opacity: 0.8;
-}
-
+/* ---------- 加载 / 空态 ---------- */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -79,182 +100,96 @@
   justify-content: center;
   padding: 100rpx;
 }
-
 .loading-spinner {
-  width: 60rpx;
-  height: 60rpx;
-  border: 6rpx solid #d2c5ad;
-  border-top-color: #775a00;
+  width: 56rpx;
+  height: 56rpx;
+  border: 6rpx solid #e3e7ef;
+  border-top-color: #4ca85f;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.9s linear infinite;
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading-text {
-  margin-top: 20rpx;
-  font-size: 28rpx;
-  color: #807661;
-}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { margin-top: 20rpx; font-size: 26rpx; color: #a0a0ad; }
 
 .empty-tip {
   text-align: center;
-  padding: 100rpx 40rpx;
+  padding: 90rpx 40rpx;
   font-size: 28rpx;
-  color: #807661;
+  color: #a0a0ad;
 }
+.empty-cta { margin-top: 28rpx; display: inline-block; }
 
-.recipe-list {
-  padding: 20rpx;
-}
+/* ---------- 菜友菜谱卡 ---------- */
+.recipe-list { padding: 24rpx; }
 
 .recipe-card {
-  background: #fef9ed;
-  border: 4rpx solid #807661;
-  border-radius: 16rpx;
-  margin-bottom: 20rpx;
+  background: #ffffff;
+  border: none;
+  border-radius: 28rpx;
+  margin-bottom: 22rpx;
   overflow: hidden;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  box-shadow: 0 10rpx 30rpx rgba(80, 95, 130, 0.08);
+  transition: transform 0.12s ease;
 }
+.recipe-card:active { transform: scale(0.99); }
 
-.card-header {
-  display: flex;
-  align-items: center;
-  padding: 20rpx;
-  gap: 16rpx;
-}
-
-.user-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  border: 3rpx solid #d2c5ad;
-}
-
+.card-header { display: flex; align-items: center; padding: 24rpx 26rpx 16rpx; gap: 16rpx; }
+.user-avatar { width: 76rpx; height: 76rpx; border-radius: 50%; }
 .user-avatar-placeholder {
-  width: 80rpx;
-  height: 80rpx;
+  width: 76rpx;
+  height: 76rpx;
   border-radius: 50%;
-  background: #d2c5ad;
+  background: #eaeef5;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 40rpx;
 }
+.user-info { flex: 1; }
+.user-name { font-size: 29rpx; font-weight: 700; color: #2b2b33; display: block; }
+.share-time { font-size: 22rpx; color: #a0a0ad; }
 
-.user-info {
-  flex: 1;
-}
+.card-body { padding: 0 26rpx 26rpx; }
+.recipe-images { display: flex; gap: 10rpx; margin-bottom: 18rpx; }
+.recipe-image { width: calc(33.33% - 7rpx); height: 200rpx; border-radius: 16rpx; }
 
-.user-name {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #1d1c15;
-  display: block;
-}
-
-.share-time {
-  font-size: 22rpx;
-  color: #807661;
-}
-
-.card-body {
-  padding: 0 20rpx 20rpx;
-}
-
-.recipe-images {
-  display: flex;
-  gap: 8rpx;
-  margin-bottom: 16rpx;
-}
-
-.recipe-image {
-  width: calc(33.33% - 6rpx);
-  height: 200rpx;
-  border-radius: 8rpx;
-  border: 3rpx solid #807661;
-  box-sizing: border-box;
-}
-
-/* 列表卡片依次淡入(只动 opacity，不影响按下反馈) */
-@keyframes feedIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes feedIn { from { opacity: 0; transform: translateY(12rpx); } to { opacity: 1; transform: translateY(0); } }
 .recipe-card, .wiki-feed-card { animation: feedIn 0.4s ease both; }
 .recipe-card:nth-child(2) { animation-delay: 0.05s; }
 .recipe-card:nth-child(3) { animation-delay: 0.10s; }
 .recipe-card:nth-child(4) { animation-delay: 0.15s; }
 
-.recipe-info {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  margin-bottom: 10rpx;
-}
-
-.recipe-name {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #1d1c15;
-}
-
+.recipe-info { display: flex; align-items: center; gap: 16rpx; margin-bottom: 10rpx; }
+.recipe-name { font-size: 32rpx; font-weight: 800; color: #2b2b33; }
 .recipe-category {
-  font-size: 24rpx;
-  color: #fef9ed;
-  background: #47672c;
-  padding: 4rpx 16rpx;
-  border-radius: 8rpx;
+  font-size: 22rpx;
+  color: #4ca85f;
+  background: #e3f4e0;
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  font-weight: 700;
 }
+.recipe-desc { font-size: 25rpx; color: #8a8a97; line-height: 1.6; margin-bottom: 18rpx; }
 
-.recipe-desc {
-  font-size: 26rpx;
-  color: #807661;
-  line-height: 1.5;
-  margin-bottom: 16rpx;
-}
+.recipe-stats { display: flex; gap: 30rpx; }
+.stat-item { display: flex; align-items: center; gap: 8rpx; }
+.stat-icon { font-size: 26rpx; }
+.stat-value { font-size: 25rpx; color: #6b6b7a; font-weight: 600; }
 
-.recipe-stats {
-  display: flex;
-  gap: 30rpx;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-
-.stat-icon {
-  font-size: 28rpx;
-}
-
-.stat-value {
-  font-size: 26rpx;
-  color: #4e4634;
-}
-
+/* ---------- 悬浮按钮 ---------- */
 .share-fab {
   position: fixed;
   right: 30rpx;
   bottom: 200rpx;
   width: 100rpx;
   height: 100rpx;
-  background: #775a00;
+  background: linear-gradient(135deg, #6cc06f, #4ca85f);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.3);
-  border: 4rpx solid #4e3d00;
+  box-shadow: 0 12rpx 28rpx rgba(76, 168, 95, 0.4);
+  border: none;
 }
-
-.fab-icon {
-  font-size: 56rpx;
-  color: #fef9ed;
-  line-height: 1;
-}
-
-.share-fab:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: 4rpx 4rpx 0rpx 0rpx rgba(136, 81, 32, 0.3);
-}
+.fab-icon { font-size: 52rpx; color: #ffffff; line-height: 1; }
+.share-fab:active { transform: scale(0.94); }
