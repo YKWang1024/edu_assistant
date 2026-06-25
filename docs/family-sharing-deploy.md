@@ -59,13 +59,11 @@
 **Phase 8（买菜心得 Wiki + 语音）**：新增集合 `wikis`(权限「仅创建者可读写」)；新增云函数 `saveWiki`、`listWiki`、`deleteWiki`。
 菜友圈页新增「我的买菜心得」入口与「菜友买菜心得」信息流(`listWiki` scope=public)。AI 整理走小程序端 `wx.cloud.extend.AI` 文本模型(同错题课程)。
 
-**语音输入（个人账号无需插件）**：录音 → 上传云存储 → 云函数 `aiVoice` 转文字。需**新增并部署云函数 `aiVoice`**，在其环境变量配置：
-- `AI_VOICE_API_KEY`：语音识别服务的 API Key（必填）
-- `AI_VOICE_BASE_URL`：默认 `https://api.moonshot.ai/v1`（实际请求 `.../audio/transcriptions`）
-- `AI_VOICE_MODEL`：默认 `whisper-1`
-- `AI_VOICE_ENDPOINT`（可选）：完整请求 URL，覆盖拼接
-> ⚠️ **经核实，Kimi/Moonshot 托管 API 目前【没有公开的语音转文字接口】**（Kimi-Audio 是开源模型需自部署）。`aiVoice` 做成「OpenAI 兼容、可配置」，默认指向 Moonshot 以便其将来支持；**若不可用，请把 `AI_VOICE_*` 指向真正的 ASR 服务**：OpenAI Whisper、Groq Whisper，或**腾讯云语音识别(与本 CloudBase 同生态，最稳)**。无论是否配好语音，文字输入始终可用。
-> `app.json` 已移除「微信同声传译」插件声明（个人账号用不了）。
+**语音输入（个人账号无需插件）**：录音 → 上传云存储 → 云函数 `aiVoice` 转文字。需**新增并部署云函数 `aiVoice`**。两种模式（env `AI_VOICE_MODE`）：
+- **`chat`（默认）**：把音频当多模态输入丢给 **Kimi 2.6**，和图片识别 `aiVision` 走同一套 Kimi Code 接口/Key —— **默认复用 `AI_VISION_API_KEY`，通常不用另配 Key**，部署上 `aiVoice` 即可试。
+  - ⚠️ Anthropic 兼容协议官方只有 text/image 块、没有 audio 块；若返回「unknown variant audio / 不支持音频」之类错误，说明 Kimi 接口暂不吃音频 → 改用 transcribe 模式。
+- **`transcribe`**：走「OpenAI 兼容」`/audio/transcriptions`（真正的 ASR）。设 `AI_VOICE_MODE=transcribe` + `AI_VOICE_API_KEY` + `AI_VOICE_BASE_URL`(如 `https://api.openai.com/v1`) + `AI_VOICE_MODEL`(如 `whisper-1`)。腾讯云语音识别(与本 CloudBase 同生态)最稳。
+> 无论语音是否可用，**文字输入始终可用**。`app.json` 已移除「微信同声传译」插件声明（个人账号用不了）。
 
 **视觉识别**：`aiVision`（超时 60s；需在其环境变量配置 `AI_VISION_API_KEY` 等，见 §3）
 
