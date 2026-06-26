@@ -1,0 +1,13 @@
+{
+  "name": "kp-generator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "本地工具：用 Kimi 生成人教版小学知识点图谱，并带结构校验(通过后再上云)。不属于小程序。",
+  "main": "index.js",
+  "bin": {
+    "kp-generator": "index.js"
+  },
+  "scripts": {
+    "validate": "node index.js validate"
+  }
+}
