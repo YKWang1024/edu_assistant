@@ -1,0 +1,16 @@
+{
+  "name": "pdf2questions",
+  "version": "0.1.0",
+  "private": true,
+  "description": "本地工具：把PDF用Kimi大模型整理成分难度/类别/知识点的题目JSON（不属于小程序）",
+  "main": "index.js",
+  "bin": {
+    "pdf2questions": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "pdf-parse": "^1.1.1"
+  }
+}
