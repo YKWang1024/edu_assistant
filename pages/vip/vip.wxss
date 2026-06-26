@@ -120,3 +120,6 @@
   color: #b5b5c0;
   margin-top: 36rpx;
 }
+
+/* REQ-017 设置页标题(替代原用户信息头) */
+.settings-head { font-size: 36rpx; font-weight: 800; color: #2b2b33; padding: 36rpx 8rpx 24rpx; }
