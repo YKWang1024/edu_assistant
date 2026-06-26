@@ -1,5 +1,6 @@
 var englishData = require('../../utils/englishData.js')
 var util = require('../../utils/util.js')
+var app = getApp()
 
 Page({
   data: {
@@ -20,6 +21,11 @@ Page({
     showResult: false,
     currentCorrect: false
   },
+
+  // 练习页停留时长采集(REQ-003)
+  onShow: function () { app.usageEnterPractice('english') },
+  onHide: function () { app.usageLeavePractice() },
+  onUnload: function () { app.usageLeavePractice() },
 
   onSelectMode: function (e) {
     this.setData({ selectedMode: e.currentTarget.dataset.mode })
@@ -53,6 +59,7 @@ Page({
     var questions = this.data.questions
     var selected = questions[idx].options[optionIdx]
     var isCorrect = (selected === questions[idx].answer)
+    app.usageTapInc()
     wx.vibrateShort({ type: isCorrect ? 'light' : 'heavy' })
 
     questions[idx].userAnswer = selected

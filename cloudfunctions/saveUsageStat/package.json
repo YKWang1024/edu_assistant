@@ -1,0 +1,9 @@
+{
+  "name": "saveUsageStat",
+  "version": "1.0.0",
+  "description": "上报学习使用增量统计(练习互动次数/练习停留时长)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

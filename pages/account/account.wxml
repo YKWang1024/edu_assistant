@@ -23,6 +23,26 @@
     </view>
   </view>
 
+  <!-- REQ-003 学习互动统计：仅采集与展示，不做挂机判定 -->
+  <view class="section-title">学习互动 · 练习时长</view>
+  <view class="stats-row">
+    <view class="stat-item card">
+      <view class="stat-value">{{usageTodayTaps}}</view>
+      <view class="stat-label">今日练习互动(次)</view>
+    </view>
+    <view class="stat-item card">
+      <view class="stat-value">{{usageTodayDwellMin}}</view>
+      <view class="stat-label">今日练习时长(分)</view>
+    </view>
+  </view>
+  <view class="usage-card card" wx:if="{{usageDays.length > 0}}">
+    <view class="usage-day" wx:for="{{usageDays}}" wx:key="date">
+      <text class="usage-date">{{item.date}}</text>
+      <text class="usage-meta">互动 {{item.taps}} 次 · 练习 {{item.dwellMin}} 分</text>
+    </view>
+  </view>
+  <view class="empty-tip" wx:else>暂无练习互动数据（孩子在数学/拼音/英语练习时自动记录）</view>
+
   <view class="section-title">最近记录</view>
   <view class="empty-tip" wx:if="{{recentRecords.length === 0}}">
     暂无记录，快去打卡吧！
