@@ -87,3 +87,7 @@
 
 .join-other { text-align: center; }
 .join-text { font-size: 26rpx; color: #6b6b7a; margin-bottom: 18rpx; }
+
+/* 小孩头像(REQ-012) */
+.child-avatar { width: 56rpx; height: 56rpx; border-radius: 50%; margin-right: 14rpx; }
+.child-avatar-ph { width: 56rpx; height: 56rpx; border-radius: 50%; margin-right: 14rpx; background: #eaeef5; text-align: center; line-height: 56rpx; font-size: 32rpx; }

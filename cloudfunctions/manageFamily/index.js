@@ -78,7 +78,12 @@ exports.main = async (event, context) => {
         return { success: false, message: '该称呼已被占用，请换一个' }
       }
       const childId = newChildId()
-      children.push({ childId: childId, name: name, grade: String(event.grade || '').trim(), isDeleted: false, createdAt: new Date() })
+      children.push({
+        childId: childId, name: name, grade: String(event.grade || '').trim(),
+        age: String(event.age || '').trim(),                              // REQ-012 年龄
+        avatar: (typeof event.avatar === 'string') ? event.avatar : '',   // REQ-012 头像 fileID
+        isDeleted: false, createdAt: new Date()
+      })
       await db.collection('families').doc(ctx.familyId).update({ data: { children: children } })
       return { success: true, data: { childId: childId } }
     }
@@ -98,6 +103,8 @@ exports.main = async (event, context) => {
       }
       children[idx].name = newName
       if (event.grade != null) children[idx].grade = String(event.grade).trim()
+      if (event.age != null) children[idx].age = String(event.age).trim()       // REQ-012 年龄
+      if (typeof event.avatar === 'string') children[idx].avatar = event.avatar  // REQ-012 头像 fileID
       await db.collection('families').doc(ctx.familyId).update({ data: { children: children } })
       // 关联：小孩改名 → 同步菜谱里以该小孩署名的打分(小孩无账号, 按旧名匹配)
       if (newName !== oldName) {

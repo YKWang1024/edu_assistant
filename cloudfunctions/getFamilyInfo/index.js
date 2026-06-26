@@ -51,9 +51,10 @@ exports.main = async (event, context) => {
       ;(us.data || []).forEach(function (u) { userMap[u.openid] = u })
     }
 
-    // 头像 fileID → 临时链接
+    // 头像 fileID → 临时链接（成员头像 + 小孩头像 REQ-012）
     const avatarIDs = []
     Object.keys(userMap).forEach(function (k) { if (userMap[k].avatarUrl) avatarIDs.push(userMap[k].avatarUrl) })
+    ;(family.children || []).forEach(function (c) { if (c && c.avatar) avatarIDs.push(c.avatar) })
     const avatarMap = await buildTempUrlMap(avatarIDs)
 
     const members = rawMembers.map(function (m) {
@@ -68,10 +69,18 @@ exports.main = async (event, context) => {
       }
     })
 
-    // 无账号的小孩成员（妹妹/姐姐等），软删除的不返回
+    // 无账号的小孩成员（妹妹/姐姐等），软删除的不返回。含年龄/头像(REQ-012)
     const children = (family.children || [])
       .filter(function (c) { return c && !c.isDeleted })
-      .map(function (c) { return { childId: c.childId, name: c.name, grade: c.grade || '' } })
+      .map(function (c) {
+        return {
+          childId: c.childId,
+          name: c.name,
+          grade: c.grade || '',
+          age: c.age || '',
+          avatar: c.avatar ? (avatarMap[c.avatar] || c.avatar) : ''
+        }
+      })
 
     // 补全家庭码：无论谁查看、家庭如何创建，都保证有码可见
     let inviteCode = family.inviteCode || ''
