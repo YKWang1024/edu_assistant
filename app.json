@@ -61,7 +61,7 @@
       },
       {
         "pagePath": "pages/vip/vip",
-        "text": "我的",
+        "text": "设置",
         "iconPath": "images/user.png",
         "selectedIconPath": "images/user-active.png"
       }
