@@ -4,6 +4,7 @@
     "ignore": [
       { "type": "folder", "value": "stitch" },
       { "type": "folder", "value": "docs" },
+      { "type": "folder", "value": "tools" },
       { "type": "suffix", "value": ".md" }
     ],
     "include": []
