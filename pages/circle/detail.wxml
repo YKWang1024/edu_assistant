@@ -24,14 +24,27 @@
       <text class="recipe-category">{{recipe.category}}</text>
     </view>
 
-    <view class="recipe-stats">
+    <view class="recipe-stats" bindtap="onToggleRatings">
       <view class="stat-item">
         <text class="stat-icon">⭐</text>
         <text class="stat-value">{{recipe.avgScore || 0}}分</text>
       </view>
       <view class="stat-item">
         <text class="stat-icon">👨🍳</text>
-        <text class="stat-value">{{recipe.ratings ? recipe.ratings.length : 0}}人评分</text>
+        <text class="stat-value">{{ratingCount}}人评分</text>
+      </view>
+      <text class="stat-toggle" wx:if="{{ratingCount > 0}}">{{showRatings ? '收起 ▲' : '查看全部评分 ▼'}}</text>
+    </view>
+
+    <!-- 全部评分(菜友圈全局可见，REQ-009)：评分人/分数/评价/时间 -->
+    <view class="ratings-panel" wx:if="{{showRatings && ratingCount > 0}}">
+      <view class="rating-row" wx:for="{{ratingList}}" wx:key="id">
+        <view class="rating-line1">
+          <text class="rating-name">{{item.memberName}}</text>
+          <text class="rating-score">{{item.score}}分</text>
+        </view>
+        <view class="rating-comment" wx:if="{{item.comment}}">{{item.comment}}</view>
+        <text class="rating-time">{{item.date}} {{item.time}}</text>
       </view>
     </view>
 
