@@ -272,3 +272,25 @@
 
 /* 当前小孩头像(REQ-012) */
 .hero-avatar-img { background: transparent; }
+
+/* 成长轨迹卡(REQ-017/018) */
+.growth {
+  margin: 8rpx 0 28rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
+  padding: 28rpx 28rpx 24rpx;
+  box-shadow: 0 8rpx 22rpx rgba(80, 110, 170, 0.08);
+}
+.growth-head { display: flex; align-items: baseline; gap: 14rpx; margin-bottom: 22rpx; }
+.growth-title { font-size: 30rpx; font-weight: 800; color: #2b2b33; }
+.growth-sub { font-size: 22rpx; color: #a0a0ad; }
+.growth-stats { display: flex; gap: 16rpx; }
+.g-stat { flex: 1; text-align: center; background: #f7f9fc; border-radius: 18rpx; padding: 22rpx 8rpx; }
+.g-val { font-size: 38rpx; font-weight: 800; color: #4ca85f; }
+.g-lab { font-size: 22rpx; color: #8a8a97; margin-top: 6rpx; }
+.growth-dishes { margin-top: 20rpx; }
+.g-dish { display: flex; justify-content: space-between; align-items: center; padding: 14rpx 0; border-bottom: 2rpx solid #f0f0f4; }
+.g-dish:last-child { border-bottom: none; }
+.g-dish-name { font-size: 26rpx; color: #2b2b33; }
+.g-dish-score { font-size: 26rpx; font-weight: 700; color: #f5a623; }
+.growth-empty { margin-top: 20rpx; font-size: 24rpx; color: #a0a0ad; text-align: center; line-height: 1.6; }

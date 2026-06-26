@@ -47,6 +47,35 @@
     </view>
   </view>
 
+  <!-- 成长轨迹(REQ-017 迁自设置页 + REQ-018 综合内容) -->
+  <view class="growth">
+    <view class="growth-head">
+      <text class="growth-title">🌱 成长轨迹</text>
+      <text class="growth-sub">最近的学习与生活表现</text>
+    </view>
+    <view class="growth-stats">
+      <view class="g-stat">
+        <view class="g-val">{{likedCount}}</view>
+        <view class="g-lab">爱吃的菜</view>
+      </view>
+      <view class="g-stat">
+        <view class="g-val">{{ratingCount}}</view>
+        <view class="g-lab">我的评分</view>
+      </view>
+      <view class="g-stat">
+        <view class="g-val">{{wrongMastered}}/{{wrongTotal}}</view>
+        <view class="g-lab">错题已巩固</view>
+      </view>
+    </view>
+    <view class="growth-dishes" wx:if="{{topDishes.length > 0}}">
+      <view class="g-dish" wx:for="{{topDishes}}" wx:key="id">
+        <text class="g-dish-name">🍽️ {{item.name}}</text>
+        <text class="g-dish-score">{{item.avgScore}}分</text>
+      </view>
+    </view>
+    <view class="growth-empty" wx:if="{{!hasGrowth}}">多记录菜谱评分与错题，这里会长出你的成长轨迹～</view>
+  </view>
+
   <!-- 一键小测 CTA -->
   <view class="quiz-cta" bindtap="onTapDailyQuiz">
     <view class="quiz-left">

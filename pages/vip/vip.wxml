@@ -1,24 +1,6 @@
 <view class="profile">
-  <!-- 用户头 -->
-  <view class="p-hero">
-    <view class="p-hero-blob p-hero-blob-1"></view>
-    <view class="p-hero-blob p-hero-blob-2"></view>
-    <view class="p-avatar">🧒</view>
-    <view class="p-info">
-      <view class="p-name">{{childName}}</view>
-      <view class="p-meta">Lv.{{level}}<text class="p-dot">·</text>成长值 {{gameMinutes}}</view>
-    </view>
-  </view>
-
-  <!-- 成长档案高亮卡 -->
-  <view class="archive" bindtap="onViewWrong">
-    <view class="archive-blob"></view>
-    <view class="archive-text">
-      <view class="archive-title">成长档案</view>
-      <view class="archive-sub">记录你的成长点滴 · 错题与练习</view>
-    </view>
-    <view class="archive-emoji">📈</view>
-  </view>
+  <!-- REQ-017：设置页隐藏用户信息与成长曲线入口；成长曲线已迁至首页。此处仅保留纯设置项。 -->
+  <view class="settings-head">设置</view>
 
   <!-- 设置列表 -->
   <view class="menu card">

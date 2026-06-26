@@ -11,6 +11,13 @@ Page({
     streak: 0,
     doneCount: 0,
     progressPct: 0,
+    // 成长轨迹(REQ-017 迁到首页 + REQ-018 综合内容：爱吃的菜/评分/错题)
+    likedCount: 0,      // 高分(爱吃的)菜品数
+    ratingCount: 0,     // 累计给出的评分数
+    topDishes: [],      // 高分菜 Top3
+    wrongTotal: 0,      // 错题累积
+    wrongMastered: 0,   // 已巩固错题
+    hasGrowth: false,
     todayChecked: {
       school: false,
       homework: false,
@@ -36,6 +43,45 @@ Page({
       that.setData({ childName: app.getCurrentChild(), childAvatar: that.currentChildAvatar() })
     })
     this.checkTodayStatus()
+    this.loadGrowth()
+  },
+
+  // 成长轨迹(REQ-018)：综合 爱吃的菜+评分(菜谱) 与 错题累积/已巩固(错题本)
+  loadGrowth: function () {
+    var that = this
+    if (!app.globalData.cloudReady) return
+    // 1) 菜谱评分：高分菜(爱吃的) + 累计评分数
+    app.callCloudFunction('listRecipes', {}, function (res) {
+      var recipes = (res && res.success) ? (res.data || []) : []
+      var ratingCount = 0
+      var dishes = []
+      recipes.forEach(function (r) {
+        var active = (r.ratings || []).filter(function (x) { return !x.deleted })
+        ratingCount += active.length
+        var avg = Number(r.avgScore) || 0
+        if (avg > 0) dishes.push({ id: r._id, name: r.name, avgScore: avg })
+      })
+      dishes.sort(function (a, b) { return b.avgScore - a.avgScore })
+      var liked = dishes.filter(function (d) { return d.avgScore >= 4 })
+      that.setData({
+        ratingCount: ratingCount,
+        likedCount: liked.length,
+        topDishes: dishes.slice(0, 3)
+      })
+      that.refreshGrowthFlag()
+    })
+    // 2) 错题：累积 + 已巩固(status mastered)，按当前小孩
+    app.callCloudFunction('listExamQuestions', { childName: app.getCurrentChild() }, function (res) {
+      var list = (res && res.success) ? (res.data || []) : []
+      var mastered = list.filter(function (q) { return q.status === 'mastered' }).length
+      that.setData({ wrongTotal: list.length, wrongMastered: mastered })
+      that.refreshGrowthFlag()
+    })
+  },
+
+  refreshGrowthFlag: function () {
+    var d = this.data
+    this.setData({ hasGrowth: (d.ratingCount > 0 || d.topDishes.length > 0 || d.wrongTotal > 0) })
   },
 
   // 取当前小孩头像(来自家庭数据，已在 getFamilyInfo 转临时链接)
