@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/ai/ai",
     "pages/math/math",
     "pages/math/result",
     "pages/pinyin/pinyin",
@@ -58,12 +57,6 @@
         "text": "菜谱",
         "iconPath": "images/recipe.png",
         "selectedIconPath": "images/recipe-active.png"
-      },
-      {
-        "pagePath": "pages/ai/ai",
-        "text": "AI建议",
-        "iconPath": "images/ai.png",
-        "selectedIconPath": "images/ai-active.png"
       },
       {
         "pagePath": "pages/vip/vip",

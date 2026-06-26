@@ -78,10 +78,6 @@ Page({
     wx.navigateTo({ url: '/pages/family/manage' })
   },
 
-  onTapAI: function () {
-    wx.switchTab({ url: '/pages/ai/ai' })
-  },
-
   onTapMath: function () {
     wx.navigateTo({ url: '/pages/math/math' })
   },
