@@ -6,6 +6,7 @@ Page({
     childName: '宝贝',
     level: 1,
     gameMinutes: 0,
+    studyMinutes: 0,
     streak: 0,
     doneCount: 0,
     progressPct: 0,
@@ -23,7 +24,8 @@ Page({
     this.setData({
       childName: app.getCurrentChild(),
       gameMinutes: cached,
-      level: this.calcLevel(cached)
+      level: this.calcLevel(cached),
+      studyMinutes: app.getTodayStudyMinutes()
     })
     app.refreshGameTime(function (balance) {
       that.setData({ gameMinutes: balance, level: that.calcLevel(balance) })

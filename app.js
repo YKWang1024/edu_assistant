@@ -13,9 +13,49 @@ App({
   onLaunch: function () {
     // 先加载本地数据，确保应用能正常启动
     this.loadLocalData()
-    
+
     // 异步初始化云开发，不阻塞启动
     this.initCloud()
+  },
+
+  // ---------------- 学习时长监控(REQ-003，开发中) ----------------
+  // 说明：在小程序内只能统计「前台在线时长」。切到后台/切出由 onHide 触发并累计。
+  // 待办(见表中 CC的反馈)：有效交互统计(区分真学习/挂机)、长时间无操作告警、每日报告页+导出、跨设备上云。
+  onShow: function () {
+    this._fgStart = Date.now()
+  },
+
+  onHide: function () {
+    this._accumulateStudy()
+    this._fgStart = 0
+  },
+
+  _studyTodayStr: function () {
+    var d = new Date(Date.now() + 8 * 3600 * 1000)
+    function p(n) { return (n < 10 ? '0' : '') + n }
+    return d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate())
+  },
+
+  // 把当前前台时段并入今日累计(按 UTC+8 日切)
+  _accumulateStudy: function () {
+    if (!this._fgStart) return
+    var add = Math.floor((Date.now() - this._fgStart) / 1000)
+    this._fgStart = Date.now()
+    if (add <= 0) return
+    var today = this._studyTodayStr()
+    var rec = { date: today, seconds: 0 }
+    try { var s = wx.getStorageSync('studyTime'); if (s && s.date === today) rec = s } catch (e) {}
+    rec.seconds += add
+    try { wx.setStorageSync('studyTime', rec) } catch (e) {}
+  },
+
+  // 今日前台在线学习时长(分钟)。读取时把当前进行中的时段也并入。
+  getTodayStudyMinutes: function () {
+    this._accumulateStudy()
+    var today = this._studyTodayStr()
+    var sec = 0
+    try { var s = wx.getStorageSync('studyTime'); if (s && s.date === today) sec = s.seconds } catch (e) {}
+    return Math.floor(sec / 60)
   },
 
   initCloud: function () {

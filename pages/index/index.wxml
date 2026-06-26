@@ -23,7 +23,7 @@
         <text class="energy-val">{{doneCount}}/3</text>
       </view>
       <view class="energy-bar"><view class="energy-fill" style="width:{{progressPct}}%"></view></view>
-      <view class="energy-tip">完成今日打卡与小测，点亮全部能量 ⚡</view>
+      <view class="energy-tip">今日在线学习 {{studyMinutes}} 分钟 · 完成打卡与小测点亮能量 ⚡</view>
     </view>
   </view>
 
