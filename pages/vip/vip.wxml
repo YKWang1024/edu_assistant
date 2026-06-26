@@ -22,11 +22,6 @@
 
   <!-- 设置列表 -->
   <view class="menu card">
-    <view class="menu-item" bindtap="onGoAI">
-      <view class="menu-left"><view class="menu-ic ic-blue">🤖</view><text class="menu-name">AI 学习建议</text></view>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="menu-sep"></view>
     <view class="menu-item" bindtap="onViewWrong">
       <view class="menu-left"><view class="menu-ic ic-purple">📒</view><text class="menu-name">我的错题本</text></view>
       <text class="menu-arrow">›</text>

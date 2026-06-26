@@ -60,6 +60,12 @@
         "selectedIconPath": "images/recipe-active.png"
       },
       {
+        "pagePath": "pages/ai/ai",
+        "text": "AI建议",
+        "iconPath": "images/ai.png",
+        "selectedIconPath": "images/ai-active.png"
+      },
+      {
         "pagePath": "pages/vip/vip",
         "text": "我的",
         "iconPath": "images/user.png",

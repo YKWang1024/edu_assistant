@@ -79,7 +79,7 @@ Page({
   },
 
   onTapAI: function () {
-    wx.navigateTo({ url: '/pages/ai/ai' })
+    wx.switchTab({ url: '/pages/ai/ai' })
   },
 
   onTapMath: function () {
