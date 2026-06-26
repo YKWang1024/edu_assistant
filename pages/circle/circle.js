@@ -1,4 +1,5 @@
 const app = getApp()
+var config = require('../../config/ai.js')
 
 Page({
   data: {
@@ -8,59 +9,47 @@ Page({
     refreshing: false
   },
 
-  onLoad: function () {
+  // 每次进入菜友圈都刷新，能及时看到新分享的菜/心得
+  onShow: function () {
     this.loadFriendRecipes()
     this.loadWikis()
+  },
+
+  loadFriendRecipes: function () {
+    var that = this
+    if (!app.globalData.cloudReady) { that.setData({ loading: false }); return }
+    if (!that.data.refreshing) that.setData({ loading: true })
+    // 菜友圈是公共池：getFriendRecipes 以管理员身份读所有 isPublic 菜谱，不需登录态
+    app.callCloudFunction('getFriendRecipes', {}, function (res) {
+      that.setData({ loading: false, refreshing: false })
+      if (res && res.success) {
+        that.setData({ recipes: res.data || res.recipes || [] })
+      } else {
+        var msg = (res && res.message) || '获取失败'
+        if (config.DEBUG) {
+          wx.showModal({ title: '菜友圈加载失败(调试)', content: msg + (res && res.error ? ('\n' + res.error) : ''), showCancel: false })
+        } else {
+          wx.showToast({ title: msg, icon: 'none' })
+        }
+      }
+    })
   },
 
   loadWikis: function () {
     var that = this
     if (!app.globalData.cloudReady) return
-    wx.cloud.callFunction({
-      name: 'listWiki',
-      data: { scope: 'public' },
-      success: function (res) {
-        if (res.result && res.result.success) that.setData({ wikis: res.result.data || [] })
-      }
+    app.callCloudFunction('listWiki', { scope: 'public' }, function (res) {
+      if (res && res.success) that.setData({ wikis: res.data || [] })
     })
   },
 
-  onGoWiki: function () {
-    wx.navigateTo({ url: '/pages/wiki/wiki' })
-  },
-
-  loadFriendRecipes: function () {
-    if (!app.globalData.isLoggedIn) {
-      wx.showToast({ title: '请先登录', icon: 'none' })
-      return
-    }
-
-    this.setData({ loading: true })
-
-    wx.cloud.callFunction({
-      name: 'getFriendRecipes',
-      success: function (res) {
-        if (res.result && res.result.success) {
-          // getFriendRecipes 返回的是 data 字段（旧代码误读 recipes，导致永远为空）
-          var list = res.result.data || res.result.recipes || []
-          this.setData({ recipes: list })
-        } else {
-          wx.showToast({ title: (res.result && res.result.message) || '获取失败', icon: 'none' })
-        }
-      }.bind(this),
-      fail: function () {
-        wx.showToast({ title: '获取失败', icon: 'none' })
-      },
-      complete: function () {
-        this.setData({ loading: false, refreshing: false })
-      }.bind(this)
-    })
-  },
-
-  onRefresh: function () {
+  // 下拉刷新
+  onPullDownRefresh: function () {
+    var that = this
     this.setData({ refreshing: true })
     this.loadFriendRecipes()
     this.loadWikis()
+    setTimeout(function () { wx.stopPullDownRefresh() }, 600)
   },
 
   onViewRecipe: function (e) {
@@ -68,6 +57,10 @@ Page({
     wx.navigateTo({
       url: '/pages/circle/detail?recipe=' + encodeURIComponent(JSON.stringify(recipe))
     })
+  },
+
+  onGoWiki: function () {
+    wx.navigateTo({ url: '/pages/wiki/wiki' })
   },
 
   onGoRecipe: function () {

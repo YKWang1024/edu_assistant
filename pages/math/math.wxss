@@ -1,218 +1,82 @@
-.select-header {
-  text-align: center;
-  padding: 48rpx 0 36rpx;
-}
+/* ========== 数学速算 · 柔和绿色「学习习惯」风 ========== */
+.select-header { text-align: center; padding: 48rpx 0 36rpx; }
+.select-title { font-size: 46rpx; font-weight: 800; color: #2b2b33; margin-bottom: 12rpx; letter-spacing: -0.02em; }
+.select-desc { font-size: 26rpx; color: #a0a0ad; }
 
-.select-title {
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #775a00;
-  margin-bottom: 12rpx;
-  font-family: 'PingFang SC', monospace;
-  letter-spacing: -0.02em;
-}
-
-.select-desc {
-  font-size: 26rpx;
-  color: #807661;
-  font-family: 'PingFang SC', monospace;
-}
-
-.level-list {
-  margin-bottom: 40rpx;
-}
-
+.level-list { margin-bottom: 40rpx; }
 .level-item {
   display: flex;
   align-items: center;
-  background: #fef9ed;
-  border-radius: 12rpx;
-  padding: 30rpx 24rpx;
-  margin-bottom: 16rpx;
-  border: 4rpx solid #807661;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  transition: all 0.15s;
-  font-family: 'PingFang SC', monospace;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 30rpx 26rpx;
+  margin-bottom: 18rpx;
+  border: 3rpx solid transparent;
+  box-shadow: 0 8rpx 22rpx rgba(80, 95, 130, 0.07);
+  transition: transform 0.12s ease;
 }
-
-.level-item:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: none;
-}
-
-.level-item.active {
-  border-color: #e6b325;
-  background: #fef9ed;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-}
-
+.level-item:active { transform: scale(0.985); }
+.level-item.active { border-color: #4ca85f; background: #f4faf3; }
 .level-icon {
-  font-size: 48rpx;
-  margin-right: 20rpx;
+  width: 84rpx; height: 84rpx; border-radius: 22rpx;
+  background: #e3f4e0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44rpx; margin-right: 22rpx; flex-shrink: 0;
 }
+.level-info { flex: 1; }
+.level-name { font-size: 30rpx; font-weight: 700; color: #2b2b33; margin-bottom: 4rpx; }
+.level-desc { font-size: 24rpx; color: #9a9aa7; }
+.level-check { font-size: 36rpx; color: #4ca85f; font-weight: 800; }
+.start-btn { width: 86%; margin: 0 auto; }
 
-.level-info {
-  flex: 1;
-}
-
-.level-name {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #775a00;
-  margin-bottom: 4rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.level-desc {
-  font-size: 24rpx;
-  color: #807661;
-  font-family: 'PingFang SC', monospace;
-}
-
-.level-check {
-  font-size: 32rpx;
-  color: #e6b325;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
-.start-btn {
-  width: 80%;
-  margin: 0 auto;
-}
-
+/* 练习模式 */
 .progress-bar {
   height: 16rpx;
-  background: #dedace;
-  border-radius: 4rpx;
-  border: 4rpx solid #807661;
+  background: #e9edf4;
+  border-radius: 999rpx;
+  border: none;
   overflow: hidden;
   margin-bottom: 16rpx;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
 }
-
-.progress-fill {
-  height: 100%;
-  background: #47672c;
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  text-align: center;
-  color: #807661;
-  font-size: 26rpx;
-  margin-bottom: 40rpx;
-  font-family: 'PingFang SC', monospace;
-  font-weight: 700;
-}
+.progress-fill { height: 100%; background: linear-gradient(90deg, #6cc06f, #4ca85f); transition: width 0.3s ease; }
+.progress-text { text-align: center; color: #a0a0ad; font-size: 26rpx; margin-bottom: 40rpx; font-weight: 700; }
 
 .question-card {
-  background: #fef9ed;
-  border-radius: 16rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
   padding: 60rpx 30rpx;
   text-align: center;
-  border: 4rpx solid #807661;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  border: none;
+  box-shadow: 0 10rpx 30rpx rgba(80, 95, 130, 0.08);
   margin-bottom: 50rpx;
 }
+.question-text { display: flex; align-items: center; justify-content: center; gap: 16rpx; }
+.num { font-size: 84rpx; font-weight: 800; color: #2b2b33; }
+.operator { font-size: 60rpx; font-weight: 800; color: #4ca85f; margin: 0 8rpx; }
+.placeholder { color: #c6c6d0; }
 
-.question-text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16rpx;
-}
-
-.num {
-  font-size: 80rpx;
-  font-weight: 700;
-  color: #775a00;
-  font-family: 'PingFang SC', monospace;
-}
-
-.operator {
-  font-size: 60rpx;
-  font-weight: 700;
-  color: #e6b325;
-  margin: 0 8rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.placeholder {
-  color: #d2c5ad;
-}
-
-.options-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20rpx;
-  padding: 0 20rpx;
-  margin-bottom: 30rpx;
-}
-
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20rpx; padding: 0 20rpx; margin-bottom: 30rpx; }
 .option-btn {
   height: 148rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fef9ed;
-  border: 4rpx solid #807661;
-  border-radius: 12rpx;
+  background: #ffffff;
+  border: 2rpx solid #eceef4;
+  border-radius: 24rpx;
   font-size: 56rpx;
-  font-weight: 700;
-  color: #775a00;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.4), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  font-family: 'PingFang SC', monospace;
-  transition: all 0.1s;
+  font-weight: 800;
+  color: #2b2b33;
+  box-shadow: 0 8rpx 22rpx rgba(80, 95, 130, 0.07);
+  transition: transform 0.1s ease;
 }
+.option-btn:active { transform: scale(0.97); }
+.option-btn.correct { background: #e8f6e7; border-color: #4ca85f; color: #3f8d57; }
+.option-btn.wrong { background: #ffe9e6; border-color: #e5484d; color: #e5484d; }
+.option-btn.show-correct { background: #e8f6e7; border-color: #4ca85f; color: #3f8d57; }
 
-.option-btn:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(0, 0, 0, 0.1);
-}
-
-.option-btn.correct {
-  background: #c7efa4;
-  border-color: #47672c;
-  color: #47672c;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.3), 8rpx 8rpx 0rpx 0rpx rgba(71, 103, 44, 0.2);
-}
-
-.option-btn.wrong {
-  background: #f3ab72;
-  border-color: #885120;
-  color: #885120;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(0, 0, 0, 0.1), 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-}
-
-.option-btn.show-correct {
-  background: #c7efa4;
-  border-color: #47672c;
-  color: #47672c;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.3), 8rpx 8rpx 0rpx 0rpx rgba(71, 103, 44, 0.2);
-}
-
-@keyframes tipPop {
-  0% { transform: scale(0.8); opacity: 0; }
-  70% { transform: scale(1.08); }
-  100% { transform: scale(1); opacity: 1; }
-}
-.result-tip {
-  text-align: center;
-  padding: 10rpx 0;
-  animation: tipPop 0.3s ease;
-}
-
-.tip-text {
-  font-size: 30rpx;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
-.tip-correct {
-  color: #47672c;
-}
-
-.tip-wrong {
-  color: #885120;
-}
+@keyframes tipPop { 0% { transform: scale(0.8); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.result-tip { text-align: center; padding: 10rpx 0; animation: tipPop 0.3s ease; }
+.tip-text { font-size: 30rpx; font-weight: 700; }
+.tip-correct { color: #4ca85f; }
+.tip-wrong { color: #e5484d; }

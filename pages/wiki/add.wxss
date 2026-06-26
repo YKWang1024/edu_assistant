@@ -1,48 +1,33 @@
-.field-label {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #5e4700;
-  margin: 16rpx 0 12rpx;
-  font-family: 'PingFang SC', monospace;
-}
+.field-label { font-size: 26rpx; font-weight: 700; color: #6b6b7a; margin: 18rpx 0 12rpx; }
 .voice-btn {
   width: 100%;
   margin-top: 18rpx;
-  background: #47672c;
-  color: #fef9ed;
-  border: 4rpx solid #2d441a;
-  border-radius: 12rpx;
+  background: linear-gradient(135deg, #6cc06f, #4ca85f);
+  color: #ffffff;
+  border: none;
+  border-radius: 999rpx;
   font-size: 30rpx;
   font-weight: 700;
-  padding: 20rpx 0;
+  padding: 22rpx 0;
+  box-shadow: 0 10rpx 22rpx rgba(76, 168, 95, 0.26);
 }
-.voice-btn.on {
-  background: #ba1a1a;
-  border-color: #93000a;
-}
-.voice-tip {
-  font-size: 24rpx;
-  color: #807661;
-  margin-top: 14rpx;
-}
+.voice-btn::after { border: none; }
+.voice-btn.on { background: linear-gradient(135deg, #ff6b6b, #e5484d); box-shadow: 0 10rpx 22rpx rgba(229, 72, 77, 0.3); }
+.voice-tip { font-size: 24rpx; color: #a0a0ad; margin-top: 14rpx; text-align: center; }
 .organize-btn {
   width: 100%;
   margin-top: 18rpx;
+  background: linear-gradient(135deg, #f9b94e, #f5a623);
+  color: #ffffff;
+  box-shadow: 0 10rpx 22rpx rgba(245, 166, 35, 0.26);
 }
 .share-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 24rpx;
-  padding-top: 16rpx;
-  border-top: 2rpx solid #ece5d6;
+  padding-top: 18rpx;
+  border-top: 2rpx solid #f1f3f7;
 }
-.share-label {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #1d1c15;
-}
-.save-btn {
-  width: 100%;
-  margin-top: 28rpx;
-}
+.share-label { font-size: 28rpx; font-weight: 700; color: #2b2b33; }
+.save-btn { width: 100%; margin-top: 28rpx; }

@@ -1,103 +1,50 @@
 .container {
   padding: 40rpx 30rpx;
   min-height: 100vh;
-  background: linear-gradient(180deg, #fef9ed 0%, #f2ede2 100%);
+  background: linear-gradient(180deg, #eaf3fb 0%, #f3f6fb 100%);
 }
 
 .auth-card {
-  background: #fef9ed;
-  border: 4rpx solid #807661;
-  border-radius: 16rpx;
+  background: #ffffff;
+  border: none;
+  border-radius: 32rpx;
   padding: 60rpx 40rpx;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  box-shadow: 0 16rpx 40rpx rgba(80, 95, 130, 0.10);
 }
 
-.auth-header {
-  text-align: center;
-  margin-bottom: 40rpx;
-}
+.auth-header { text-align: center; margin-bottom: 40rpx; }
+.title { font-size: 48rpx; font-weight: 800; color: #2b2b33; margin-bottom: 10rpx; letter-spacing: -0.02em; }
+.subtitle { font-size: 26rpx; color: #a0a0ad; }
 
-.title {
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #775a00;
-  margin-bottom: 10rpx;
-}
-
-.subtitle {
-  font-size: 26rpx;
-  color: #807661;
-}
-
-.form-group {
-  margin-bottom: 30rpx;
-}
-
-.form-label {
-  font-size: 28rpx;
-  color: #4e4634;
-  margin-bottom: 12rpx;
-}
-
+.form-group { margin-bottom: 30rpx; }
+.form-label { font-size: 28rpx; color: #6b6b7a; margin-bottom: 12rpx; font-weight: 600; }
 .form-input {
   width: 100%;
-  height: 88rpx;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 0 20rpx;
+  height: 92rpx;
+  border: 2rpx solid #eceef4;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
   font-size: 30rpx;
-  background: #fef9ed;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
+  background: #f7f8fb;
+  box-sizing: border-box;
 }
 
 .avatar-upload {
   width: 200rpx;
   height: 200rpx;
-  border: 4rpx dashed #807661;
+  border: 3rpx dashed #cdd2dc;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: #f7f8fb;
 }
+.avatar-preview { width: 100%; height: 100%; }
+.avatar-placeholder { display: flex; flex-direction: column; align-items: center; gap: 10rpx; }
+.upload-icon { font-size: 48rpx; }
+.upload-text { font-size: 22rpx; color: #a0a0ad; }
 
-.avatar-preview {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatar-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10rpx;
-}
-
-.upload-icon {
-  font-size: 48rpx;
-}
-
-.upload-text {
-  font-size: 22rpx;
-  color: #807661;
-}
-
-.auth-btn {
-  width: 100%;
-  height: 96rpx;
-  line-height: 96rpx;
-  font-size: 32rpx;
-  margin-bottom: 20rpx;
-}
-
-.switch-mode {
-  text-align: center;
-  font-size: 26rpx;
-  color: #775a00;
-  padding: 16rpx;
-}
-
-.switch-mode:active {
-  opacity: 0.7;
-}
+.auth-btn { width: 100%; height: 96rpx; line-height: 96rpx; font-size: 32rpx; margin-bottom: 20rpx; }
+.switch-mode { text-align: center; font-size: 26rpx; color: #4ca85f; padding: 16rpx; font-weight: 600; }
+.switch-mode:active { opacity: 0.7; }

@@ -1,253 +1,80 @@
-.select-header {
-  text-align: center;
-  padding: 40rpx 0 30rpx;
-}
+/* ========== 英语测试 · 柔和绿色风 ========== */
+.select-header { text-align: center; padding: 40rpx 0 30rpx; }
+.select-title { font-size: 44rpx; font-weight: 800; color: #2b2b33; margin-bottom: 10rpx; letter-spacing: -0.02em; }
+.select-desc { font-size: 26rpx; color: #a0a0ad; }
+.section-label { font-size: 28rpx; font-weight: 700; color: #2b2b33; margin-bottom: 16rpx; padding-left: 8rpx; }
 
-.select-title {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #775a00;
-  margin-bottom: 10rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.select-desc {
-  font-size: 26rpx;
-  color: #4e4634;
-  font-family: 'PingFang SC', monospace;
-}
-
-.section-label {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #775a00;
-  margin-bottom: 16rpx;
-  padding-left: 8rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.mode-list {
-  margin-bottom: 30rpx;
-}
-
+.mode-list { margin-bottom: 30rpx; }
 .mode-item {
   display: flex;
   align-items: center;
-  background: #fef9ed;
-  border-radius: 16rpx;
+  background: #ffffff;
+  border-radius: 22rpx;
   padding: 24rpx;
   margin-bottom: 16rpx;
-  border: 4rpx solid #807661;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  transition: transform 0.1s, box-shadow 0.1s;
+  border: 3rpx solid transparent;
+  box-shadow: 0 8rpx 22rpx rgba(80, 95, 130, 0.07);
+  transition: transform 0.12s ease;
 }
-
-.mode-item:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: none;
-}
-
-.mode-item.active {
-  border-color: #775a00;
-  background: #f2ede2;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-}
-
-.mode-item.active:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #d2c5ad;
-}
-
+.mode-item:active { transform: scale(0.985); }
+.mode-item.active { border-color: #4ca85f; background: #f4faf3; }
 .mode-icon {
-  font-size: 40rpx;
-  margin-right: 16rpx;
+  width: 72rpx; height: 72rpx; border-radius: 18rpx;
+  background: #e2eefe;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38rpx; margin-right: 18rpx; flex-shrink: 0;
 }
+.mode-info { flex: 1; }
+.mode-name { font-size: 28rpx; font-weight: 700; color: #2b2b33; margin-bottom: 4rpx; }
+.mode-desc { font-size: 22rpx; color: #9a9aa7; }
+.mode-check { font-size: 30rpx; color: #4ca85f; font-weight: 800; }
+.start-btn { width: 86%; margin: 20rpx auto 0; }
 
-.mode-info {
-  flex: 1;
-}
-
-.mode-name {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #1d1c15;
-  margin-bottom: 4rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.mode-desc {
-  font-size: 22rpx;
-  color: #4e4634;
-  font-family: 'PingFang SC', monospace;
-}
-
-.mode-check {
-  font-size: 30rpx;
-  color: #e6b325;
-  font-weight: 700;
-}
-
-.start-btn {
-  width: 80%;
-  margin: 20rpx auto 0;
-}
-
-.progress-bar {
-  height: 16rpx;
-  background: #dedace;
-  border-radius: 8rpx;
-  overflow: hidden;
-  margin-bottom: 16rpx;
-  border: 4rpx solid #807661;
-}
-
-.progress-fill {
-  height: 100%;
-  background: #47672c;
-  border-radius: 4rpx;
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  text-align: center;
-  color: #4e4634;
-  font-size: 24rpx;
-  margin-bottom: 40rpx;
-  font-family: 'PingFang SC', monospace;
-  font-weight: 700;
-}
+.progress-bar { height: 16rpx; background: #e9edf4; border-radius: 999rpx; overflow: hidden; margin-bottom: 16rpx; border: none; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #6cc06f, #4ca85f); border-radius: 999rpx; transition: width 0.3s ease; }
+.progress-text { text-align: center; color: #a0a0ad; font-size: 24rpx; margin-bottom: 40rpx; font-weight: 700; }
 
 .english-card {
   text-align: center;
   padding: 50rpx 30rpx;
-  background: #fef9ed;
-  border: 4rpx solid #807661;
-  border-radius: 16rpx;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  background: #ffffff;
+  border: none;
+  border-radius: 28rpx;
+  box-shadow: 0 10rpx 30rpx rgba(80, 95, 130, 0.08);
   margin-bottom: 30rpx;
 }
+.prompt-label { font-size: 26rpx; color: #a0a0ad; margin-bottom: 24rpx; }
+.prompt-text { font-weight: 800; color: #2b2b33; }
+.en-prompt { font-size: 72rpx; line-height: 1.2; color: #2b2b33; letter-spacing: 2rpx; }
+.cn-prompt { font-size: 80rpx; color: #4ca85f; line-height: 1.2; }
+.sentence-prompt { font-size: 36rpx; color: #2b2b33; line-height: 1.6; white-space: pre-line; }
 
-.prompt-label {
-  font-size: 26rpx;
-  color: #4e4634;
-  margin-bottom: 24rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.prompt-text {
-  font-weight: 700;
-  color: #1d1c15;
-  font-family: 'PingFang SC', monospace;
-}
-
-.en-prompt {
-  font-size: 72rpx;
-  line-height: 1.2;
-  color: #775a00;
-  letter-spacing: 2rpx;
-}
-
-.cn-prompt {
-  font-size: 80rpx;
-  color: #885120;
-  line-height: 1.2;
-}
-
-.sentence-prompt {
-  font-size: 36rpx;
-  color: #775a00;
-  line-height: 1.6;
-  white-space: pre-line;
-}
-
-.options-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20rpx;
-  padding: 0 20rpx;
-  margin-bottom: 30rpx;
-}
-
-.options-grid.options-2col {
-  grid-template-columns: 1fr 1fr;
-}
-
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20rpx; padding: 0 20rpx; margin-bottom: 30rpx; }
+.options-grid.options-2col { grid-template-columns: 1fr 1fr; }
 .option-btn {
   min-height: 100rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fef9ed;
-  border: 4rpx solid #807661;
-  border-radius: 12rpx;
+  background: #ffffff;
+  border: 2rpx solid #eceef4;
+  border-radius: 22rpx;
   font-size: 36rpx;
   font-weight: 700;
-  color: #1d1c15;
-  font-family: 'PingFang SC', monospace;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #e7e2d6, inset -4rpx -4rpx 0rpx 0rpx #807661, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-  transition: transform 0.1s, box-shadow 0.1s;
+  color: #2b2b33;
+  box-shadow: 0 8rpx 22rpx rgba(80, 95, 130, 0.07);
+  transition: transform 0.1s ease;
   padding: 16rpx 12rpx;
   text-align: center;
   word-break: break-all;
 }
+.option-btn:active { transform: scale(0.97); }
+.option-btn.correct { background: #e8f6e7; border-color: #4ca85f; color: #3f8d57; }
+.option-btn.wrong { background: #ffe9e6; border-color: #e5484d; color: #e5484d; }
+.option-btn.show-correct { background: #e8f6e7; border-color: #4ca85f; color: #3f8d57; }
 
-.option-btn:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #807661, inset -4rpx -4rpx 0rpx 0rpx #e7e2d6;
-}
-
-.option-btn.correct {
-  background: #c7efa4;
-  border-color: #47672c;
-  color: #47672c;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(199, 239, 164, 0.6), inset -4rpx -4rpx 0rpx 0rpx #47672c, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-}
-
-.option-btn.correct:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #47672c, inset -4rpx -4rpx 0rpx 0rpx rgba(199, 239, 164, 0.6);
-}
-
-.option-btn.wrong {
-  background: #ffdad6;
-  border-color: #ba1a1a;
-  color: #ba1a1a;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 218, 214, 0.6), inset -4rpx -4rpx 0rpx 0rpx #ba1a1a, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-}
-
-.option-btn.wrong:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx #ba1a1a, inset -4rpx -4rpx 0rpx 0rpx rgba(255, 218, 214, 0.6);
-}
-
-.option-btn.show-correct {
-  background: #c7efa4;
-  border-color: #47672c;
-  color: #47672c;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(199, 239, 164, 0.6), inset -4rpx -4rpx 0rpx 0rpx #47672c, 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
-}
-
-@keyframes tipPop {
-  0% { transform: scale(0.8); opacity: 0; }
-  70% { transform: scale(1.08); }
-  100% { transform: scale(1); opacity: 1; }
-}
-.result-tip {
-  text-align: center;
-  padding: 10rpx 0;
-  animation: tipPop 0.3s ease;
-}
-
-.tip-text {
-  font-size: 30rpx;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
-.tip-correct {
-  color: #47672c;
-}
-
-.tip-wrong {
-  color: #ba1a1a;
-}
+@keyframes tipPop { 0% { transform: scale(0.8); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.result-tip { text-align: center; padding: 10rpx 0; animation: tipPop 0.3s ease; }
+.tip-text { font-size: 30rpx; font-weight: 700; }
+.tip-correct { color: #4ca85f; }
+.tip-wrong { color: #e5484d; }
