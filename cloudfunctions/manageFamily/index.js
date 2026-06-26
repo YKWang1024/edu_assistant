@@ -21,6 +21,41 @@ function newChildId() {
   return 'c_' + Date.now() + '_' + Math.floor(Math.random() * 1000000)
 }
 
+function recompute(ratings) {
+  const active = (ratings || []).filter(function (r) { return !r.deleted })
+  let total = 0
+  active.forEach(function (r) { total += Number(r.score) || 0 })
+  const avg = active.length ? Math.round((total / active.length) * 10) / 10 : 0
+  const ms = {}
+  active.forEach(function (r) {
+    const k = r.memberName || '未知'
+    if (!ms[k]) ms[k] = { t: 0, c: 0 }
+    ms[k].t += Number(r.score) || 0
+    ms[k].c += 1
+  })
+  const memberAvg = {}
+  Object.keys(ms).forEach(function (k) { memberAvg[k] = Math.round((ms[k].t / ms[k].c) * 10) / 10 })
+  return { avgScore: avg, memberAvgScores: memberAvg }
+}
+
+// 把本家庭菜谱里满足 matchFn 的评分署名改为 newName，并重算均分
+async function renameInRatings(familyId, matchFn, newName) {
+  const res = await db.collection('recipes').where({ familyId: familyId }).get()
+  for (const r of (res.data || [])) {
+    let changed = false
+    const ratings = (r.ratings || []).map(function (rt) {
+      if (!rt.deleted && matchFn(rt)) { changed = true; return Object.assign({}, rt, { memberName: newName }) }
+      return rt
+    })
+    if (changed) {
+      const agg = recompute(ratings)
+      await db.collection('recipes').doc(r._id).update({
+        data: { ratings: ratings, avgScore: agg.avgScore, memberAvgScores: agg.memberAvgScores, updatedAt: new Date() }
+      })
+    }
+  }
+}
+
 exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID
   try {
@@ -46,9 +81,16 @@ exports.main = async (event, context) => {
     if (action === 'updateChild') {
       const idx = children.findIndex(c => c.childId === event.childId)
       if (idx < 0) return { success: false, message: '小孩不存在' }
-      if (event.name != null) children[idx].name = String(event.name).trim() || children[idx].name
+      const oldName = children[idx].name
+      let newName = oldName
+      if (event.name != null) newName = String(event.name).trim() || oldName
+      children[idx].name = newName
       if (event.grade != null) children[idx].grade = String(event.grade).trim()
       await db.collection('families').doc(ctx.familyId).update({ data: { children: children } })
+      // 关联：小孩改名 → 同步菜谱里以该小孩署名的打分(小孩无账号, 按旧名匹配)
+      if (newName !== oldName) {
+        await renameInRatings(ctx.familyId, function (rt) { return rt.memberName === oldName }, newName)
+      }
       return { success: true }
     }
 
