@@ -15,7 +15,7 @@ function buildWikiPrompt(raw) {
 function organizeNote(raw) {
   return new Promise(function (resolve, reject) {
     if (!wx.cloud || !wx.cloud.extend || !wx.cloud.extend.AI) {
-      reject(new Error('当前环境不支持 AI 能力，请确认基础库与云开发 AI'))
+      reject(new Error('当前环境不支持智能能力，请确认基础库与云开发智能'))
       return
     }
     var model

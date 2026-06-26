@@ -21,6 +21,7 @@ function detectLinkType(url) {
 Page({
   data: {
     name: '',
+    desc: '',
     ingredients: '',
     steps: '',
     category: '',
@@ -39,6 +40,7 @@ Page({
   },
 
   onNameInput: function (e) { this.setData({ name: e.detail.value }) },
+  onDescInput: function (e) { this.setData({ desc: e.detail.value }) },
   onIngredientsInput: function (e) { this.setData({ ingredients: e.detail.value }) },
   onStepsInput: function (e) { this.setData({ steps: e.detail.value }) },
   onCategoryChange: function (e) { this.setData({ categoryIndex: e.detail.value }) },
@@ -122,18 +124,20 @@ Page({
     if (this.data.images.length === 0) { wx.showToast({ title: '请先添加成品照片', icon: 'none' }); return }
     this.setData({ recognizing: true })
     var path = this.data.images[0]
+    // 菜名 + 一句话描述 一起作为识别提示，提升准确率
+    var hint = [this.data.name, this.data.desc].map(function (s) { return (s || '').trim() }).filter(Boolean).join('，')
 
     // 优先「先上云存储拿 fileID → aiVision 云端下载识别」，规避 callFunction 包体上限；
     // 上传失败再回退压缩 base64 直传。识别所用 fileID 缓存复用，保存时不再重传。
     var p
     if (app.globalData.cloudReady && wx.cloud) {
       p = this.uploadImageCached(path).then(function (fid) {
-        return recipeUtil.recognizeRecipe({ fileID: fid, mediaType: 'image/jpeg' }, that.data.name)
+        return recipeUtil.recognizeRecipe({ fileID: fid, mediaType: 'image/jpeg' }, hint)
       }, function () {
-        return imageUtil.compressForCloud(path).then(function (c) { return recipeUtil.recognizeRecipe(c.dataUri, that.data.name) })
+        return imageUtil.compressForCloud(path).then(function (c) { return recipeUtil.recognizeRecipe(c.dataUri, hint) })
       })
     } else {
-      p = imageUtil.compressForCloud(path).then(function (c) { return recipeUtil.recognizeRecipe(c.dataUri, that.data.name) })
+      p = imageUtil.compressForCloud(path).then(function (c) { return recipeUtil.recognizeRecipe(c.dataUri, hint) })
     }
 
     p.then(function (rp) {
@@ -143,7 +147,7 @@ Page({
     }).catch(function (err) {
       that.setData({ recognizing: false })
       var m = (err && err.message) || ''
-      if (/key|密钥|未配置|api/i.test(m)) m = 'AI 识别暂不可用（后端未配置密钥），请手动填写菜谱'
+      if (/key|密钥|未配置|api/i.test(m)) m = '智能识别暂不可用（后端未配置密钥），请手动填写菜谱'
       wx.showModal({ title: '识别失败', content: m || '请手动填写', showCancel: false })
     })
   },

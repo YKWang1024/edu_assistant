@@ -13,11 +13,11 @@
     </button>
     <view class="voice-tip">按住说话，松开自动转成文字；也可以直接打字</view>
 
-    <button class="btn-secondary organize-btn" bindtap="onOrganize" loading="{{organizing}}" disabled="{{organizing}}">✨ AI 整理成小记</button>
+    <button class="btn-secondary organize-btn" bindtap="onOrganize" loading="{{organizing}}" disabled="{{organizing}}">✨ 智能整理成小记</button>
 
     <block wx:if="{{content}}">
       <view class="field-label">整理后的小记（可修改）</view>
-      <textarea class="textarea-field" value="{{content}}" bindinput="onContentInput" placeholder="AI 整理后的内容" auto-height></textarea>
+      <textarea class="textarea-field" value="{{content}}" bindinput="onContentInput" placeholder="智能整理后的内容" auto-height></textarea>
     </block>
 
     <view class="share-row">

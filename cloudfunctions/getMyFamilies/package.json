@@ -1,0 +1,9 @@
+{
+  "name": "getMyFamilies",
+  "version": "1.0.0",
+  "description": "列出我加入的所有家庭",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

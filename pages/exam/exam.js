@@ -81,6 +81,7 @@ Page({
     // 编辑
     typeLabels: TYPE_LABELS,
     editSubjects: config.SUBJECTS,
+    editChildNames: [],
     editForm: null,
     savingEdit: false
   },
@@ -266,7 +267,7 @@ Page({
       if (res.becameHard) {
         wx.showModal({
           title: '重点疑难题',
-          content: '这道题连续做错 3 次了，要不要让 AI 老师讲解一下？',
+          content: '这道题连续做错 3 次了，要不要让智能老师讲解一下？',
           confirmText: '去学习',
           cancelText: '稍后',
           success: function (m) {
@@ -430,12 +431,23 @@ Page({
     if (type === 'choice' && options.length === 0) {
       options = [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }]
     }
+    // 归属小孩：可把错题分配给妹妹/姐姐等。
+    // 关键：保留题目原归属——若原归属不在当前小孩列表(如老数据「宝贝」或已移除的小孩)，
+    // 把它补进选项并默认选中，避免「只改了题干就保存」时把归属悄悄改成第一个小孩。
+    var childNames = (app.globalData.children || []).map(function (c) { return c.name })
+    if (!childNames.length) childNames = ['宝贝']
+    var origChild = item.childName || '宝贝'
+    if (childNames.indexOf(origChild) < 0) childNames = [origChild].concat(childNames)
+    var childIndex = childNames.indexOf(origChild)
     this.setData({
       mode: 'edit',
+      editChildNames: childNames,
       editForm: {
         _id: id,
         subject: subjects[subjectIndex],
         subjectIndex: subjectIndex,
+        childName: childNames[childIndex],
+        childIndex: childIndex,
         type: type,
         typeIndex: typeIndex,
         stem: item.stem || '',
@@ -445,6 +457,11 @@ Page({
         figure: item.figure || null
       }
     })
+  },
+
+  onEditChildChange: function (e) {
+    var idx = Number(e.detail.value)
+    this.setData({ 'editForm.childIndex': idx, 'editForm.childName': this.data.editChildNames[idx] })
   },
 
   onEditSubjectChange: function (e) {
@@ -513,6 +530,7 @@ Page({
     app.callCloudFunction('updateExamQuestion', {
       questionId: f._id,
       subject: f.subject,
+      childName: f.childName,
       type: f.type,
       stem: f.stem.trim(),
       options: options,

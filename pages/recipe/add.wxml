@@ -17,15 +17,16 @@
           <text class="add-text">{{images.length}}/2</text>
         </view>
       </view>
+      <input class="input-field desc-input" placeholder="一句话描述这道菜，识别更准（如：番茄炒蛋，偏甜口）" value="{{desc}}" bindinput="onDescInput" wx:if="{{images.length > 0}}" />
       <button class="btn-secondary analyze-btn" bindtap="onAIRecognize" loading="{{recognizing}}" disabled="{{recognizing}}" wx:if="{{images.length > 0}}">
-        🤖 AI识别菜谱（自动填写）
+        🤖 智能识别菜谱（自动填写）
       </button>
     </view>
 
     <view class="calories-card card" wx:if="{{calories}}">
       <view class="calories-header">
         <text class="calories-icon">🔥</text>
-        <text class="calories-title">营养信息（AI 估算，可不填）</text>
+        <text class="calories-title">营养信息（智能估算，可不填）</text>
       </view>
       <view class="calories-content">
         <view class="calories-main">

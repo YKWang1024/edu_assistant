@@ -10,7 +10,8 @@ Page({
     isObserver: false,
     members: [],
     children: [],
-    inviteCode: ''
+    inviteCode: '',
+    myFamilies: []
   },
 
   onShow: function () {
@@ -24,6 +25,7 @@ Page({
       wx.showToast({ title: '云开发未就绪，请稍后重试', icon: 'none' })
       return
     }
+    this.loadFamilies()
     app.callCloudFunction('getFamilyInfo', {}, function (res) {
       if (res && res.success) {
         var members = (res.data.members || []).map(function (m) {
@@ -52,6 +54,56 @@ Page({
       } else {
         that.setData({ loading: false })
         wx.showToast({ title: (res && res.message) || '加载失败', icon: 'none' })
+      }
+    })
+  },
+
+  // ---------------- 多家庭：列表 / 切换 / 退出 ----------------
+  loadFamilies: function () {
+    var that = this
+    app.callCloudFunction('getMyFamilies', {}, function (res) {
+      if (res && res.success) that.setData({ myFamilies: res.data.families || [] })
+    })
+  },
+
+  onSwitchFamily: function (e) {
+    var that = this
+    if (e.currentTarget.dataset.active) return
+    var fid = e.currentTarget.dataset.id
+    wx.showLoading({ title: '切换中…' })
+    app.callCloudFunction('switchFamily', { familyId: fid }, function (res) {
+      wx.hideLoading()
+      if (res && res.success) {
+        app.saveFamilyId(res.data.familyId)
+        app.refreshFamily(function () {})
+        wx.showToast({ title: '已切换', icon: 'success' })
+        that.load()
+      } else {
+        wx.showToast({ title: (res && res.message) || '切换失败', icon: 'none' })
+      }
+    })
+  },
+
+  onLeaveFamily: function (e) {
+    var that = this
+    var fid = e.currentTarget.dataset.id
+    var name = e.currentTarget.dataset.name || '该家庭'
+    wx.showModal({
+      title: '退出家庭',
+      content: '确定退出「' + name + '」吗？退出后将看不到该家庭共享的菜谱、错题等数据。',
+      confirmColor: '#e5484d',
+      success: function (m) {
+        if (!m.confirm) return
+        app.callCloudFunction('leaveFamily', { familyId: fid }, function (res) {
+          if (res && res.success) {
+            app.saveFamilyId(res.data.familyId)
+            app.refreshFamily(function () {})
+            wx.showToast({ title: '已退出', icon: 'success' })
+            that.load()
+          } else {
+            wx.showToast({ title: (res && res.message) || '退出失败', icon: 'none' })
+          }
+        })
       }
     })
   },

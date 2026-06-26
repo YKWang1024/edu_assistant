@@ -7,6 +7,22 @@
   </view>
 
   <block wx:else>
+    <!-- 我的家庭（可加入多个、切换、退出） -->
+    <view class="card" wx:if="{{myFamilies.length}}">
+      <view class="card-title"><text class="icon">🏠</text>我的家庭（{{myFamilies.length}}）</view>
+      <view class="fam-item" wx:for="{{myFamilies}}" wx:key="familyId">
+        <view class="fam-main">
+          <view class="fam-name">{{item.name}}<text wx:if="{{item.isActive}}" class="fam-active-tag">当前</text></view>
+          <view class="fam-sub">{{item.role === 'admin' ? '管理员' : (item.role === 'observer' ? '旁观' : '成员')}} · {{item.memberCount}}人 · {{item.childCount}}个小孩</view>
+        </view>
+        <view class="fam-ops">
+          <view wx:if="{{!item.isActive}}" class="fam-btn switch" data-id="{{item.familyId}}" data-active="{{item.isActive}}" bindtap="onSwitchFamily">切换</view>
+          <view wx:if="{{myFamilies.length > 1}}" class="fam-btn leave" data-id="{{item.familyId}}" data-name="{{item.name}}" bindtap="onLeaveFamily">退出</view>
+        </view>
+      </view>
+      <view class="card-hint">可加入多个家庭，在此切换「当前家庭」；当前家庭决定你看到的菜谱、错题等共享数据。</view>
+    </view>
+
     <view class="card">
       <view class="card-title flex-between">
         <view><text class="icon">👨‍👩‍👧</text>家庭成员（{{members.length}}）</view>

@@ -92,7 +92,7 @@ function buildRecognizeManyPrompt() {
 
 // 从模型返回文本里抠出 JSON 并解析（容错：去代码围栏、截取大括号）
 function parseQuestionJSON(text) {
-  if (!text) throw new Error('AI 未返回内容')
+  if (!text) throw new Error('智能未返回内容')
   var s = String(text).trim()
   s = s.replace(/^```[a-zA-Z]*/, '').replace(/```$/, '').trim()
   var start = s.indexOf('{')
@@ -102,7 +102,7 @@ function parseQuestionJSON(text) {
   try {
     obj = JSON.parse(s)
   } catch (e) {
-    throw new Error('AI 返回的内容无法解析为题目')
+    throw new Error('智能识别的内容无法解析为题目')
   }
   return normalizeQuestion(obj)
 }
@@ -197,7 +197,7 @@ function normalizeFigure(f) {
 // 解析「多题」返回：容错地取出 questions 数组并逐项 normalize。
 // 同时兼容返回对象 {questions:[...]} 或裸数组 [...]。
 function parseQuestionsJSON(text) {
-  if (!text) throw new Error('AI 未返回内容')
+  if (!text) throw new Error('智能未返回内容')
   var s = String(text).trim()
   s = s.replace(/^```[a-zA-Z]*/, '').replace(/```$/, '').trim()
   var objStart = s.indexOf('{')
@@ -211,7 +211,7 @@ function parseQuestionsJSON(text) {
     if (objStart >= 0 && oe > objStart) s = s.slice(objStart, oe + 1)
   }
   var obj
-  try { obj = JSON.parse(s) } catch (e) { throw new Error('AI 返回的内容无法解析为错题列表') }
+  try { obj = JSON.parse(s) } catch (e) { throw new Error('智能识别的内容无法解析为错题列表') }
   var arr = Array.isArray(obj) ? obj : (obj && Array.isArray(obj.questions) ? obj.questions : [])
   return arr.map(normalizeQuestion).filter(function (q) { return q.stem })
 }
@@ -249,7 +249,7 @@ function recognizeQuestion(source) {
     payload.debug = !!config.DEBUG
     app.callCloudFunction('aiVision', payload, function (res) {
       if (!res || !res.success) {
-        var msg = (res && res.message) || 'AI 识别失败'
+        var msg = (res && res.message) || '智能识别失败'
         if (config.DEBUG && res && res.error) msg += '：' + res.error
         reject(new Error(msg))
         return
@@ -273,7 +273,7 @@ function recognizeQuestions(source) {
     payload.debug = !!config.DEBUG
     app.callCloudFunction('aiVision', payload, function (res) {
       if (!res || !res.success) {
-        var msg = (res && res.message) || 'AI 识别失败'
+        var msg = (res && res.message) || '智能识别失败'
         if (config.DEBUG && res && res.error) msg += '：' + res.error
         reject(new Error(msg))
         return
@@ -309,7 +309,7 @@ function buildCoursePrompt(q) {
 function generateCourse(q, onText) {
   return new Promise(function (resolve, reject) {
     if (!wx.cloud || !wx.cloud.extend || !wx.cloud.extend.AI) {
-      reject(new Error('当前环境不支持 AI 能力，请确认基础库≥3.7.1并已开通云开发 AI'))
+      reject(new Error('当前环境不支持智能能力，请确认基础库≥3.7.1并已开通云开发智能'))
       return
     }
     var model

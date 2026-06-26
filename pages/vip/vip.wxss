@@ -93,6 +93,7 @@
   margin-right: 22rpx;
 }
 .ic-purple { background: #efe9fb; }
+.ic-blue { background: #e2eefe; }
 .ic-green { background: #e3f4e0; }
 .ic-orange { background: #fdeede; }
 .ic-red { background: #ffe9e6; }

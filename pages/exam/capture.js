@@ -12,7 +12,7 @@ var TYPE_KEYS = ['choice', 'fill', 'other']
 // 把技术错误(尤其未配置 AI 密钥)转成家长能看懂的友好提示。
 function friendlyErr(err, fallback) {
   var m = (err && err.message) || ''
-  if (/key|密钥|未配置|api/i.test(m)) return 'AI 识别暂不可用（后端未配置密钥），已切换为手动录入'
+  if (/key|密钥|未配置|api/i.test(m)) return '智能识别暂不可用（后端未配置密钥），已切换为手动录入'
   return m || fallback
 }
 

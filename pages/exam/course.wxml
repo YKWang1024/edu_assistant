@@ -15,7 +15,7 @@
 
   <view wx:if="{{content || generating}}" class="card course-card">
     <view class="course-head">
-      <text class="course-title">🤖 AI 老师讲解</text>
+      <text class="course-title">🤖 智能老师讲解</text>
       <text wx:if="{{generating}}" class="course-status">生成中…</text>
       <text wx:elif="{{cached}}" class="course-status">已保存</text>
     </view>

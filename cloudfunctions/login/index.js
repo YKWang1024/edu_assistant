@@ -63,6 +63,7 @@ exports.main = async (event, context) => {
         nickname: nickname,
         avatarUrl: avatarUrl,
         familyId: familyResult._id,
+        familyIds: [familyResult._id], // 支持加入多个家庭：familyId 为「当前」, familyIds 为全部
         familyRole: 'admin',
         createdAt: new Date()
       }
@@ -92,6 +93,7 @@ exports.main = async (event, context) => {
       nickname: nickname,
       avatarUrl: avatarUrl,
       familyId: familyResult._id,
+      familyIds: [familyResult._id],
       familyRole: 'admin'
     }
     return { success: true, userInfo: userInfo, familyId: familyResult._id, data: userInfo, autoCreated: true, message: '自动登录成功' }

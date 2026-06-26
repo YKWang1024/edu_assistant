@@ -94,7 +94,7 @@ Page({
       wx.showToast({ title: '已整理，可修改', icon: 'success' })
     }).catch(function (err) {
       that.setData({ organizing: false, content: raw })
-      wx.showModal({ title: 'AI 整理失败', content: (err && err.message) || '已用原文，可手动编辑', showCancel: false })
+      wx.showModal({ title: '智能整理失败', content: (err && err.message) || '已用原文，可手动编辑', showCancel: false })
     })
   },
 
