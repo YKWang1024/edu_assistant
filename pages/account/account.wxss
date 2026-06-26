@@ -1,162 +1,60 @@
+/* ========== 游戏时间钱包 · 柔和风 ========== */
 .balance-card {
   position: relative;
-  border-radius: 16rpx;
+  border-radius: 32rpx;
   overflow: hidden;
   margin-bottom: 24rpx;
-  border: 4rpx solid #807661;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  border: none;
+  box-shadow: 0 16rpx 36rpx rgba(110, 120, 230, 0.28);
 }
-
 .balance-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #775a00;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #8b7af0 0%, #6a8bf0 60%, #5b9ef0 100%);
 }
-
-.balance-content {
-  position: relative;
-  z-index: 1;
-  padding: 40rpx 30rpx;
-  text-align: center;
+.balance-bg::after {
+  content: '';
+  position: absolute;
+  width: 260rpx; height: 260rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  top: -110rpx; right: -60rpx;
 }
-
-.balance-label {
-  font-size: 26rpx;
-  color: #f3ab72;
-  margin-bottom: 16rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.balance-value {
-  font-size: 72rpx;
-  font-weight: 800;
-  color: #fef9ed;
-  margin-bottom: 24rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.balance-unit {
-  font-size: 28rpx;
-  font-weight: 400;
-  color: #f3ab72;
-}
-
+.balance-content { position: relative; z-index: 1; padding: 44rpx 30rpx; text-align: center; }
+.balance-label { font-size: 26rpx; color: rgba(255, 255, 255, 0.9); margin-bottom: 16rpx; }
+.balance-value { font-size: 76rpx; font-weight: 800; color: #ffffff; margin-bottom: 26rpx; }
+.balance-unit { font-size: 28rpx; font-weight: 400; color: rgba(255, 255, 255, 0.85); }
 .use-btn {
   display: inline-block;
-  background: #e6b325;
-  color: #5e4700;
-  border: 4rpx solid #807661;
-  border-radius: 8rpx;
-  padding: 12rpx 40rpx;
-  font-size: 26rpx;
+  background: rgba(255, 255, 255, 0.95);
+  color: #5b6ff0;
+  border: none;
+  border-radius: 999rpx;
+  padding: 16rpx 50rpx;
+  font-size: 27rpx;
   font-weight: 700;
   line-height: 1.5;
-  font-family: 'PingFang SC', monospace;
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8rpx 18rpx rgba(60, 70, 160, 0.2);
 }
+.use-btn::after { border: none; }
+.use-btn:active { transform: scale(0.96); }
 
-.use-btn::after {
-  border: none;
-}
+.stats-row { display: flex; gap: 16rpx; margin-bottom: 24rpx; }
+.stat-item { flex: 1; text-align: center; padding: 28rpx 16rpx; }
+.stat-value { font-size: 38rpx; font-weight: 800; margin-bottom: 8rpx; color: #2b2b33; }
+.stat-value.positive { color: #4ca85f; }
+.stat-value.negative { color: #f5a623; }
+.stat-label { font-size: 22rpx; color: #a0a0ad; }
 
-.use-btn:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: inset 4rpx 4rpx 0rpx 0rpx rgba(0, 0, 0, 0.1);
-}
-
-.stats-row {
-  display: flex;
-  gap: 16rpx;
-  margin-bottom: 24rpx;
-}
-
-.stat-item {
-  flex: 1;
-  text-align: center;
-  padding: 24rpx 16rpx;
-}
-
-.stat-value {
-  font-size: 36rpx;
-  font-weight: 700;
-  margin-bottom: 6rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.stat-value.positive {
-  color: #47672c;
-}
-
-.stat-value.negative {
-  color: #885120;
-}
-
-.stat-label {
-  font-size: 22rpx;
-  color: #4e4634;
-  font-family: 'PingFang SC', monospace;
-}
-
-.record-list {
-  margin-top: 10rpx;
-}
-
-.record-item {
-  margin-bottom: 16rpx;
-  padding: 20rpx 24rpx;
-}
-
-.record-header {
-  margin-bottom: 10rpx;
-}
-
-.record-icon {
-  font-size: 28rpx;
-  margin-right: 8rpx;
-}
-
-.record-type {
-  font-weight: 700;
-  font-size: 28rpx;
-  color: #1d1c15;
-  font-family: 'PingFang SC', monospace;
-}
-
-.record-date {
-  font-size: 22rpx;
-  color: #807661;
-  font-family: 'PingFang SC', monospace;
-}
-
-.record-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.detail-text {
-  font-size: 24rpx;
-  color: #4e4634;
-  font-family: 'PingFang SC', monospace;
-}
-
-.detail-reward {
-  font-size: 28rpx;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
-.detail-reward.positive {
-  color: #47672c;
-}
-
-.detail-reward.negative {
-  color: #885120;
-}
-
-.detail-reward.neutral {
-  color: #807661;
-}
+.record-list { margin-top: 10rpx; }
+.record-item { margin-bottom: 16rpx; padding: 24rpx; }
+.record-header { margin-bottom: 12rpx; }
+.record-icon { font-size: 28rpx; margin-right: 8rpx; }
+.record-type { font-weight: 700; font-size: 28rpx; color: #2b2b33; }
+.record-date { font-size: 22rpx; color: #a0a0ad; }
+.record-detail { display: flex; justify-content: space-between; align-items: center; }
+.detail-text { font-size: 24rpx; color: #8a8a97; }
+.detail-reward { font-size: 28rpx; font-weight: 700; }
+.detail-reward.positive { color: #4ca85f; }
+.detail-reward.negative { color: #f5a623; }
+.detail-reward.neutral { color: #a0a0ad; }

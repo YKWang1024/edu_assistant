@@ -1,288 +1,118 @@
-.detail-card {
-  text-align: center;
-  padding: 30rpx;
-  overflow: hidden;
-}
-
-.detail-images {
-  margin: -30rpx -30rpx 20rpx;
-  position: relative;
-}
-
-.image-swiper {
-  width: 100%;
-  height: 400rpx;
-}
-
-.detail-img {
-  width: 100%;
-  height: 400rpx;
-}
-
+.detail-card { text-align: center; padding: 30rpx; overflow: hidden; }
+.detail-images { margin: -30rpx -30rpx 22rpx; position: relative; }
+.image-swiper { width: 100%; height: 420rpx; }
+.detail-img { width: 100%; height: 420rpx; }
 .image-counter {
   position: absolute;
   bottom: 16rpx;
   right: 16rpx;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.45);
   color: #fff;
   font-size: 22rpx;
-  padding: 4rpx 14rpx;
-  border-radius: 16rpx;
-  font-family: 'PingFang SC', monospace;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
 }
-
-.detail-name {
-  font-size: 40rpx;
-  font-weight: 700;
-  color: #1d1c15;
-  margin-bottom: 12rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
+.detail-name { font-size: 40rpx; font-weight: 800; color: #2b2b33; margin-bottom: 12rpx; }
 .detail-category {
-  font-size: 24rpx;
-  color: #4e4634;
-  margin-bottom: 16rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.detail-score {
-  font-size: 28rpx;
-  color: #e6b325;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
-.member-scores {
-  margin-bottom: 16rpx;
-}
-
-.member-score-list {
-  padding-top: 10rpx;
-}
-
-.member-score-row {
-  padding: 14rpx 0;
-  border-bottom: 4rpx solid #d2c5ad;
-}
-
-.member-score-row:last-child {
-  border-bottom: none;
-}
-
-.score-avatar {
-  width: 48rpx;
-  height: 48rpx;
-  border-radius: 8rpx;
-  background: #e6b325;
-  color: #5e4700;
+  display: inline-block;
   font-size: 22rpx;
+  color: #4ca85f;
+  background: #e3f4e0;
+  padding: 6rpx 20rpx;
+  border-radius: 999rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+}
+.detail-score { font-size: 28rpx; color: #f5a623; font-weight: 700; }
+
+.member-scores { margin-bottom: 20rpx; }
+.member-score-list { padding-top: 10rpx; }
+.member-score-row { padding: 16rpx 0; border-bottom: 2rpx solid #f1f3f7; }
+.member-score-row:last-child { border-bottom: none; }
+.score-avatar {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 16rpx;
+  background: #fdeede;
+  color: #d98a2b;
+  font-size: 24rpx;
   font-weight: 700;
   text-align: center;
-  line-height: 48rpx;
-  margin-right: 12rpx;
-  border: 4rpx solid #807661;
-  font-family: 'PingFang SC', monospace;
+  line-height: 52rpx;
+  margin-right: 14rpx;
+  border: none;
 }
-
-.score-name {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #1d1c15;
-  font-family: 'PingFang SC', monospace;
-}
-
-.score-right {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-}
-
-.score-stars {
-  display: flex;
-}
-
-.star-filled {
-  font-size: 24rpx;
-  color: #e6b325;
-  margin-right: 2rpx;
-}
-
-.score-value {
-  font-size: 26rpx;
-  color: #e6b325;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
+.score-name { font-size: 28rpx; font-weight: 700; color: #2b2b33; }
+.score-right { display: flex; align-items: center; gap: 10rpx; }
+.score-stars { display: flex; }
+.star-filled { font-size: 24rpx; color: #f5a623; margin-right: 2rpx; }
+.score-value { font-size: 26rpx; color: #f5a623; font-weight: 700; }
 .score-label {
   font-size: 22rpx;
   font-weight: 700;
-  padding: 2rpx 10rpx;
-  border-radius: 8rpx;
-  border: 4rpx solid #807661;
-  font-family: 'PingFang SC', monospace;
-  background: #c7efa4;
-  color: #0c2000;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  border: none;
+  background: #e3f4e0;
+  color: #3f8d57;
 }
 
-.info-card {
-  margin-bottom: 16rpx;
-}
-
-.info-content {
-  font-size: 28rpx;
-  color: #4e4634;
-  line-height: 1.8;
-  font-family: 'PingFang SC', monospace;
-}
-
-.info-content.steps {
-  white-space: pre-line;
-}
-
+.info-card { margin-bottom: 18rpx; }
+.info-content { font-size: 28rpx; color: #5a5a66; line-height: 1.8; }
+.info-content.steps { white-space: pre-line; }
 .info-content.nutrition {
-  color: #47672c;
-  background: #c7efa4;
-  padding: 12rpx;
-  border-radius: 8rpx;
-  border: 4rpx solid #807661;
+  color: #3f8d57;
+  background: #e8f6e7;
+  padding: 16rpx 18rpx;
+  border-radius: 16rpx;
+  border: none;
 }
 
-.rating-list {
-  padding-top: 10rpx;
-}
-
-.rating-item {
-  padding: 14rpx 0;
-  border-bottom: 4rpx solid #d2c5ad;
-}
-
-.rating-item:last-child {
-  border-bottom: none;
-}
-
+.rating-list { padding-top: 10rpx; }
+.rating-item { padding: 16rpx 0; border-bottom: 2rpx solid #f1f3f7; }
+.rating-item:last-child { border-bottom: none; }
 .rating-member {
   font-size: 24rpx;
-  color: #775a00;
+  color: #d98a2b;
   font-weight: 700;
   margin-right: 12rpx;
-  background: #f2ede2;
-  padding: 2rpx 10rpx;
-  border-radius: 8rpx;
-  border: 4rpx solid #807661;
-  font-family: 'PingFang SC', monospace;
+  background: #fdeede;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  border: none;
 }
-
-.rating-date {
-  font-size: 22rpx;
-  color: #807661;
-  font-family: 'PingFang SC', monospace;
-}
-
-.rating-score {
-  font-size: 26rpx;
-  color: #e6b325;
-  font-weight: 700;
-  font-family: 'PingFang SC', monospace;
-}
-
-.rating-comment {
-  font-size: 26rpx;
-  color: #4e4634;
-  margin-top: 6rpx;
-  padding-left: 4rpx;
-  font-family: 'PingFang SC', monospace;
-}
-
-.rating-manage {
-  display: flex;
-  gap: 16rpx;
-  margin-top: 10rpx;
-}
-
+.rating-date { font-size: 22rpx; color: #a0a0ad; }
+.rating-score { font-size: 26rpx; color: #f5a623; font-weight: 700; }
+.rating-comment { font-size: 26rpx; color: #5a5a66; margin-top: 8rpx; padding-left: 4rpx; }
+.rating-manage { display: flex; gap: 16rpx; margin-top: 12rpx; }
 .rating-op {
   font-size: 24rpx;
   font-weight: 700;
-  color: #775a00;
-  background: #f2ede2;
-  border: 2rpx solid #807661;
-  border-radius: 6rpx;
-  padding: 4rpx 18rpx;
-  font-family: 'PingFang SC', monospace;
+  color: #6b6b7a;
+  background: #f1f3f7;
+  border: none;
+  border-radius: 999rpx;
+  padding: 6rpx 22rpx;
 }
+.rating-op.danger { color: #e5484d; background: #ffe9e6; }
 
-.rating-op.danger {
-  color: #ba1a1a;
-  background: #ffdad6;
-}
-
-.reference-card {
-  margin-bottom: 16rpx;
-  border-left: 8rpx solid #e6b325;
-}
-
-.reference-card:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: none;
-}
-
-.reference-info {
-  padding-top: 10rpx;
-}
-
-.reference-platform {
-  margin-bottom: 10rpx;
-}
-
+.reference-card { margin-bottom: 18rpx; border-left: none; background: linear-gradient(160deg, #ffffff 0%, #fdf6ec 100%); }
+.reference-card:active { transform: scale(0.99); }
+.reference-info { padding-top: 10rpx; }
+.reference-platform { margin-bottom: 12rpx; }
 .platform-badge {
   display: inline-block;
-  padding: 4rpx 16rpx;
-  border-radius: 8rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 999rpx;
   font-size: 22rpx;
   font-weight: 700;
-  border: 4rpx solid #807661;
-  font-family: 'PingFang SC', monospace;
+  border: none;
 }
+.platform-badge.xiaohongshu { background: #ffe0e6; color: #d6336c; }
+.platform-badge.bilibili { background: #e2eefe; color: #4b86ef; }
+.platform-badge.other { background: #f1f3f7; color: #6b6b7a; }
+.reference-link-text { font-size: 24rpx; color: #d98a2b; word-break: break-all; line-height: 1.6; padding: 8rpx 0; }
+.reference-hint { font-size: 22rpx; color: #a0a0ad; }
 
-.platform-badge.xiaohongshu {
-  background: #ffe0e0;
-  color: #c41a1a;
-}
-
-.platform-badge.bilibili {
-  background: #e0eaff;
-  color: #0066cc;
-}
-
-.platform-badge.other {
-  background: #f2ede2;
-  color: #4e4634;
-}
-
-.reference-link-text {
-  font-size: 24rpx;
-  color: #775a00;
-  word-break: break-all;
-  line-height: 1.6;
-  padding: 8rpx 0;
-  font-family: 'PingFang SC', monospace;
-}
-
-.reference-hint {
-  font-size: 22rpx;
-  color: #807661;
-  font-family: 'PingFang SC', monospace;
-}
-
-.btn-group {
-  margin-top: 20rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  padding-bottom: 40rpx;
-}
-
-.btn-group button {
-  width: 100% !important;
-}
+.btn-group { margin-top: 22rpx; display: flex; flex-direction: column; gap: 16rpx; padding-bottom: 40rpx; }
+.btn-group button { width: 100% !important; }

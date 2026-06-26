@@ -3,21 +3,28 @@
   <!-- ============ 列表模式 ============ -->
   <block wx:if="{{mode === 'list'}}">
     <view class="stats-card card">
-      <view class="stat-item">
-        <view class="stat-num">{{stats.total}}</view>
-        <view class="stat-label">总错题</view>
+      <view class="stats-head">
+        <view class="stats-left">
+          <view class="stats-total">{{stats.total}}</view>
+          <view class="stats-total-label">📚 总错题数</view>
+        </view>
+        <view class="stats-right">
+          <view class="stats-kv">
+            <text class="kv-label">本周新增</text>
+            <text class="kv-val">{{weekAdded}}</text>
+          </view>
+          <view class="stats-kv">
+            <text class="kv-label">已掌握</text>
+            <text class="kv-badge">{{masteredPct}}%</text>
+          </view>
+        </view>
       </view>
-      <view class="stat-item">
-        <view class="stat-num due">{{stats.due}}</view>
-        <view class="stat-label">待复习</view>
-      </view>
-      <view class="stat-item">
-        <view class="stat-num hard">{{stats.hard}}</view>
-        <view class="stat-label">疑难</view>
-      </view>
-      <view class="stat-item">
-        <view class="stat-num mastered">{{stats.mastered}}</view>
-        <view class="stat-label">已掌握</view>
+      <view class="bar-chart" wx:if="{{chartBars.length}}">
+        <view class="bar-col" wx:for="{{chartBars}}" wx:key="subject">
+          <view class="bar-track"><view class="bar-fill" style="height:{{item.pct}}%"></view></view>
+          <view class="bar-count">{{item.count}}</view>
+          <view class="bar-x">{{item.subject}}</view>
+        </view>
       </view>
     </view>
 
@@ -154,8 +161,8 @@
     </view>
 
     <view class="edit-actions">
-      <button class="btn-secondary edit-act-btn" bindtap="onCancelEdit">取消</button>
-      <button class="btn-primary edit-act-btn" bindtap="onSaveEdit">保存</button>
+      <button class="btn-secondary edit-act-btn" bindtap="onCancelEdit" disabled="{{savingEdit}}">取消</button>
+      <button class="btn-primary edit-act-btn" bindtap="onSaveEdit" loading="{{savingEdit}}" disabled="{{savingEdit}}">保存</button>
     </view>
   </block>
 </view>

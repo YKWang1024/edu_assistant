@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/ai/ai",
     "pages/math/math",
     "pages/math/result",
     "pages/pinyin/pinyin",
@@ -28,16 +29,17 @@
     "pages/wiki/add"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#775a00",
+    "backgroundTextStyle": "dark",
+    "backgroundColor": "#f3f6fb",
+    "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTitleText": "宝贝成长助手",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "#807661",
-    "selectedColor": "#47672c",
-    "backgroundColor": "#fef9ed",
-    "borderStyle": "black",
+    "color": "#a0a0ad",
+    "selectedColor": "#4ca85f",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",
@@ -56,6 +58,12 @@
         "text": "菜谱",
         "iconPath": "images/recipe.png",
         "selectedIconPath": "images/recipe-active.png"
+      },
+      {
+        "pagePath": "pages/ai/ai",
+        "text": "AI建议",
+        "iconPath": "images/ai.png",
+        "selectedIconPath": "images/ai-active.png"
       },
       {
         "pagePath": "pages/vip/vip",

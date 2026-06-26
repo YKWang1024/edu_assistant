@@ -1,0 +1,54 @@
+<view class="ai-page">
+  <!-- 顶部 AI 渐变头 -->
+  <view class="ai-hero">
+    <view class="ai-hero-blob"></view>
+    <view class="ai-hero-emoji">🤖</view>
+    <view class="ai-hero-text">
+      <view class="ai-hero-title">AI 学习助手</view>
+      <view class="ai-hero-sub">为 {{childName}} 生成的阶段建议</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty-tip">AI 正在分析最近的学习与饮食…</view>
+  <view wx:elif="{{offline}}" class="empty-tip">联网后即可生成 AI 学习/做菜建议</view>
+
+  <block wx:else>
+    <!-- 阶段性总结 -->
+    <view class="card sec">
+      <view class="sec-title">📈 阶段性总结</view>
+      <view class="sec-summary">{{summary}}</view>
+    </view>
+
+    <!-- 知识点掌握情况 -->
+    <view class="card sec" wx:if="{{bars.length}}">
+      <view class="sec-title">知识点掌握情况</view>
+      <view class="bar-row" wx:for="{{bars}}" wx:key="subject">
+        <view class="bar-head">
+          <text class="bar-name">{{item.subject}}</text>
+          <text class="bar-pct" style="color:{{item.color}}">{{item.pct}}%</text>
+        </view>
+        <view class="bar-track">
+          <view class="bar-fill" style="width:{{item.pct}}%;background:{{item.color}}"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 最近错题建议 -->
+    <view class="card sec">
+      <view class="sec-title">📒 最近错题建议</view>
+      <view class="tip-item" wx:for="{{wrongTips}}" wx:key="*this">
+        <text class="tip-dot">•</text><text class="tip-text">{{item}}</text>
+      </view>
+      <button wx:if="{{hasWrong}}" class="btn-purple sec-btn" bindtap="onGoWrong">去错题本复习</button>
+    </view>
+
+    <!-- 最近做菜建议 -->
+    <view class="card sec">
+      <view class="sec-title">🥗 最近做菜建议</view>
+      <view class="tip-item" wx:for="{{cookTips}}" wx:key="*this">
+        <text class="tip-dot">•</text><text class="tip-text">{{item}}</text>
+      </view>
+      <button class="btn-orange sec-btn" bindtap="onGoRecipe">去菜谱看看</button>
+    </view>
+  </block>
+</view>

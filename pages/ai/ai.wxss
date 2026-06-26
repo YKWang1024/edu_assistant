@@ -1,0 +1,52 @@
+.ai-page { padding: 24rpx 24rpx 60rpx; }
+
+/* 顶部渐变头 */
+.ai-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #a78bfa 0%, #8b6fd6 55%, #6a8bf0 120%);
+  border-radius: 32rpx;
+  padding: 36rpx 32rpx;
+  margin-bottom: 26rpx;
+  box-shadow: 0 16rpx 36rpx rgba(139, 111, 214, 0.30);
+}
+.ai-hero-blob { position: absolute; width: 220rpx; height: 220rpx; border-radius: 50%; background: rgba(255, 255, 255, 0.16); top: -80rpx; right: -40rpx; }
+.ai-hero-emoji {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 26rpx;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 54rpx;
+  margin-right: 22rpx;
+  flex-shrink: 0;
+  box-shadow: 0 6rpx 16rpx rgba(90, 70, 170, 0.25);
+}
+.ai-hero-text { position: relative; }
+.ai-hero-title { font-size: 38rpx; font-weight: 800; color: #ffffff; text-shadow: 0 2rpx 6rpx rgba(80, 60, 160, 0.25); }
+.ai-hero-sub { margin-top: 8rpx; font-size: 24rpx; color: rgba(255, 255, 255, 0.9); }
+
+/* 区块 */
+.sec { padding: 28rpx; }
+.sec-title { font-size: 30rpx; font-weight: 800; color: #2b2b33; margin-bottom: 18rpx; }
+.sec-summary { font-size: 27rpx; color: #5a5a66; line-height: 1.75; }
+
+/* 掌握情况进度条 */
+.bar-row { margin-bottom: 22rpx; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10rpx; }
+.bar-name { font-size: 26rpx; font-weight: 700; color: #2b2b33; }
+.bar-pct { font-size: 25rpx; font-weight: 800; }
+.bar-track { height: 18rpx; background: #eef1f6; border-radius: 999rpx; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999rpx; transition: width 0.6s ease; }
+
+/* 建议条目 */
+.tip-item { display: flex; align-items: flex-start; margin-bottom: 12rpx; }
+.tip-item:last-of-type { margin-bottom: 0; }
+.tip-dot { color: #8b6fd6; font-weight: 800; margin-right: 12rpx; line-height: 1.7; }
+.tip-text { flex: 1; font-size: 26rpx; color: #5a5a66; line-height: 1.7; }
+.sec-btn { width: 100%; margin-top: 22rpx; }

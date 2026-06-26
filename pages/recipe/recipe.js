@@ -100,7 +100,14 @@ Page({
     topRecipes = topRecipes.slice(0, 10)
 
     var analysis = util.analyzeNutrition(recipes)
-    var recommendations = util.getRecipeRecommendations(recipes)
+    var recommendations = util.getRecipeRecommendations(recipes).slice(0, 3)
+    // 模板「今日推荐」三餐：给前几条推荐贴上餐段标签(纯展示)
+    var MEALS = [{ l: '早餐', e: '🌅' }, { l: '午餐', e: '☀️' }, { l: '晚餐', e: '🌙' }]
+    recommendations.forEach(function (r, i) {
+      var m = MEALS[i] || { l: '推荐', e: '🍽️' }
+      r.mealLabel = m.l
+      r.mealEmoji = m.e
+    })
 
     this.setData({
       recipes: recipes,
@@ -128,6 +135,27 @@ Page({
   onRateRecipe: function (e) {
     var id = e.currentTarget.dataset.id
     wx.navigateTo({ url: '/pages/recipe/rate?id=' + id })
+  },
+
+  // 一键分享到菜友圈(公共池)
+  onShareCircle: function (e) {
+    var that = this
+    var id = e.currentTarget.dataset.id
+    if (e.currentTarget.dataset.public) {
+      wx.showToast({ title: '这道菜已在菜友圈', icon: 'none' })
+      return
+    }
+    wx.showModal({
+      title: '分享到菜友圈',
+      content: '把这道菜分享到公共菜友圈，大家都能看到它的做法和评分。',
+      success: function (m) {
+        if (!m.confirm) return
+        app.callCloudFunction('shareRecipe', { recipeId: id, shareMessage: '' }, function (res) {
+          if (res && res.success) { wx.showToast({ title: '已分享到菜友圈', icon: 'success' }); that.loadRecipes() }
+          else wx.showToast({ title: (res && res.message) || '分享失败', icon: 'none' })
+        })
+      }
+    })
   },
 
   getFilteredRecipes: function (recipes, filter) {

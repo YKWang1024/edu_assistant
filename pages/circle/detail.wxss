@@ -1,135 +1,57 @@
-.container {
-  background: #f2ede2;
-  min-height: 100vh;
-}
+.container { background: #f3f6fb; min-height: 100vh; padding: 0; }
 
-.recipe-header {
-  background: #fef9ed;
-  padding: 20rpx;
-  border-bottom: 4rpx solid #d2c5ad;
-}
-
-.user-bar {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.user-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  border: 3rpx solid #d2c5ad;
-}
-
+.recipe-header { background: #ffffff; padding: 22rpx 24rpx; border-bottom: 2rpx solid #eef0f4; }
+.user-bar { display: flex; align-items: center; gap: 16rpx; }
+.user-avatar { width: 80rpx; height: 80rpx; border-radius: 50%; border: none; }
 .user-avatar-placeholder {
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  background: #d2c5ad;
+  background: #eaeef5;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 40rpx;
 }
+.user-info { flex: 1; }
+.user-name { font-size: 30rpx; font-weight: 700; color: #2b2b33; display: block; }
+.share-time { font-size: 22rpx; color: #a0a0ad; }
 
-.user-info {
-  flex: 1;
-}
-
-.user-name {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #1d1c15;
-  display: block;
-}
-
-.share-time {
-  font-size: 22rpx;
-  color: #807661;
-}
-
-.image-swiper {
-  height: 400rpx;
-  background: #fff;
-}
-
-.swiper-image {
-  width: 100%;
-  height: 100%;
-}
+.image-swiper { height: 440rpx; background: #fff; }
+.swiper-image { width: 100%; height: 100%; }
 
 .recipe-content {
-  background: #fef9ed;
-  margin: 20rpx;
-  border-radius: 16rpx;
-  padding: 30rpx;
-  border: 4rpx solid #807661;
-  box-shadow: 8rpx 8rpx 0rpx 0rpx rgba(136, 81, 32, 0.2);
+  background: #ffffff;
+  margin: 24rpx;
+  border-radius: 28rpx;
+  padding: 32rpx;
+  border: none;
+  box-shadow: 0 10rpx 30rpx rgba(80, 95, 130, 0.08);
 }
-
-.recipe-title-row {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  margin-bottom: 20rpx;
-}
-
-.recipe-name {
-  font-size: 40rpx;
-  font-weight: 700;
-  color: #1d1c15;
-}
-
+.recipe-title-row { display: flex; align-items: center; gap: 16rpx; margin-bottom: 22rpx; }
+.recipe-name { font-size: 40rpx; font-weight: 800; color: #2b2b33; }
 .recipe-category {
-  font-size: 24rpx;
-  color: #fef9ed;
-  background: #47672c;
+  font-size: 22rpx;
+  color: #4ca85f;
+  background: #e3f4e0;
   padding: 6rpx 20rpx;
-  border-radius: 8rpx;
+  border-radius: 999rpx;
+  font-weight: 700;
 }
+.recipe-stats { display: flex; gap: 40rpx; margin-bottom: 30rpx; padding-bottom: 22rpx; border-bottom: 2rpx solid #f1f3f7; }
+.stat-item { display: flex; align-items: center; gap: 8rpx; }
+.stat-icon { font-size: 30rpx; }
+.stat-value { font-size: 28rpx; color: #6b6b7a; font-weight: 600; }
 
-.recipe-stats {
-  display: flex;
-  gap: 40rpx;
-  margin-bottom: 30rpx;
-  padding-bottom: 20rpx;
-  border-bottom: 2rpx dashed #d2c5ad;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-
-.stat-icon {
-  font-size: 32rpx;
-}
-
-.stat-value {
-  font-size: 28rpx;
-  color: #4e4634;
-}
-
-.section {
-  margin-bottom: 25rpx;
-}
-
-.section:last-child {
-  margin-bottom: 0;
-}
-
+.section { margin-bottom: 26rpx; }
+.section:last-child { margin-bottom: 0; }
 .section-title {
   font-size: 28rpx;
   font-weight: 700;
-  color: #775a00;
+  color: #d98a2b;
   margin-bottom: 10rpx;
   display: block;
+  padding-left: 0;
+  border-left: none;
 }
-
-.section-content {
-  font-size: 28rpx;
-  color: #4e4634;
-  line-height: 1.6;
-}
+.section-content { font-size: 28rpx; color: #5a5a66; line-height: 1.7; }

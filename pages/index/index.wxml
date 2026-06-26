@@ -1,77 +1,102 @@
-<view class="container">
-  <view class="header-card">
-    <view class="header-top flex-between">
-      <view class="header-brand">宝贝成长</view>
-      <view class="header-chips">
-        <view class="chip streak-chip"><text class="chip-icon">🔥</text>连续{{streak}}天</view>
-        <view class="chip game-chip"><text class="chip-icon">🎮</text>{{gameMinutes}}分钟</view>
-        <view class="chip family-chip" bindtap="onTapFamily">👨‍👩‍👧</view>
+<view class="home">
+  <!-- 顶部渐变头：问候 + 等级 + 成长值 -->
+  <view class="hero">
+    <view class="hero-blob hero-blob-1"></view>
+    <view class="hero-blob hero-blob-2"></view>
+    <view class="hero-row">
+      <view class="hero-user">
+        <view class="hero-avatar">🧒</view>
+        <view class="hero-text">
+          <view class="hero-hi">Hi，{{childName}}！</view>
+          <view class="hero-meta">Lv.{{level}}<text class="hero-dot">·</text>成长值 {{gameMinutes}}</view>
+        </view>
+      </view>
+      <view class="hero-badge" bindtap="onTapFamily">
+        <text class="hero-badge-icon">👨‍👩‍👧</text>
       </view>
     </view>
-    <view class="header-sub">每天进步一点点，一块一块搭未来</view>
+
+    <!-- 今日能量 -->
+    <view class="energy">
+      <view class="energy-top">
+        <text class="energy-label">今日任务能量</text>
+        <text class="energy-val">{{doneCount}}/3</text>
+      </view>
+      <view class="energy-bar"><view class="energy-fill" style="width:{{progressPct}}%"></view></view>
+      <view class="energy-tip">完成今日打卡与小测，点亮全部能量 ⚡</view>
+    </view>
   </view>
 
-  <!-- 今日任务：一眼看到今天做什么 -->
-  <view class="today-card card">
-    <view class="today-top flex-between">
-      <view class="today-title">🎯 今日任务</view>
-      <view class="today-count">{{doneCount}}/3 完成</view>
+  <!-- 三大入口 -->
+  <view class="entry-grid">
+    <view class="entry-card entry-green" bindtap="onTapReward">
+      <view class="entry-emoji">📅</view>
+      <view class="entry-title">学习习惯</view>
+      <view class="entry-sub">每日打卡养成</view>
     </view>
-    <view class="today-bar"><view class="today-bar-fill" style="width:{{progressPct}}%"></view></view>
-    <view class="today-tasks">
-      <view class="today-task {{todayChecked.school ? 'ok' : ''}}">{{todayChecked.school ? '✓' : '○'}} 到校</view>
-      <view class="today-task {{todayChecked.homework ? 'ok' : ''}}">{{todayChecked.homework ? '✓' : '○'}} 作业</view>
-      <view class="today-task {{todayChecked.sleep ? 'ok' : ''}}">{{todayChecked.sleep ? '✓' : '○'}} 睡觉</view>
+    <view class="entry-card entry-orange" bindtap="onTapRecipe">
+      <view class="entry-emoji">🥗</view>
+      <view class="entry-title">营养饮食</view>
+      <view class="entry-sub">菜谱与搭配</view>
     </view>
-    <button class="btn-primary daily-quiz-btn" bindtap="onTapDailyQuiz">🚀 今日一键小测（约 3 分钟）</button>
+    <view class="entry-card entry-purple" bindtap="onTapWrong">
+      <view class="entry-emoji">📒</view>
+      <view class="entry-title">错题本</view>
+      <view class="entry-sub">错题统一复习</view>
+    </view>
   </view>
 
+  <!-- 一键小测 CTA -->
+  <view class="quiz-cta" bindtap="onTapDailyQuiz">
+    <view class="quiz-left">
+      <view class="quiz-emoji">🚀</view>
+      <view class="quiz-textwrap">
+        <view class="quiz-title">今日一键小测</view>
+        <view class="quiz-sub">随机一科 · 约 3 分钟，完成赚能量</view>
+      </view>
+    </view>
+    <view class="quiz-go">开始 ›</view>
+  </view>
+
+  <!-- AI 建议入口 -->
+  <view class="ai-banner" bindtap="onTapAI">
+    <view class="ai-banner-emoji">🤖</view>
+    <view class="ai-banner-text">
+      <view class="ai-banner-title">AI 学习建议</view>
+      <view class="ai-banner-sub">错题归纳 · 营养搭配，一眼看建议</view>
+    </view>
+    <view class="ai-banner-go">›</view>
+  </view>
+
+  <!-- 学习练习 -->
   <view class="section-title">学习练习</view>
   <view class="func-list">
-    <view class="func-item card" bindtap="onTapMath">
-      <view class="func-icon-wrap math-icon">
-        <text class="func-icon">🧮</text>
-      </view>
+    <view class="func-item" bindtap="onTapMath">
+      <view class="func-icon-wrap math-icon"><text class="func-icon">🧮</text></view>
       <view class="func-info">
         <view class="func-name">数学速算</view>
-        <view class="func-desc">10/20以内加减法</view>
+        <view class="func-desc">10/20 以内加减法</view>
       </view>
       <view class="func-arrow">›</view>
     </view>
-    <view class="func-item card" bindtap="onTapPinyin">
-      <view class="func-icon-wrap pinyin-icon">
-        <text class="func-icon">📖</text>
-      </view>
+    <view class="func-item" bindtap="onTapPinyin">
+      <view class="func-icon-wrap pinyin-icon"><text class="func-icon">📖</text></view>
       <view class="func-info">
         <view class="func-name">语文拼音</view>
-        <view class="func-desc">识字/写字练习</view>
+        <view class="func-desc">识字 / 写字练习</view>
       </view>
       <view class="func-arrow">›</view>
     </view>
-    <view class="func-item card" bindtap="onTapEnglish">
-      <view class="func-icon-wrap english-icon">
-        <text class="func-icon">🔤</text>
-      </view>
+    <view class="func-item" bindtap="onTapEnglish">
+      <view class="func-icon-wrap english-icon"><text class="func-icon">🔤</text></view>
       <view class="func-info">
         <view class="func-name">英语测试</view>
-        <view class="func-desc">词汇/句型/易混词</view>
+        <view class="func-desc">词汇 / 句型 / 易混词</view>
       </view>
       <view class="func-arrow">›</view>
     </view>
-    <view class="func-item card" bindtap="onTapWrong">
-      <view class="func-icon-wrap wrong-icon">
-        <text class="func-icon">📝</text>
-      </view>
-      <view class="func-info">
-        <view class="func-name">错题本</view>
-        <view class="func-desc">拍照+小测错题 · 统一复习</view>
-      </view>
-      <view class="func-arrow">›</view>
-    </view>
-    <view class="func-item card" bindtap="onTapExam">
-      <view class="func-icon-wrap exam-icon">
-        <text class="func-icon">📷</text>
-      </view>
+    <view class="func-item" bindtap="onTapExam">
+      <view class="func-icon-wrap exam-icon"><text class="func-icon">📷</text></view>
       <view class="func-info">
         <view class="func-name">拍照录题</view>
         <view class="func-desc">拍试卷照片 · AI 识别错题</view>
@@ -80,55 +105,23 @@
     </view>
   </view>
 
-  <view class="section-title">习惯养成</view>
-  <view class="habit-list">
-    <view class="habit-item card {{todayChecked.school ? 'done' : ''}}" bindtap="onTapReward">
-      <view class="habit-icon-wrap {{todayChecked.school ? 'done-icon' : ''}}">
-        <text class="habit-icon">🏫</text>
-      </view>
-      <view class="habit-info flex-1">
-        <view class="habit-name {{todayChecked.school ? 'line-through' : ''}}">到校打卡</view>
-        <view class="habit-time">目标 8:10</view>
-      </view>
-      <view class="habit-status {{todayChecked.school ? 'status-done' : 'status-pending'}}">
-        {{todayChecked.school ? '✓' : '○'}}
-      </view>
+  <!-- 习惯打卡：彩色软块网格 -->
+  <view class="section-title">习惯打卡</view>
+  <view class="habit-grid">
+    <view class="habit-tile {{todayChecked.school ? 'done' : ''}}" bindtap="onTapReward">
+      <view class="habit-tile-icon">🏫</view>
+      <view class="habit-tile-name">到校</view>
+      <view class="habit-tile-check">{{todayChecked.school ? '✓' : ''}}</view>
     </view>
-    <view class="habit-item card {{todayChecked.homework ? 'done' : ''}}" bindtap="onTapReward">
-      <view class="habit-icon-wrap {{todayChecked.homework ? 'done-icon' : ''}}">
-        <text class="habit-icon">📚</text>
-      </view>
-      <view class="habit-info flex-1">
-        <view class="habit-name {{todayChecked.homework ? 'line-through' : ''}}">作业打卡</view>
-        <view class="habit-time">目标 19:30</view>
-      </view>
-      <view class="habit-status {{todayChecked.homework ? 'status-done' : 'status-pending'}}">
-        {{todayChecked.homework ? '✓' : '○'}}
-      </view>
+    <view class="habit-tile {{todayChecked.homework ? 'done' : ''}}" bindtap="onTapReward">
+      <view class="habit-tile-icon">📚</view>
+      <view class="habit-tile-name">作业</view>
+      <view class="habit-tile-check">{{todayChecked.homework ? '✓' : ''}}</view>
     </view>
-    <view class="habit-item card {{todayChecked.sleep ? 'done' : ''}}" bindtap="onTapReward">
-      <view class="habit-icon-wrap {{todayChecked.sleep ? 'done-icon' : ''}}">
-        <text class="habit-icon">🌙</text>
-      </view>
-      <view class="habit-info flex-1">
-        <view class="habit-name {{todayChecked.sleep ? 'line-through' : ''}}">睡觉打卡</view>
-        <view class="habit-time">目标 21:00</view>
-      </view>
-      <view class="habit-status {{todayChecked.sleep ? 'status-done' : 'status-pending'}}">
-        {{todayChecked.sleep ? '✓' : '○'}}
-      </view>
+    <view class="habit-tile {{todayChecked.sleep ? 'done' : ''}}" bindtap="onTapReward">
+      <view class="habit-tile-icon">🌙</view>
+      <view class="habit-tile-name">睡觉</view>
+      <view class="habit-tile-check">{{todayChecked.sleep ? '✓' : ''}}</view>
     </view>
-  </view>
-
-  <view class="section-title">饮食健康</view>
-  <view class="func-item card" bindtap="onTapRecipe">
-    <view class="func-icon-wrap recipe-icon">
-      <text class="func-icon">🍽️</text>
-    </view>
-    <view class="func-info">
-      <view class="func-name">菜谱管理</view>
-      <view class="func-desc">打卡评分推荐</view>
-    </view>
-    <view class="func-arrow">›</view>
   </view>
 </view>
