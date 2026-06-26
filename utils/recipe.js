@@ -72,14 +72,14 @@ function buildRecipePrompt(nameHint) {
 }
 
 function parseRecipeJSON(text) {
-  if (!text) throw new Error('AI 未返回内容')
+  if (!text) throw new Error('智能未返回内容')
   var s = String(text).trim()
   s = s.replace(/^```[a-zA-Z]*/, '').replace(/```$/, '').trim()
   var start = s.indexOf('{')
   var end = s.lastIndexOf('}')
   if (start >= 0 && end > start) s = s.slice(start, end + 1)
   var obj
-  try { obj = JSON.parse(s) } catch (e) { throw new Error('AI 返回的内容无法解析为菜谱') }
+  try { obj = JSON.parse(s) } catch (e) { throw new Error('智能识别的内容无法解析为菜谱') }
   return normalizeRecipe(obj)
 }
 
@@ -98,7 +98,7 @@ function normalizeRecipe(obj) {
       protein: Number(obj.calories.protein) || 0,
       fat: Number(obj.calories.fat) || 0,
       carbs: Number(obj.calories.carbs) || 0,
-      unit: '每份(AI估算)'
+      unit: '每份(智能估算)'
     }
   }
   return {
@@ -145,7 +145,7 @@ function recognizeRecipe(source, nameHint) {
     payload.debug = !!config.DEBUG
     app.callCloudFunction('aiVision', payload, function (res) {
       if (!res || !res.success) {
-        var msg = (res && res.message) || 'AI 识别失败'
+        var msg = (res && res.message) || '智能识别失败'
         if (config.DEBUG && res && res.error) msg += '：' + res.error
         reject(new Error(msg))
         return

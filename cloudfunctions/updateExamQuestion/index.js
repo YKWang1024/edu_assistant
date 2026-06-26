@@ -23,7 +23,7 @@ function canAccess(q, openid, ctx) {
 exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID
   try {
-    const { questionId, subject, type, stem, options, correctAnswer, analysis, figure } = event
+    const { questionId, subject, childName, type, stem, options, correctAnswer, analysis, figure } = event
     if (!questionId) return { success: false, message: '缺少题目 ID' }
     if (!stem || !String(stem).trim()) return { success: false, message: '题干不能为空' }
 
@@ -35,6 +35,7 @@ exports.main = async (event, context) => {
 
     const patch = {
       subject: SUBJECTS.indexOf(subject) >= 0 ? subject : (q.subject || '其他'),
+      childName: (childName != null && String(childName).trim()) ? String(childName).trim() : (q.childName || '宝贝'),
       type: (type === 'choice' || type === 'fill' || type === 'other') ? type : 'other',
       stem: String(stem).trim(),
       options: Array.isArray(options) ? options : [],

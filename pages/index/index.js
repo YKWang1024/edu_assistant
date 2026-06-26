@@ -28,7 +28,34 @@ Page({
     app.refreshGameTime(function (balance) {
       that.setData({ gameMinutes: balance, level: that.calcLevel(balance) })
     })
+    // 拉取家庭小孩列表，保证可切换妹妹/姐姐等小孩账户
+    app.refreshFamily(function () { that.setData({ childName: app.getCurrentChild() }) })
     this.checkTodayStatus()
+  },
+
+  // 切换当前小孩(妹妹/姐姐等)，影响错题/打分归属
+  onSwitchChild: function () {
+    var that = this
+    var children = app.globalData.children || []
+    if (children.length <= 1) {
+      wx.showModal({
+        title: '切换小孩',
+        content: '还没有其他小孩成员，去家庭管理添加（如 妹妹、姐姐）。',
+        confirmText: '去添加',
+        success: function (m) { if (m.confirm) wx.navigateTo({ url: '/pages/family/manage' }) }
+      })
+      return
+    }
+    var names = children.map(function (c) { return c.name })
+    wx.showActionSheet({
+      itemList: names,
+      success: function (res) {
+        var name = names[res.tapIndex]
+        app.setCurrentChild(name)
+        that.setData({ childName: name })
+        wx.showToast({ title: '已切换到 ' + name, icon: 'none' })
+      }
+    })
   },
 
   // 由成长值(累计游戏时间)粗略折算等级，纯展示用

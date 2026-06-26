@@ -55,7 +55,7 @@ Page({
       }
     }).catch(function (err) {
       console.error('generate course fail', err)
-      var msg = 'AI 生成失败，请重试'
+      var msg = '智能生成失败，请重试'
       if (config.DEBUG && err && err.message) msg = err.message
       that.setData({ generating: false, error: msg })
     })

@@ -67,9 +67,17 @@ Page({
     if (!recipe || !recipe.referenceLink) return
     var link = recipe.referenceLink
     if (recipe.referenceType === 'xiaohongshu') {
+      // 微信不允许直接拉起小红书 App；复制链接后，打开小红书会自动识别剪贴板并跳转到对应笔记
       wx.setClipboardData({
         data: link,
-        success: function () { wx.showToast({ title: '已复制，请打开小红书查看', icon: 'none', duration: 2000 }) }
+        success: function () {
+          wx.showModal({
+            title: '已复制小红书链接',
+            content: '打开「小红书」App 即可自动跳转到这道菜的笔记。',
+            confirmText: '我知道了',
+            showCancel: false
+          })
+        }
       })
     } else {
       wx.navigateTo({ url: '/pages/webview/webview?url=' + encodeURIComponent(link) })

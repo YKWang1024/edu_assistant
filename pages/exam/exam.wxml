@@ -62,7 +62,7 @@
           <text class="q-meta" wx:if="{{q.source !== 'quiz' && q.consecutiveWrong > 0}}">连错 {{q.consecutiveWrong}} 次</text>
           <text class="q-meta" wx:if="{{q.source !== 'quiz'}}">已做 {{q.attemptCount}} 次</text>
           <view class="q-foot-actions">
-            <text class="q-action" wx:if="{{q.status === 'hard' && q.source !== 'quiz'}}" data-id="{{q._id}}" catchtap="onViewCourse">AI 讲解</text>
+            <text class="q-action" wx:if="{{q.status === 'hard' && q.source !== 'quiz'}}" data-id="{{q._id}}" catchtap="onViewCourse">智能讲解</text>
             <text class="q-action" data-id="{{q._id}}" data-source="{{q.source}}" catchtap="onEditOne">✎ 编辑</text>
             <text class="q-action danger" data-id="{{q._id}}" data-source="{{q.source}}" catchtap="onDeleteOne">删除</text>
           </view>
@@ -130,6 +130,11 @@
       <view class="field-label">科目</view>
       <picker mode="selector" range="{{editSubjects}}" value="{{editForm.subjectIndex}}" bindchange="onEditSubjectChange">
         <view class="picker-value">{{editForm.subject}} ▾</view>
+      </picker>
+
+      <view class="field-label">归属小孩</view>
+      <picker mode="selector" range="{{editChildNames}}" value="{{editForm.childIndex}}" bindchange="onEditChildChange">
+        <view class="picker-value">{{editForm.childName}} ▾</view>
       </picker>
 
       <view class="field-label">题型</view>

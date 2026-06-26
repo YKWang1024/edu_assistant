@@ -1,16 +1,16 @@
 <view class="ai-page">
-  <!-- 顶部 AI 渐变头 -->
+  <!-- 顶部 智能渐变头 -->
   <view class="ai-hero">
     <view class="ai-hero-blob"></view>
     <view class="ai-hero-emoji">🤖</view>
     <view class="ai-hero-text">
-      <view class="ai-hero-title">AI 学习助手</view>
+      <view class="ai-hero-title">智能学习助手</view>
       <view class="ai-hero-sub">为 {{childName}} 生成的阶段建议</view>
     </view>
   </view>
 
-  <view wx:if="{{loading}}" class="empty-tip">AI 正在分析最近的学习与饮食…</view>
-  <view wx:elif="{{offline}}" class="empty-tip">联网后即可生成 AI 学习/做菜建议</view>
+  <view wx:if="{{loading}}" class="empty-tip">智能正在分析最近的学习与饮食…</view>
+  <view wx:elif="{{offline}}" class="empty-tip">联网后即可生成 智能学习/做菜建议</view>
 
   <block wx:else>
     <!-- 阶段性总结 -->

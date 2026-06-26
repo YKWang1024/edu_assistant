@@ -83,7 +83,7 @@ Page({
         tips.push('「' + weak + '」未掌握最多（' + (map[weak].total - map[weak].mastered) + ' 道），建议优先复习。')
       }
       if (totalDue > 0) tips.push('当前 ' + totalDue + ' 道错题待复习，每天做 2~3 道，掌握率会稳步上升。')
-      if (hardCount > 0) tips.push('有 ' + hardCount + ' 道反复做错的疑难题，建议看看 AI 老师讲解。')
+      if (hardCount > 0) tips.push('有 ' + hardCount + ' 道反复做错的疑难题，建议看看 智能老师讲解。')
       if (tips.length === 0) tips.push('错题都在稳步掌握中，继续加油！')
     }
     this._totalWrong = totalWrong
