@@ -80,6 +80,18 @@
   justify-content: space-between;
   padding: 26rpx 0;
 }
+/* 分享按钮伪装成菜单行：清掉 button 默认样式 */
+.menu-share {
+  background: transparent;
+  border: none;
+  margin: 0;
+  width: 100%;
+  text-align: left;
+  line-height: 1.2;
+  font-size: 29rpx;
+  color: #2b2b33;
+}
+.menu-share::after { border: none; }
 .menu-item:active { opacity: 0.6; }
 .menu-left { display: flex; align-items: center; }
 .menu-ic {
