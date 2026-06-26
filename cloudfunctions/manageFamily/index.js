@@ -69,9 +69,10 @@ exports.main = async (event, context) => {
       if (idx < 0) return { success: false, message: '成员不存在' }
       members[idx].role = role
       await db.collection('families').doc(ctx.familyId).update({ data: { members: members } })
-      // 同步 users 表角色
+      // 仅当对方「当前家庭」正是本家庭时，才同步缓存角色 users.familyRole；
+      // 多家庭下若直接覆盖，会污染对方在其它当前家庭里的角色(越权/降权)。
       const us = await db.collection('users').where({ openid: target }).get()
-      if (us.data && us.data.length) {
+      if (us.data && us.data.length && us.data[0].familyId === ctx.familyId) {
         await db.collection('users').doc(us.data[0]._id).update({ data: { familyRole: role } })
       }
       return { success: true }

@@ -129,6 +129,12 @@ App({
       if (res && res.success && res.data) {
         that.globalData.children = res.data.children || []
         that.globalData.myFamilyRole = res.data.myRole || ''
+        // 同步缓存 userInfo 的当前家庭与角色，切换/退出家庭后各页(如菜谱详情读 userInfo.familyRole)保持一致
+        if (that.globalData.userInfo) {
+          that.globalData.userInfo.familyId = res.data.familyId
+          that.globalData.userInfo.familyRole = res.data.myRole || that.globalData.userInfo.familyRole
+          try { wx.setStorageSync('userInfo', JSON.stringify(that.globalData.userInfo)) } catch (e) {}
+        }
         var names = that.globalData.children.map(function (c) { return c.name })
         var saved = ''
         try { saved = wx.getStorageSync('currentChild') } catch (e) {}

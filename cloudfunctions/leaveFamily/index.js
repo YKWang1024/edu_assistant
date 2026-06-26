@@ -15,8 +15,11 @@ exports.main = async (event) => {
     if (!u.data || !u.data.length) return { success: false, message: '用户未注册' }
     const me = u.data[0]
 
-    let ids = (Array.isArray(me.familyIds) && me.familyIds.length) ? me.familyIds.slice() : (me.familyId ? [me.familyId] : [])
-    if (ids.indexOf(targetId) < 0 && me.familyId !== targetId) {
+    // 归一化：确保当前家庭在列表内 + 去重(规避并发追加产生的重复 id)
+    let ids = (Array.isArray(me.familyIds) && me.familyIds.length) ? me.familyIds.slice() : []
+    if (me.familyId && ids.indexOf(me.familyId) < 0) ids.push(me.familyId)
+    ids = Array.from(new Set(ids))
+    if (ids.indexOf(targetId) < 0) {
       return { success: false, message: '你不在该家庭中' }
     }
     if (ids.length <= 1) {
@@ -45,6 +48,7 @@ exports.main = async (event) => {
       } catch (e) { newRole = 'member' }
     }
 
+    if (!newActive) return { success: false, message: '无法切换到其它家庭' }
     await db.collection('users').doc(me._id).update({
       data: { familyId: newActive, familyIds: ids, familyRole: newRole }
     })

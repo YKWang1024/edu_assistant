@@ -21,6 +21,7 @@ exports.main = async (event) => {
 
     let ids = (Array.isArray(me.familyIds) && me.familyIds.length) ? me.familyIds.slice() : (me.familyId ? [me.familyId] : [])
     if (ids.indexOf(targetId) < 0) ids.push(targetId)
+    ids = Array.from(new Set(ids))
 
     await db.collection('users').doc(me._id).update({
       data: { familyId: targetId, familyIds: ids, familyRole: mine.role || 'member' }

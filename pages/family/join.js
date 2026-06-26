@@ -40,30 +40,24 @@ Page({
     }
   },
 
-  doJoin: function (fn, payload, force) {
+  doJoin: function (fn, payload) {
     var that = this
     if (!app.globalData.cloudReady) {
       wx.showToast({ title: '云开发未就绪，请稍后重试', icon: 'none' })
       return
     }
-    if (force) payload.force = true
     that.setData({ joining: true })
+    // 多家庭：加入是「追加」，不再退出原家庭，故无需 force/二次确认
     app.callCloudFunction(fn, payload, function (res) {
       if (res && res.success) {
         app.saveFamilyId(res.data.familyId)
-        // 刷新本地 userInfo，确保 isLoggedIn 与 familyId 同步
+        // 刷新本地 userInfo 与家庭态，确保当前家庭/角色同步
         app.callCloudFunction('login', {}, function (lr) {
           if (lr && lr.success && lr.userInfo) app.saveUserInfo(lr.userInfo)
+          app.refreshFamily(function () {})
           that.setData({ joining: false })
-          wx.showToast({ title: '已加入家庭', icon: 'success' })
+          wx.showToast({ title: res.message || '已加入家庭', icon: 'success' })
           setTimeout(function () { wx.navigateBack() }, 1200)
-        })
-      } else if (res && res.code === 'ALREADY_IN_FAMILY') {
-        that.setData({ joining: false })
-        wx.showModal({
-          title: '切换家庭',
-          content: '你已在一个家庭中，加入新家庭将退出当前家庭，确定？',
-          success: function (m) { if (m.confirm) that.doJoin(fn, payload, true) }
         })
       } else {
         that.setData({ joining: false })

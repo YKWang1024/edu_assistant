@@ -18,12 +18,6 @@ async function ensureMember(familyId, openid, displayName, role) {
   }
 }
 
-async function removeMember(familyId, openid) {
-  const f = await db.collection('families').doc(familyId).get()
-  const members = ((f.data && f.data.members) || []).filter(function (m) { return m.openid !== openid })
-  await db.collection('families').doc(familyId).update({ data: { members: members } })
-}
-
 // 多家庭：加入是「追加」——保留原有家庭，新家庭设为当前(familyId)，全部记入 familyIds。
 async function joinFamily(openid, targetFamilyId, displayName) {
   const u = await db.collection('users').where({ openid: openid }).get()
@@ -39,6 +33,7 @@ async function joinFamily(openid, targetFamilyId, displayName) {
     let ids = (Array.isArray(me.familyIds) && me.familyIds.length) ? me.familyIds.slice() : (me.familyId ? [me.familyId] : [])
     const already = ids.indexOf(targetFamilyId) >= 0
     if (!already) ids.push(targetFamilyId)
+    ids = Array.from(new Set(ids))
     await db.collection('users').doc(me._id).update({ data: { familyId: targetFamilyId, familyIds: ids, familyRole: role } })
     return { success: true, data: { familyId: targetFamilyId }, message: already ? '已切换到该家庭' : '已加入家庭' }
   } else {
