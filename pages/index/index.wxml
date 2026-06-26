@@ -4,21 +4,30 @@
     <view class="hero-blob hero-blob-1"></view>
     <view class="hero-blob hero-blob-2"></view>
     <view class="hero-row">
-      <view class="hero-user" bindtap="onSwitchChild">
-        <image wx:if="{{childAvatar}}" src="{{childAvatar}}" class="hero-avatar hero-avatar-img" mode="aspectFill" />
-        <view wx:else class="hero-avatar">🧒</view>
-        <view class="hero-text">
-          <view class="hero-hi">Hi，{{childName}}！<text class="hero-switch">切换 ▾</text></view>
-          <view class="hero-meta">Lv.{{level}}<text class="hero-dot">·</text>成长值 {{gameMinutes}}</view>
-        </view>
+      <view class="hero-user" bindtap="onSwitchRole">
+        <block wx:if="{{viewRole === 'parent'}}">
+          <view class="hero-avatar">👨‍👩‍👧</view>
+          <view class="hero-text">
+            <view class="hero-hi">家长<text class="hero-switch">切换 ▾</text></view>
+            <view class="hero-meta">管控视角</view>
+          </view>
+        </block>
+        <block wx:else>
+          <image wx:if="{{childAvatar}}" src="{{childAvatar}}" class="hero-avatar hero-avatar-img" mode="aspectFill" />
+          <view wx:else class="hero-avatar">🧒</view>
+          <view class="hero-text">
+            <view class="hero-hi">Hi，{{childName}}！<text class="hero-switch">切换 ▾</text></view>
+            <view class="hero-meta">Lv.{{level}}<text class="hero-dot">·</text>成长值 {{gameMinutes}}</view>
+          </view>
+        </block>
       </view>
       <view class="hero-badge" bindtap="onTapFamily">
         <text class="hero-badge-icon">👨‍👩‍👧</text>
       </view>
     </view>
 
-    <!-- 今日能量 -->
-    <view class="energy">
+    <!-- 今日能量(孩子视角) -->
+    <view class="energy" wx:if="{{viewRole !== 'parent'}}">
       <view class="energy-top">
         <text class="energy-label">今日任务能量</text>
         <text class="energy-val">{{doneCount}}/3</text>
@@ -28,6 +37,47 @@
     </view>
   </view>
 
+  <!-- ============ 家长视角(REQ-015)：学习报告/时长统计 + 管控入口 ============ -->
+  <block wx:if="{{viewRole === 'parent'}}">
+    <view class="section-title">学习报告 · 时长统计</view>
+    <view class="p-stats">
+      <view class="p-stat"><view class="p-val">{{studyMinutes}}</view><view class="p-lab">今日在线(分)</view></view>
+      <view class="p-stat"><view class="p-val">{{usageTodayDwellMin}}</view><view class="p-lab">今日练习(分)</view></view>
+      <view class="p-stat"><view class="p-val">{{usageTodayTaps}}</view><view class="p-lab">练习互动(次)</view></view>
+    </view>
+    <view class="p-stats">
+      <view class="p-stat"><view class="p-val">{{gameMinutes}}</view><view class="p-lab">游戏时间(分)</view></view>
+      <view class="p-stat"><view class="p-val">{{wrongMastered}}/{{wrongTotal}}</view><view class="p-lab">错题已巩固</view></view>
+      <view class="p-stat"><view class="p-val">{{doneCount}}/3</view><view class="p-lab">今日打卡</view></view>
+    </view>
+
+    <view class="section-title">管控</view>
+    <view class="func-list">
+      <view class="func-item" bindtap="onGoAccount">
+        <view class="func-icon-wrap math-icon"><text class="func-icon">📊</text></view>
+        <view class="func-info"><view class="func-name">家长报告 / 游戏时间</view><view class="func-desc">余额、今日/本周、练习互动</view></view>
+        <view class="func-arrow">›</view>
+      </view>
+      <view class="func-item" bindtap="onTapWrong">
+        <view class="func-icon-wrap exam-icon"><text class="func-icon">📒</text></view>
+        <view class="func-info"><view class="func-name">错题本管理</view><view class="func-desc">查看/编辑错题(需家长密码)</view></view>
+        <view class="func-arrow">›</view>
+      </view>
+      <view class="func-item" bindtap="onTapFamily">
+        <view class="func-icon-wrap pinyin-icon"><text class="func-icon">👨‍👩‍👧</text></view>
+        <view class="func-info"><view class="func-name">家庭管理</view><view class="func-desc">成员/小孩/家庭设置</view></view>
+        <view class="func-arrow">›</view>
+      </view>
+      <view class="func-item" bindtap="onGoSettings">
+        <view class="func-icon-wrap english-icon"><text class="func-icon">⚙️</text></view>
+        <view class="func-info"><view class="func-name">设置</view><view class="func-desc">账户/分享/清除数据</view></view>
+        <view class="func-arrow">›</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============ 孩子视角：学习内容 ============ -->
+  <block wx:if="{{viewRole !== 'parent'}}">
   <!-- 三大入口 -->
   <view class="entry-grid">
     <view class="entry-card entry-green" bindtap="onTapReward">
@@ -144,4 +194,5 @@
       <view class="habit-tile-check">{{todayChecked.sleep ? '✓' : ''}}</view>
     </view>
   </view>
+  </block>
 </view>

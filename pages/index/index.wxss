@@ -294,3 +294,9 @@
 .g-dish-name { font-size: 26rpx; color: #2b2b33; }
 .g-dish-score { font-size: 26rpx; font-weight: 700; color: #f5a623; }
 .growth-empty { margin-top: 20rpx; font-size: 24rpx; color: #a0a0ad; text-align: center; line-height: 1.6; }
+
+/* 家长视角统计(REQ-015) */
+.p-stats { display: flex; gap: 16rpx; margin-bottom: 16rpx; }
+.p-stat { flex: 1; text-align: center; background: #ffffff; border-radius: 20rpx; padding: 26rpx 8rpx; box-shadow: 0 6rpx 18rpx rgba(80, 110, 170, 0.08); }
+.p-val { font-size: 36rpx; font-weight: 800; color: #5b6ff0; }
+.p-lab { font-size: 22rpx; color: #8a8a97; margin-top: 6rpx; }
