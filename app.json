@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/profile/profile",
+    "pages/profile/child",
     "pages/math/math",
     "pages/math/result",
     "pages/pinyin/pinyin",

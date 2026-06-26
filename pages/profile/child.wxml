@@ -1,0 +1,27 @@
+<view class="page">
+  <!-- 头像 -->
+  <view class="avatar-block" bindtap="onChooseAvatar">
+    <image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" class="avatar-img" mode="aspectFill" />
+    <view wx:else class="avatar-ph">🧒</view>
+    <view class="avatar-edit">更换头像</view>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form card">
+    <view class="form-row">
+      <text class="form-label">名字</text>
+      <input class="form-input" value="{{name}}" placeholder="孩子的名字/称呼" bindinput="onInputName" maxlength="12" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">年龄</text>
+      <input class="form-input" value="{{age}}" placeholder="如 7" type="number" bindinput="onInputAge" maxlength="3" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">年级</text>
+      <input class="form-input" value="{{grade}}" placeholder="如 一年级" bindinput="onInputGrade" maxlength="10" />
+    </view>
+  </view>
+
+  <button class="save-btn" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">保存</button>
+  <view class="hint">头像保存后会在首页、家庭、错题集等处同步显示。</view>
+</view>

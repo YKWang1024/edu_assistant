@@ -5,7 +5,8 @@
     <view class="hero-blob hero-blob-2"></view>
     <view class="hero-row">
       <view class="hero-user" bindtap="onSwitchChild">
-        <view class="hero-avatar">🧒</view>
+        <image wx:if="{{childAvatar}}" src="{{childAvatar}}" class="hero-avatar hero-avatar-img" mode="aspectFill" />
+        <view wx:else class="hero-avatar">🧒</view>
         <view class="hero-text">
           <view class="hero-hi">Hi，{{childName}}！<text class="hero-switch">切换 ▾</text></view>
           <view class="hero-meta">Lv.{{level}}<text class="hero-dot">·</text>成长值 {{gameMinutes}}</view>

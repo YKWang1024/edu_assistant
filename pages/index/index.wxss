@@ -269,3 +269,6 @@
   background: transparent;
 }
 .habit-tile.done .habit-tile-check { background: #4ca85f; box-shadow: 0 4rpx 10rpx rgba(76, 168, 95, 0.4); }
+
+/* 当前小孩头像(REQ-012) */
+.hero-avatar-img { background: transparent; }

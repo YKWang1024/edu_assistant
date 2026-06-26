@@ -209,25 +209,14 @@ Page({
     })
   },
 
+  // 添加/编辑小孩 → 信息管理页(支持头像/年龄)，REQ-012
   onAddChild: function () {
-    var that = this
-    this.promptChild('', '', function (name, grade) {
-      app.callCloudFunction('manageFamily', { action: 'addChild', name: name, grade: grade }, function (r) {
-        if (r && r.success) { wx.showToast({ title: '已添加', icon: 'success' }); that.load() }
-        else wx.showToast({ title: (r && r.message) || '添加失败', icon: 'none' })
-      })
-    })
+    wx.navigateTo({ url: '/pages/profile/child' })
   },
 
   onEditChild: function (e) {
-    var that = this
     var c = e.currentTarget.dataset.child
-    this.promptChild(c.name, c.grade, function (name, grade) {
-      app.callCloudFunction('manageFamily', { action: 'updateChild', childId: c.childId, name: name, grade: grade }, function (r) {
-        if (r && r.success) { wx.showToast({ title: '已保存', icon: 'success' }); that.load() }
-        else wx.showToast({ title: (r && r.message) || '保存失败', icon: 'none' })
-      })
-    })
+    wx.navigateTo({ url: '/pages/profile/child?childId=' + c.childId })
   },
 
   onRemoveChild: function (e) {

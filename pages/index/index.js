@@ -4,6 +4,7 @@ var util = require('../../utils/util.js')
 Page({
   data: {
     childName: '宝贝',
+    childAvatar: '',
     level: 1,
     gameMinutes: 0,
     studyMinutes: 0,
@@ -30,9 +31,18 @@ Page({
     app.refreshGameTime(function (balance) {
       that.setData({ gameMinutes: balance, level: that.calcLevel(balance) })
     })
-    // 拉取家庭小孩列表，保证可切换妹妹/姐姐等小孩账户
-    app.refreshFamily(function () { that.setData({ childName: app.getCurrentChild() }) })
+    // 拉取家庭小孩列表，保证可切换妹妹/姐姐等小孩账户；同步当前小孩头像(REQ-012)
+    app.refreshFamily(function () {
+      that.setData({ childName: app.getCurrentChild(), childAvatar: that.currentChildAvatar() })
+    })
     this.checkTodayStatus()
+  },
+
+  // 取当前小孩头像(来自家庭数据，已在 getFamilyInfo 转临时链接)
+  currentChildAvatar: function () {
+    var name = app.getCurrentChild()
+    var c = (app.globalData.children || []).filter(function (x) { return x.name === name })[0]
+    return (c && c.avatar) || ''
   },
 
   // 切换当前小孩(妹妹/姐姐等)，影响错题/打分归属
@@ -54,7 +64,7 @@ Page({
       success: function (res) {
         var name = names[res.tapIndex]
         app.setCurrentChild(name)
-        that.setData({ childName: name })
+        that.setData({ childName: name, childAvatar: that.currentChildAvatar() })
         wx.showToast({ title: '已切换到 ' + name, icon: 'none' })
       }
     })
