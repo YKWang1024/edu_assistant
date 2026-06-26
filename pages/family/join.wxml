@@ -1,5 +1,9 @@
 <view class="container">
-  <view class="card">
+  <view class="card" wx:if="{{checking}}">
+    <view class="empty-tip">正在确认你是否已在该家庭…</view>
+  </view>
+
+  <view class="card" wx:else>
     <view class="card-title"><text class="icon">🏠</text>加入家庭</view>
 
     <view wx:if="{{fromCard}}" class="from-card-tip">有人邀请你加入TA的家庭，填写称呼后点「确认加入」。</view>

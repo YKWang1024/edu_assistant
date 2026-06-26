@@ -66,6 +66,7 @@
 }
 .fam-btn.switch { color: #4ca85f; background: #e3f4e0; }
 .fam-btn.leave { color: #e5484d; background: #ffe9e6; }
+.fam-btn.rename { color: #4b86ef; background: #e2eefe; }
 .fam-btn:active { transform: scale(0.95); }
 
 .rename-link { font-size: 24rpx; color: #4ca85f; font-weight: 700; }
