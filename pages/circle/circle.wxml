@@ -34,9 +34,17 @@
   </view>
 
   <view class="recipe-list" wx:else>
+    <!-- 按评分排序/筛选(REQ-009) -->
+    <view class="sort-bar" wx:if="{{recipesAll.length > 0}}">
+      <view class="sort-chip {{sortMode === 'latest' ? 'active' : ''}}" bindtap="onSetSort" data-mode="latest">最新</view>
+      <view class="sort-chip {{sortMode === 'score' ? 'active' : ''}}" bindtap="onSetSort" data-mode="score">评分最高</view>
+      <view class="sort-chip filter {{minScore > 0 ? 'active' : ''}}" bindtap="onToggleFilter">{{minScore > 0 ? '已筛 4分+' : '筛选 4分+'}}</view>
+    </view>
+
     <view class="empty-tip" wx:if="{{recipes.length === 0}}">
-      <view>还没有菜友分享的菜谱～</view>
-      <button class="btn-primary empty-cta" bindtap="onGoRecipe">去菜谱页分享我的拿手菜</button>
+      <view wx:if="{{recipesAll.length === 0}}">还没有菜友分享的菜谱～</view>
+      <view wx:else>没有符合筛选条件的菜谱～</view>
+      <button class="btn-primary empty-cta" wx:if="{{recipesAll.length === 0}}" bindtap="onGoRecipe">去菜谱页分享我的拿手菜</button>
     </view>
 
     <view class="recipe-card card" wx:for="{{recipes}}" wx:key="_id" bindtap="onViewRecipe" data-recipe="{{item}}">
@@ -71,7 +79,7 @@
           </view>
           <view class="stat-item">
             <text class="stat-icon">👨🍳</text>
-            <text class="stat-value">{{item.ratings ? item.ratings.length : 0}}人评分</text>
+            <text class="stat-value">{{item.ratingCount || 0}}人评分</text>
           </view>
         </view>
       </view>
