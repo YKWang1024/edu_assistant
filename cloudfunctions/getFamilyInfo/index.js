@@ -18,6 +18,20 @@ async function resolveFamily(openid) {
   return { user: u.data[0], familyId: u.data[0].familyId, role: u.data[0].familyRole }
 }
 
+// 头像 fileID → 临时链接(同家庭成员互相可见)
+async function buildTempUrlMap(fileIDs) {
+  const ids = Array.from(new Set((fileIDs || []).filter(function (f) { return typeof f === 'string' && f.indexOf('cloud://') === 0 })))
+  const map = {}
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50)
+    try {
+      const r = await cloud.getTempFileURL({ fileList: chunk })
+      ;(r.fileList || []).forEach(function (f) { if (f.fileID && f.tempFileURL) map[f.fileID] = f.tempFileURL })
+    } catch (e) { /* 失败保留原值 */ }
+  }
+  return map
+}
+
 exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID
   try {
@@ -37,13 +51,18 @@ exports.main = async (event, context) => {
       ;(us.data || []).forEach(function (u) { userMap[u.openid] = u })
     }
 
+    // 头像 fileID → 临时链接
+    const avatarIDs = []
+    Object.keys(userMap).forEach(function (k) { if (userMap[k].avatarUrl) avatarIDs.push(userMap[k].avatarUrl) })
+    const avatarMap = await buildTempUrlMap(avatarIDs)
+
     const members = rawMembers.map(function (m) {
       const u = userMap[m.openid] || {}
       return {
         openid: m.openid,
         role: m.role || 'member',
         displayName: m.displayName || u.nickname || '成员',
-        avatarUrl: u.avatarUrl || '',
+        avatarUrl: u.avatarUrl ? (avatarMap[u.avatarUrl] || u.avatarUrl) : '',
         joinedAt: m.joinedAt || null,
         isMe: m.openid === openid
       }

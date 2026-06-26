@@ -1,22 +1,32 @@
-// 云函数入口文件
+// 云函数：菜友圈公共池 —— 拉取所有 isPublic 菜谱 + 发布者信息。
+// 关键：把图片/头像的 cloud:// fileID 转成临时下载链接，确保「别人也能看到图片」
+// (云函数有读取权限，签名后的临时链接任何人都能加载，规避存储「仅创建者可读」限制)。
 const cloud = require('wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-// 云函数入口函数
-exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()
+// 批量把 fileID 转临时链接(每次最多 50 个，自动分批；失败则保留原值)
+async function buildTempUrlMap(fileIDs) {
+  const ids = Array.from(new Set((fileIDs || []).filter(function (f) { return typeof f === 'string' && f.indexOf('cloud://') === 0 })))
+  const map = {}
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50)
+    try {
+      const r = await cloud.getTempFileURL({ fileList: chunk })
+      ;(r.fileList || []).forEach(function (f) { if (f.fileID && f.tempFileURL) map[f.fileID] = f.tempFileURL })
+    } catch (e) { /* 转换失败保留原 fileID */ }
+  }
+  return map
+}
+function mapImgs(arr, map) { return (arr || []).map(function (f) { return map[f] || f }) }
 
+exports.main = async (event, context) => {
   try {
     const db = cloud.database()
     const { page = 1, pageSize = 20, userOpenid } = event
 
     let query = { isPublic: true }
-
-    // 如果指定了用户，只看该用户的分享
-    if (userOpenid) {
-      query.userId = userOpenid
-    }
+    if (userOpenid) query.userId = userOpenid
 
     const recipesResult = await db.collection('recipes')
       .where(query)
@@ -25,28 +35,26 @@ exports.main = async (event, context) => {
       .limit(pageSize)
       .get()
 
-    // 获取发布者信息
+    // 发布者信息
     const publisherOpenids = [...new Set(recipesResult.data.map(r => r.userId))]
-
     let publishers = {}
     if (publisherOpenids.length > 0) {
       const usersResult = await db.collection('users')
-        .where({
-          openid: db.command.in(publisherOpenids)
-        })
-        .field({
-          openid: true,
-          nickname: true,
-          avatarUrl: true
-        })
+        .where({ openid: db.command.in(publisherOpenids) })
+        .field({ openid: true, nickname: true, avatarUrl: true })
         .get()
-
-      usersResult.data.forEach(u => {
-        publishers[u.openid] = u
-      })
+      usersResult.data.forEach(u => { publishers[u.openid] = u })
     }
 
-    // 把日期格式化成 UTC+8 的 YYYY-MM-DD 字符串（Date 经 callFunction 序列化不可靠）
+    // 收集所有图片/头像 fileID → 临时链接
+    const allFileIDs = []
+    recipesResult.data.forEach(r => {
+      ;(r.images || []).forEach(f => allFileIDs.push(f))
+      if (r.imageUrl) allFileIDs.push(r.imageUrl)
+    })
+    Object.keys(publishers).forEach(k => { if (publishers[k].avatarUrl) allFileIDs.push(publishers[k].avatarUrl) })
+    const urlMap = await buildTempUrlMap(allFileIDs)
+
     const pad = n => (n < 10 ? '0' : '') + n
     const toDateStr = d => {
       if (!d) return ''
@@ -56,23 +64,19 @@ exports.main = async (event, context) => {
       return x.getUTCFullYear() + '-' + pad(x.getUTCMonth() + 1) + '-' + pad(x.getUTCDate())
     }
 
-    // 添加发布者信息
-    const recipesWithPublisher = recipesResult.data.map(r => ({
-      ...r,
-      publisher: publishers[r.userId] || {},
-      sharedDate: toDateStr(r.sharedAt || r.createdAt)
-    }))
+    const recipesWithPublisher = recipesResult.data.map(r => {
+      const pub = publishers[r.userId] || {}
+      return {
+        ...r,
+        images: mapImgs(r.images, urlMap),
+        imageUrl: r.imageUrl ? (urlMap[r.imageUrl] || r.imageUrl) : r.imageUrl,
+        publisher: Object.assign({}, pub, { avatarUrl: pub.avatarUrl ? (urlMap[pub.avatarUrl] || pub.avatarUrl) : '' }),
+        sharedDate: toDateStr(r.sharedAt || r.createdAt)
+      }
+    })
 
-    return {
-      success: true,
-      data: recipesWithPublisher,
-      total: recipesResult.data.length
-    }
+    return { success: true, data: recipesWithPublisher, total: recipesResult.data.length }
   } catch (err) {
-    return {
-      success: false,
-      message: '获取失败',
-      error: err.message
-    }
+    return { success: false, message: '获取失败', error: err.message }
   }
 }
