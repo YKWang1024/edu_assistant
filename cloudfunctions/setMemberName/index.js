@@ -59,8 +59,14 @@ exports.main = async (event, context) => {
 
     const f = await db.collection('families').doc(familyId).get()
     const members = (f.data && f.data.members) || []
+    const children = (f.data && f.data.children) || []
     const idx = members.findIndex(function (m) { return m.openid === target })
     if (idx < 0) return { success: false, message: '成员不存在' }
+
+    // 称呼唯一性：不与其他成员/小孩重名(否则打分署名会混淆、统计会并桶)
+    const taken = members.some(function (m) { return m.openid !== target && String(m.displayName || '').trim() === newName }) ||
+      children.some(function (c) { return c && !c.isDeleted && String(c.name || '').trim() === newName })
+    if (taken) return { success: false, message: '该称呼已被占用，请换一个' }
 
     // 目标用户(取旧名兜底 + 同步昵称)
     const tu = await db.collection('users').where({ openid: target }).get()

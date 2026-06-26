@@ -72,6 +72,11 @@ exports.main = async (event, context) => {
     if (action === 'addChild') {
       const name = String(event.name || '').trim()
       if (!name) return { success: false, message: '请填写小孩称呼' }
+      // 称呼唯一性：不与现有成员/小孩重名(避免打分署名/统计混淆)
+      if (members.some(function (m) { return String(m.displayName || '').trim() === name }) ||
+          children.some(function (c) { return c && !c.isDeleted && String(c.name || '').trim() === name })) {
+        return { success: false, message: '该称呼已被占用，请换一个' }
+      }
       const childId = newChildId()
       children.push({ childId: childId, name: name, grade: String(event.grade || '').trim(), isDeleted: false, createdAt: new Date() })
       await db.collection('families').doc(ctx.familyId).update({ data: { children: children } })
@@ -84,6 +89,13 @@ exports.main = async (event, context) => {
       const oldName = children[idx].name
       let newName = oldName
       if (event.name != null) newName = String(event.name).trim() || oldName
+      // 称呼唯一性：改名后不与其他成员/小孩重名
+      if (newName !== oldName && (
+        members.some(function (m) { return String(m.displayName || '').trim() === newName }) ||
+        children.some(function (c) { return c && !c.isDeleted && c.childId !== event.childId && String(c.name || '').trim() === newName })
+      )) {
+        return { success: false, message: '该称呼已被占用，请换一个' }
+      }
       children[idx].name = newName
       if (event.grade != null) children[idx].grade = String(event.grade).trim()
       await db.collection('families').doc(ctx.familyId).update({ data: { children: children } })

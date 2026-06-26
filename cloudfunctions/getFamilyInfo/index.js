@@ -92,7 +92,7 @@ exports.main = async (event, context) => {
       success: true,
       data: {
         familyId: ctx.familyId,
-        familyName: family.name || '',
+        familyName: family.name || ((((family.members || []).find(function (m) { return m.role === 'admin' }) || {}).displayName || '家庭') + '的家庭'),
         myRole: ctx.role,
         members: members,
         children: children,
