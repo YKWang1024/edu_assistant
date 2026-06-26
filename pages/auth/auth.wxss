@@ -40,7 +40,7 @@
   overflow: hidden;
   background: #f7f8fb;
 }
-.avatar-preview { width: 100%; height: 100%; object-fit: cover; }
+.avatar-preview { width: 100%; height: 100%; }
 .avatar-placeholder { display: flex; flex-direction: column; align-items: center; gap: 10rpx; }
 .upload-icon { font-size: 48rpx; }
 .upload-text { font-size: 22rpx; color: #a0a0ad; }

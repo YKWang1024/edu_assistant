@@ -35,6 +35,10 @@ Page({
     wx.switchTab({ url: '/pages/recipe/recipe' })
   },
 
+  onGoAI: function () {
+    wx.navigateTo({ url: '/pages/ai/ai' })
+  },
+
   onClearData: function () {
     wx.showModal({
       title: '清除数据',

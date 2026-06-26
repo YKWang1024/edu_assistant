@@ -58,6 +58,16 @@
     <view class="quiz-go">开始 ›</view>
   </view>
 
+  <!-- AI 建议入口 -->
+  <view class="ai-banner" bindtap="onTapAI">
+    <view class="ai-banner-emoji">🤖</view>
+    <view class="ai-banner-text">
+      <view class="ai-banner-title">AI 学习建议</view>
+      <view class="ai-banner-sub">错题归纳 · 营养搭配，一眼看建议</view>
+    </view>
+    <view class="ai-banner-go">›</view>
+  </view>
+
   <!-- 学习练习 -->
   <view class="section-title">学习练习</view>
   <view class="func-list">
