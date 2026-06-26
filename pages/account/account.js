@@ -7,6 +7,10 @@ Page({
     todayEarned: 0,
     todayDeducted: 0,
     weekEarned: 0,
+    // REQ-003 学习互动统计(练习互动次数 + 练习停留时长)
+    usageTodayTaps: 0,
+    usageTodayDwellMin: 0,
+    usageDays: [],
     recentRecords: [],
     typeNames: {
       school: '到校',
@@ -44,6 +48,25 @@ Page({
     } else {
       this.setData({ recentRecords: util.getRecords('rewardRecords').slice(0, 20) })
     }
+    // REQ-003 学习互动统计(当前小孩近7天)
+    this.loadUsageStats()
+  },
+
+  loadUsageStats: function () {
+    var that = this
+    if (!app.globalData.cloudReady) return
+    app.getUsageStats(app.getCurrentChild(), 7, function (data) {
+      if (!data) return
+      var todayDwellMin = Math.floor(((data.today && data.today.dwellSec) || 0) / 60)
+      var days = (data.list || []).map(function (d) {
+        return { date: d.date, taps: d.taps || 0, dwellMin: Math.floor((d.dwellSec || 0) / 60) }
+      })
+      that.setData({
+        usageTodayTaps: (data.today && data.today.taps) || 0,
+        usageTodayDwellMin: todayDwellMin,
+        usageDays: days
+      })
+    })
   },
 
   onUseTime: function () {

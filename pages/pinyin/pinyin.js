@@ -1,5 +1,6 @@
 var pinyinData = require('../../utils/pinyinData.js')
 var util = require('../../utils/util.js')
+var app = getApp()
 
 Page({
   data: {
@@ -24,6 +25,11 @@ Page({
     currentCorrect: false,
     writeAnswer: ''
   },
+
+  // 练习页停留时长采集(REQ-003)
+  onShow: function () { app.usageEnterPractice('pinyin') },
+  onHide: function () { app.usageLeavePractice() },
+  onUnload: function () { app.usageLeavePractice() },
 
   onSelectMode: function (e) {
     this.setData({ selectedMode: e.currentTarget.dataset.mode })
@@ -63,6 +69,7 @@ Page({
     var questions = this.data.questions
     var selected = questions[idx].options[optionIdx]
     var isCorrect = (selected === questions[idx].answer)
+    app.usageTapInc()
     wx.vibrateShort({ type: isCorrect ? 'light' : 'heavy' })
 
     questions[idx].userAnswer = selected
@@ -115,6 +122,7 @@ Page({
     var idx = this.data.currentIndex
     var questions = this.data.questions
     var isCorrect = (answer === questions[idx].answer)
+    app.usageTapInc()
     wx.vibrateShort({ type: isCorrect ? 'light' : 'heavy' })
 
     questions[idx].userAnswer = answer

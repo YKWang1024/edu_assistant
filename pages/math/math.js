@@ -29,6 +29,11 @@ Page({
     this.setData({ selectedLevel: savedLevel, maxNum: savedLevel })
   },
 
+  // 练习页停留时长采集(REQ-003)
+  onShow: function () { app.usageEnterPractice('math') },
+  onHide: function () { app.usageLeavePractice() },
+  onUnload: function () { app.usageLeavePractice() },
+
   onSelectLevel: function (e) {
     var level = e.currentTarget.dataset.level
     this.setData({
@@ -60,6 +65,7 @@ Page({
     var questions = this.data.questions
     var selected = questions[idx].options[optionIdx]
     var isCorrect = (selected === questions[idx].answer)
+    app.usageTapInc()
     wx.vibrateShort({ type: isCorrect ? 'light' : 'heavy' })
 
     questions[idx].userAnswer = selected

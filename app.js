@@ -28,6 +28,9 @@ App({
   onHide: function () {
     this._accumulateStudy()
     this._fgStart = 0
+    // 切到后台时结算练习页停留并把使用统计刷到云端
+    this.usageLeavePractice()
+    this.usageFlush()
   },
 
   _studyTodayStr: function () {
@@ -56,6 +59,100 @@ App({
     var sec = 0
     try { var s = wx.getStorageSync('studyTime'); if (s && s.date === today) sec = s.seconds } catch (e) {}
     return Math.floor(sec / 60)
+  },
+
+  // ---------------- 使用统计采集(REQ-003：练习互动次数 + 练习页停留时长) ----------------
+  // 需求方已确认：先只「采集」不做挂机判定；归属到当前小孩；按日(UTC+8)累计；上云供家长端查看。
+  // 本地缓冲 usageBuf: { "日期|小孩": { taps, dwellSec } }，存的是「自上次同步以来的增量」，
+  // 同步成功即从缓冲里扣掉已发送量，失败则加回，避免重复或丢失。
+  _usageBufGet: function () {
+    try { var b = wx.getStorageSync('usageBuf'); return (b && typeof b === 'object') ? b : {} } catch (e) { return {} }
+  },
+  _usageBufSet: function (buf) {
+    try { wx.setStorageSync('usageBuf', buf || {}) } catch (e) {}
+  },
+
+  // 练习页进入：记录起点(当前小孩/当前日)。math/pinyin/english 等练习页 onShow 调用。
+  usageEnterPractice: function (tag) {
+    this._practiceStart = Date.now()
+    this._practiceChild = this.getCurrentChild()
+    this._practiceDate = this._studyTodayStr()
+    this._practiceTag = tag || ''
+  },
+
+  // 练习页离开：结算停留秒数并入缓冲，随后刷云。onHide/onUnload 调用(幂等)。
+  usageLeavePractice: function () {
+    if (!this._practiceStart) return
+    var sec = Math.floor((Date.now() - this._practiceStart) / 1000)
+    this._practiceStart = 0
+    if (sec > 0) {
+      var k = this._practiceDate + '|' + (this._practiceChild || '宝贝')
+      var buf = this._usageBufGet()
+      if (!buf[k]) buf[k] = { taps: 0, dwellSec: 0 }
+      buf[k].dwellSec = (buf[k].dwellSec || 0) + sec
+      this._usageBufSet(buf)
+    }
+    this.usageFlush()
+  },
+
+  // 练习页一次有效交互(答题/选项/提交)。练习页调用 app.usageTapInc()。
+  usageTapInc: function (n) {
+    n = n || 1
+    var k = this._studyTodayStr() + '|' + this.getCurrentChild()
+    var buf = this._usageBufGet()
+    if (!buf[k]) buf[k] = { taps: 0, dwellSec: 0 }
+    buf[k].taps = (buf[k].taps || 0) + n
+    this._usageBufSet(buf)
+    this._scheduleUsageFlush()
+  },
+
+  _scheduleUsageFlush: function () {
+    if (this._usageFlushTimer) return
+    var that = this
+    this._usageFlushTimer = setTimeout(function () { that._usageFlushTimer = null; that.usageFlush() }, 5000)
+  },
+
+  // 把缓冲里的增量逐条刷到云端(saveUsageStat)。乐观先扣，失败加回。
+  usageFlush: function () {
+    if (!this.globalData.cloudReady) return
+    var that = this
+    var buf = this._usageBufGet()
+    Object.keys(buf).forEach(function (k) {
+      var e = buf[k] || {}
+      var sendTaps = e.taps || 0
+      var sendDwell = e.dwellSec || 0
+      if (sendTaps <= 0 && sendDwell <= 0) return
+      var parts = k.split('|')
+      var date = parts[0]
+      var child = parts[1] || '宝贝'
+      // 乐观扣减(防重复发送/重复计数)
+      var cur = that._usageBufGet()
+      if (cur[k]) {
+        cur[k].taps = (cur[k].taps || 0) - sendTaps
+        cur[k].dwellSec = (cur[k].dwellSec || 0) - sendDwell
+        if (cur[k].taps <= 0 && cur[k].dwellSec <= 0) delete cur[k]
+        that._usageBufSet(cur)
+      }
+      that.callCloudFunction('saveUsageStat', { childName: child, date: date, taps: sendTaps, dwellSec: sendDwell }, function (res) {
+        if (!res || !res.success) {
+          // 失败：把增量加回缓冲，下次再试
+          var b2 = that._usageBufGet()
+          if (!b2[k]) b2[k] = { taps: 0, dwellSec: 0 }
+          b2[k].taps = (b2[k].taps || 0) + sendTaps
+          b2[k].dwellSec = (b2[k].dwellSec || 0) + sendDwell
+          that._usageBufSet(b2)
+        }
+      })
+    })
+  },
+
+  // 读取近 days 天使用统计(家长端展示)。cb({ today, list })
+  getUsageStats: function (childName, days, cb) {
+    var child = childName || this.getCurrentChild()
+    if (!this.globalData.cloudReady) { if (cb) cb(null); return }
+    this.callCloudFunction('getUsageStats', { childName: child, days: days || 7 }, function (res) {
+      if (cb) cb(res && res.success ? res.data : null)
+    })
   },
 
   initCloud: function () {

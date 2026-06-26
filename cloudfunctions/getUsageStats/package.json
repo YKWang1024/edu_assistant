@@ -1,0 +1,9 @@
+{
+  "name": "getUsageStats",
+  "version": "1.0.0",
+  "description": "读取学习使用每日统计(练习互动次数/练习停留时长)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
