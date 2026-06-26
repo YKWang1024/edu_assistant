@@ -1,0 +1,22 @@
+<view class="profile-edit">
+  <view class="card edit-card">
+    <view class="avatar-row">
+      <text class="row-label">头像</text>
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="avatar-ph">＋</view>
+      </button>
+    </view>
+
+    <view class="row-sep"></view>
+
+    <view class="name-row">
+      <text class="row-label">昵称</text>
+      <input class="name-input" type="nickname" placeholder="请输入昵称" value="{{nickname}}" bindinput="onNicknameInput" />
+    </view>
+  </view>
+
+  <view class="tip">头像、昵称是你的账户资料；家庭里的「称呼」可在家庭管理里单独设置。</view>
+
+  <button class="btn-primary save-btn" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">保存</button>
+</view>

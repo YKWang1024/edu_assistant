@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/profile/profile",
     "pages/math/math",
     "pages/math/result",
     "pages/pinyin/pinyin",
