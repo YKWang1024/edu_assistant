@@ -11,6 +11,7 @@ Page({
     members: [],
     children: [],
     inviteCode: '',
+    familyName: '',
     myFamilies: []
   },
 
@@ -41,7 +42,8 @@ Page({
           isObserver: res.data.myRole === 'observer',
           members: members,
           children: res.data.children || [],
-          inviteCode: res.data.inviteCode || ''
+          inviteCode: res.data.inviteCode || '',
+          familyName: res.data.familyName || ''
         })
         // 管理员若还没有家庭码，自动生成一个，保证「看得到家庭码」
         if (res.data.myRole === 'admin' && !res.data.inviteCode) {
@@ -63,6 +65,23 @@ Page({
     var that = this
     app.callCloudFunction('getMyFamilies', {}, function (res) {
       if (res && res.success) that.setData({ myFamilies: res.data.families || [] })
+    })
+  },
+
+  onRenameFamily: function () {
+    var that = this
+    wx.showModal({
+      title: '家庭名称',
+      editable: true,
+      placeholderText: '如 我们一家 / 爷爷奶奶家',
+      content: that.data.familyName || '',
+      success: function (m) {
+        if (!m.confirm || !(m.content || '').trim()) return
+        app.callCloudFunction('manageFamily', { action: 'setFamilyName', name: m.content.trim() }, function (r) {
+          if (r && r.success) { wx.showToast({ title: '已改名', icon: 'success' }); that.load() }
+          else wx.showToast({ title: (r && r.message) || '改名失败', icon: 'none' })
+        })
+      }
     })
   },
 

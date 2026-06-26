@@ -27,7 +27,7 @@ exports.main = async () => {
       const adminName = (admin && admin.displayName) || '家庭'
       families.push({
         familyId: fid,
-        name: adminName + '的家庭',
+        name: fam.name || (adminName + '的家庭'),
         role: mine.role || 'member',
         memberCount: members.length,
         childCount: (fam.children || []).filter(function (c) { return c && !c.isDeleted }).length,

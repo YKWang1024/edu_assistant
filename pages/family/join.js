@@ -6,7 +6,8 @@ Page({
     displayName: '',
     joining: false,
     fromCard: false,
-    cardFamilyId: ''
+    cardFamilyId: '',
+    checking: false
   },
 
   onLoad: function (options) {
@@ -15,10 +16,30 @@ Page({
     if (options.familyId) {
       patch.fromCard = true
       patch.cardFamilyId = decodeURIComponent(options.familyId)
+      patch.checking = true // 卡片进入：先确认是否已在该家庭
     }
     var ui = app.globalData.userInfo
     if (ui && ui.nickname) patch.displayName = ui.nickname
     this.setData(patch)
+    if (patch.fromCard) this.checkMembership()
+  },
+
+  // 已在该家庭 → 直接进主页；不在 → 显示加入表单
+  checkMembership: function () {
+    var that = this
+    if (!app.globalData.cloudReady) { that.setData({ checking: false }); return }
+    app.callCloudFunction('getMyFamilies', {}, function (res) {
+      var inIt = false
+      if (res && res.success && res.data && res.data.families) {
+        inIt = res.data.families.some(function (f) { return f.familyId === that.data.cardFamilyId })
+      }
+      if (inIt) {
+        wx.showToast({ title: '你已在该家庭，正在进入…', icon: 'none' })
+        setTimeout(function () { wx.switchTab({ url: '/pages/index/index' }) }, 900)
+      } else {
+        that.setData({ checking: false })
+      }
+    })
   },
 
   onCodeInput: function (e) {

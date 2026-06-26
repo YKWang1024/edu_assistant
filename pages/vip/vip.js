@@ -39,6 +39,14 @@ Page({
     wx.navigateTo({ url: '/pages/profile/profile' })
   },
 
+  // 分享小程序给好友：path 指向主页，好友打开后会自动创建自己的家庭
+  onShareAppMessage: function () {
+    return {
+      title: '宝贝成长助手 · 一起记录孩子的学习和家庭菜谱',
+      path: '/pages/index/index'
+    }
+  },
+
   onClearData: function () {
     wx.showModal({
       title: '清除数据',
