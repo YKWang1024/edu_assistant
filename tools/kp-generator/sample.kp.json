@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "curriculum": "人教版",
+    "stage": "小学",
+    "masteryThreshold": 0.9,
+    "subjects": ["数学"],
+    "grades": [1]
+  },
+  "points": [
+    { "id": "math-g1-num10", "subject": "数学", "grade": 1, "name": "10以内数的认识", "category": "数与代数", "parentId": null, "prerequisites": [] },
+    { "id": "math-g1-add10", "subject": "数学", "grade": 1, "name": "10以内的加法", "category": "数与代数", "parentId": "math-g1-num10", "prerequisites": ["math-g1-num10"] },
+    { "id": "math-g1-sub10", "subject": "数学", "grade": 1, "name": "10以内的减法", "category": "数与代数", "parentId": "math-g1-num10", "prerequisites": ["math-g1-num10", "math-g1-add10"] },
+    { "id": "math-g1-shape", "subject": "数学", "grade": 1, "name": "认识图形(一)", "category": "图形与几何", "parentId": null, "prerequisites": [] },
+    { "id": "math-g1-compare", "subject": "数学", "grade": 1, "name": "比多少", "category": "数与代数", "parentId": "math-g1-num10", "prerequisites": ["math-g1-num10"] }
+  ]
+}
