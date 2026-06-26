@@ -170,35 +170,6 @@
   flex-shrink: 0;
 }
 
-/* ---------- AI 建议入口 banner ---------- */
-.ai-banner {
-  display: flex;
-  align-items: center;
-  background: linear-gradient(135deg, #efe9fb 0%, #e6dcf8 100%);
-  border-radius: 24rpx;
-  padding: 24rpx 26rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 8rpx 22rpx rgba(139, 111, 214, 0.14);
-  transition: transform 0.12s ease;
-}
-.ai-banner:active { transform: scale(0.985); }
-.ai-banner-emoji {
-  width: 76rpx;
-  height: 76rpx;
-  border-radius: 20rpx;
-  background: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42rpx;
-  margin-right: 20rpx;
-  flex-shrink: 0;
-}
-.ai-banner-text { flex: 1; min-width: 0; }
-.ai-banner-title { font-size: 30rpx; font-weight: 800; color: #4d3a7a; }
-.ai-banner-sub { font-size: 22rpx; color: #8c7bb5; margin-top: 4rpx; }
-.ai-banner-go { font-size: 40rpx; color: #b9a4f5; font-weight: 300; }
-
 /* ---------- 学习练习列表 ---------- */
 .func-list { margin-bottom: 8rpx; }
 
