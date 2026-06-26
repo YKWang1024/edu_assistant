@@ -92,6 +92,7 @@ exports.main = async (event, context) => {
       success: true,
       data: {
         familyId: ctx.familyId,
+        familyName: family.name || '',
         myRole: ctx.role,
         members: members,
         children: children,

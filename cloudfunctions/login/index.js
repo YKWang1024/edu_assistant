@@ -49,6 +49,7 @@ exports.main = async (event, context) => {
       data: {
         createdAt: new Date(),
         seeded: true,
+        name: nickname + '的家庭', // 家庭名称，可在家庭管理里改
         inviteCode: code,
         inviteCodeExpireAt: expireAt,
         members: [{ openid: openid, role: 'admin', joinedAt: new Date(), displayName: nickname }],

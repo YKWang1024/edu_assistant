@@ -3,6 +3,7 @@
 //   action='updateChild'   { childId, name, grade }  编辑小孩
 //   action='removeChild'   { childId }               软删除小孩(isDeleted=true，不真正删数据)
 //   action='setMemberRole' { targetOpenid, role }    设置成员角色 admin|member|observer
+//   action='setFamilyName' { name }                  家庭改名
 const cloud = require('wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
@@ -75,6 +76,13 @@ exports.main = async (event, context) => {
       if (us.data && us.data.length && us.data[0].familyId === ctx.familyId) {
         await db.collection('users').doc(us.data[0]._id).update({ data: { familyRole: role } })
       }
+      return { success: true }
+    }
+
+    if (action === 'setFamilyName') {
+      const name = String(event.name || '').trim()
+      if (!name) return { success: false, message: '请填写家庭名称' }
+      await db.collection('families').doc(ctx.familyId).update({ data: { name: name } })
       return { success: true }
     }
 
