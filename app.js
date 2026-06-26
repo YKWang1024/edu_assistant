@@ -7,7 +7,8 @@ App({
     cloudReady: false,
     children: [],          // [{childId,name,grade}]，无账号小孩成员
     currentChild: '',      // 当前选中的小孩名(错题/打分等归属)
-    myFamilyRole: ''       // admin | member | observer
+    myFamilyRole: '',      // admin | member | observer
+    parentVerifiedAt: 0    // 家长密码本会话验证时间戳(REQ-013，0=未验证)
   },
 
   onLaunch: function () {
@@ -282,6 +283,8 @@ App({
   },
 
   setCurrentChild: function (name) {
+    // 切换身份(当前小孩)后，家长验证失效，再编辑错题/题目需重新输入密码(REQ-013 第3条)
+    if (this.globalData.currentChild && this.globalData.currentChild !== name) this.clearParentVerified()
     this.globalData.currentChild = name
     try { wx.setStorageSync('currentChild', name) } catch (e) {}
   },
@@ -289,6 +292,21 @@ App({
   getCurrentChild: function () {
     return this.globalData.currentChild || '宝贝'
   },
+
+  // ---------------- 家长身份验证缓存(REQ-013) ----------------
+  // 首次输入家长密码后，本会话内编辑错题/题目免重复输入；30分钟无操作过期；切换身份失效。
+  PARENT_VERIFY_TTL_MS: 30 * 60 * 1000,
+
+  // 是否仍处于已验证状态。返回 true 时滑动续期(有操作即刷新，满足「30分钟无操作过期」)。
+  isParentVerified: function () {
+    var ts = this.globalData.parentVerifiedAt || 0
+    if (!ts) return false
+    if (Date.now() - ts > this.PARENT_VERIFY_TTL_MS) { this.globalData.parentVerifiedAt = 0; return false }
+    this.globalData.parentVerifiedAt = Date.now()
+    return true
+  },
+  markParentVerified: function () { this.globalData.parentVerifiedAt = Date.now() },
+  clearParentVerified: function () { this.globalData.parentVerifiedAt = 0 },
 
   // 增减游戏时间（云端权威；离线兜底本地）。cb(balance)
   addGameMinutes: function (minutes, cb) {
@@ -364,6 +382,7 @@ App({
     this.globalData.userInfo = null
     this.globalData.isLoggedIn = false
     this.globalData.familyId = null
+    this.clearParentVerified()
     try {
       wx.removeStorageSync('userInfo')
       wx.removeStorageSync('familyId')
