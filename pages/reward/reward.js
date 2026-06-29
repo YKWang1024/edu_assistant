@@ -75,20 +75,21 @@ Page({
     }
     util.saveRecord('rewardRecords', record)
 
-    // 同步到云端家庭打卡（尽力而为，不影响本地流程与游戏时间钱包）
-    if (app.globalData.cloudReady) {
-      app.callCloudFunction('saveCheckin', {
-        type: record.type,
-        actualTime: record.actualTime,
-        targetTime: record.targetTime,
-        reward: record.reward,
-        diff: record.diff,
-        isEarly: record.isEarly,
-        isLate: record.isLate,
-        date: record.date,
-        time: record.time
-      }, function () {})
-    }
+    // 同步到云端家庭打卡：在线即发，离线/失败则入队，联网后自动回传。
+    // saveCheckin 幂等(按 日期+类型+孩子 upsert)，重放安全。
+    var childName = app.getCurrentChild()
+    app.pushOrQueue('saveCheckin', {
+      type: record.type,
+      actualTime: record.actualTime,
+      targetTime: record.targetTime,
+      reward: record.reward,
+      diff: record.diff,
+      isEarly: record.isEarly,
+      isLate: record.isLate,
+      date: record.date,
+      time: record.time,
+      childName: childName
+    }, { label: '打卡:' + record.type, dedupeKey: record.type + '|' + record.date + '|' + childName })
 
     var msg = ''
     if (result.reward > 0) {
