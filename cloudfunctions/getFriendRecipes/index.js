@@ -71,7 +71,11 @@ exports.main = async (event, context) => {
         images: mapImgs(r.images, urlMap),
         imageUrl: r.imageUrl ? (urlMap[r.imageUrl] || r.imageUrl) : r.imageUrl,
         publisher: Object.assign({}, pub, { avatarUrl: pub.avatarUrl ? (urlMap[pub.avatarUrl] || pub.avatarUrl) : '' }),
-        sharedDate: toDateStr(r.sharedAt || r.createdAt)
+        sharedDate: toDateStr(r.sharedAt || r.createdAt),
+        // 隐私：菜友圈评分仅匿名走势用，剔除评分人 openid/姓名、评价文字、时间；只留分数+日期。
+        // 同时过滤已删除评分，并不下发各成员平均分(memberAvgScores)。
+        ratings: (r.ratings || []).filter(x => !x.deleted).map(x => ({ score: x.score, date: x.date || '' })),
+        memberAvgScores: {}
       }
     })
 

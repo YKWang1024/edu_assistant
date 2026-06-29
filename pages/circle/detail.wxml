@@ -33,25 +33,22 @@
         <text class="stat-icon">👨🍳</text>
         <text class="stat-value">{{ratingCount}}人评分</text>
       </view>
-      <text class="stat-toggle" wx:if="{{ratingCount >= 2}}">{{showTrend ? '收起 ▲' : '评分走势 ▼'}}</text>
+      <text class="stat-toggle" wx:if="{{hasTrend}}">{{showTrend ? '收起 ▲' : '评分走势 ▼'}}</text>
     </view>
 
-    <!-- 评分走势(匿名，按日期平均分；不展示评分人/评价) -->
-    <view class="trend-panel" wx:if="{{showTrend}}">
-      <block wx:if="{{hasTrend}}">
-        <view class="trend-title">评分走势 · 按日期平均分</view>
-        <view class="trend-chart">
-          <view class="trend-col" wx:for="{{trend}}" wx:key="date">
-            <text class="trend-val">{{item.avg}}</text>
-            <view class="trend-bar-track">
-              <view class="trend-bar" style="height:{{item.h}}%"></view>
-            </view>
-            <text class="trend-date">{{item.label}}</text>
+    <!-- 评分走势(匿名，按日期平均分；不展示评分人/评价)。仅在≥2个不同日期有评分时出现 -->
+    <view class="trend-panel" wx:if="{{showTrend && hasTrend}}">
+      <view class="trend-title">评分走势 · 按日期平均分</view>
+      <view class="trend-chart">
+        <view class="trend-col" wx:for="{{trend}}" wx:key="date">
+          <text class="trend-val">{{item.avg}}</text>
+          <view class="trend-bar-track">
+            <view class="trend-bar" style="height:{{item.h}}%"></view>
           </view>
+          <text class="trend-date">{{item.label}}</text>
         </view>
-        <view class="trend-hint">满分 5 分 · 仅显示最近若干天</view>
-      </block>
-      <view class="trend-empty" wx:else>评分不足，暂无走势（至少需要 2 条评分）</view>
+      </view>
+      <view class="trend-hint">满分 5 分 · 仅显示最近若干天</view>
     </view>
 
     <!-- 收藏到我家 -->
