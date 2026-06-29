@@ -8,12 +8,16 @@ App({
     children: [],          // [{childId,name,grade}]，无账号小孩成员
     currentChild: '',      // 当前选中的小孩名(错题/打分等归属)
     myFamilyRole: '',      // admin | member | observer
-    parentVerifiedAt: 0    // 家长密码本会话验证时间戳(REQ-013，0=未验证)
+    parentVerifiedAt: 0,   // 家长密码本会话验证时间戳(REQ-013，0=未验证)
+    isOnline: true         // 当前网络是否可用(离线写入队列用)
   },
 
   onLaunch: function () {
     // 先加载本地数据，确保应用能正常启动
     this.loadLocalData()
+
+    // 监听网络状态(离线写入队列)
+    this.initNetwork()
 
     // 异步初始化云开发，不阻塞启动
     this.initCloud()
@@ -24,6 +28,8 @@ App({
   // 待办(见表中 CC的反馈)：有效交互统计(区分真学习/挂机)、长时间无操作告警、每日报告页+导出、跨设备上云。
   onShow: function () {
     this._fgStart = Date.now()
+    // 回到前台时尝试把离线期间积压的写操作回传云端
+    this.flushSync()
   },
 
   onHide: function () {
@@ -325,6 +331,87 @@ App({
     return this.globalData.gameMinutes
   },
 
+  // ============ 离线写入队列：联网后自动回传云端 ============
+  // 适用「幂等」写操作(可安全重放)，如打卡 saveCheckin(按 日期+类型+孩子 upsert)。
+  // ⚠️ 增量/追加型(addGameTime/rateRecipe/saveUsageStat 等)不要走本队列——重放会重复计数；
+  //    使用统计已有自己的增量缓冲(usageBuf)。
+  initNetwork: function () {
+    var that = this
+    try {
+      wx.getNetworkType({ success: function (r) { that.globalData.isOnline = (r && r.networkType && r.networkType !== 'none') } })
+      wx.onNetworkStatusChange(function (r) {
+        that.globalData.isOnline = !!(r && r.isConnected)
+        if (that.globalData.isOnline) that.flushSync() // 一恢复网络就回传
+      })
+    } catch (e) {}
+  },
+
+  _syncQueueGet: function () {
+    try { var q = wx.getStorageSync('pendingSyncQueue'); return Array.isArray(q) ? q : [] } catch (e) { return [] }
+  },
+  _syncQueueSet: function (q) {
+    try { wx.setStorageSync('pendingSyncQueue', q || []) } catch (e) {}
+  },
+  _genOpId: function () {
+    this._opSeq = (this._opSeq || 0) + 1
+    return 's' + Date.now() + '_' + this._opSeq
+  },
+  getPendingSyncCount: function () { return this._syncQueueGet().length },
+
+  // 入队一条待同步写操作。opts.dedupeKey 提供时，覆盖同 fn+dedupeKey 的旧项(防队列膨胀、保最新值)。
+  queueSync: function (fn, data, opts) {
+    opts = opts || {}
+    var q = this._syncQueueGet()
+    if (opts.dedupeKey) {
+      q = q.filter(function (it) { return !(it.fn === fn && it.dedupeKey === opts.dedupeKey) })
+    }
+    q.push({ opId: this._genOpId(), fn: fn, data: data, label: opts.label || fn, dedupeKey: opts.dedupeKey || '', createdAt: Date.now() })
+    this._syncQueueSet(q)
+  },
+
+  // 立即尝试写云端；离线或网络失败则入队等联网重放。
+  // 仅对幂等 fn 使用。opts:{ label, dedupeKey, onResult(result, status) } status: 'sent'|'queued'
+  pushOrQueue: function (fn, data, opts) {
+    opts = opts || {}
+    var that = this
+    function enqueue() {
+      that.queueSync(fn, data, opts)
+      if (opts.onResult) opts.onResult(null, 'queued')
+    }
+    if (!this.globalData.cloudReady || !this.globalData.isOnline) { enqueue(); return }
+    wx.cloud.callFunction({
+      name: fn, data: data, timeout: 10000,
+      // success = 已到达服务器(无论业务是否拒绝)，不入队
+      success: function (res) { if (opts.onResult) opts.onResult(res && res.result, 'sent') },
+      // fail = 网络/超时 → 入队，等联网重放
+      fail: function () { enqueue() }
+    })
+  },
+
+  // 顺序(FIFO)重放队列：到达服务器即出队；遇网络失败停止，保留队列等下次。
+  flushSync: function (cb) {
+    var that = this
+    if (this._flushing) { if (cb) cb(); return }
+    if (!this.globalData.cloudReady || !this.globalData.isOnline) { if (cb) cb(); return }
+    if (!this._syncQueueGet().length) { if (cb) cb(); return }
+    this._flushing = true
+    function step() {
+      var cur = that._syncQueueGet()
+      if (!cur.length) { that._flushing = false; if (cb) cb(); return }
+      var item = cur[0]
+      wx.cloud.callFunction({
+        name: item.fn, data: item.data, timeout: 10000,
+        success: function () {
+          var c2 = that._syncQueueGet()
+          if (c2.length && c2[0].opId === item.opId) { c2.shift(); that._syncQueueSet(c2) }
+          step()
+        },
+        fail: function () { that._flushing = false; if (cb) cb() } // 网络仍不行，下次再试
+      })
+    }
+    step()
+  },
+
   // 微信自动登录（按 openid 静默登录；新用户云端自动建账号+家庭）
   checkLoginStatusAsync: function () {
     var that = this
@@ -344,6 +431,7 @@ App({
           that.saveFamilyId(res.result.userInfo.familyId)
           that.refreshGameTime()
           that.refreshFamily()
+          that.flushSync() // 登录成功(云已就绪)后回传离线积压
           console.log('微信自动登录成功')
         } else {
           console.log('自动登录失败:', res.result && res.result.message)
