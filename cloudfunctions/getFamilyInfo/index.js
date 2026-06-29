@@ -40,6 +40,7 @@ exports.main = async (event, context) => {
 
     const fam = await db.collection('families').doc(ctx.familyId).get()
     const family = fam.data || {}
+    if (family.isDeleted) return { success: false, message: '家庭不存在', code: 'NO_FAMILY' }
     const rawMembers = family.members || []
 
     // 用 users 表补全昵称/头像

@@ -52,6 +52,7 @@ exports.main = async (event, context) => {
 
     const f = await db.collection('families').doc(familyId).get()
     if (!f.data) return { success: false, message: '该家庭不存在' }
+    if (f.data.isDeleted) return { success: false, message: '该家庭已删除' }
 
     return await joinFamily(openid, familyId, displayName, force)
   } catch (err) {

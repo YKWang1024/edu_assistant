@@ -127,6 +127,58 @@ Page({
     })
   },
 
+  // 新建家庭：输入名称 → 创建并切换为当前家庭
+  onCreateFamily: function () {
+    var that = this
+    wx.showModal({
+      title: '新建家庭',
+      editable: true,
+      placeholderText: '如 爷爷奶奶家 / 我们一家',
+      success: function (m) {
+        if (!m.confirm) return
+        var name = (m.content || '').trim()
+        wx.showLoading({ title: '创建中…' })
+        app.callCloudFunction('createFamily', { name: name }, function (res) {
+          wx.hideLoading()
+          if (res && res.success) {
+            app.saveFamilyId(res.data.familyId)
+            app.refreshFamily(function () {})
+            wx.showToast({ title: '已创建', icon: 'success' })
+            that.load()
+          } else {
+            wx.showToast({ title: (res && res.message) || '创建失败', icon: 'none' })
+          }
+        })
+      }
+    })
+  },
+
+  // 删除家庭：仅管理员、该家庭只剩自己、且不是唯一家庭。二次确认。
+  onDeleteFamily: function (e) {
+    var that = this
+    var fid = e.currentTarget.dataset.id
+    var name = e.currentTarget.dataset.name || '该家庭'
+    wx.showModal({
+      title: '删除家庭',
+      content: '将删除「' + name + '」，你会立即看不到它及其菜谱、错题、打卡等共享数据（数据保留在后台、不在小程序内恢复）。确定删除吗？',
+      confirmText: '删除',
+      confirmColor: '#e5484d',
+      success: function (m) {
+        if (!m.confirm) return
+        app.callCloudFunction('deleteFamily', { familyId: fid }, function (res) {
+          if (res && res.success) {
+            app.saveFamilyId(res.data.familyId)
+            app.refreshFamily(function () {})
+            wx.showToast({ title: '已删除', icon: 'success' })
+            that.load()
+          } else {
+            wx.showToast({ title: (res && res.message) || '删除失败', icon: 'none' })
+          }
+        })
+      }
+    })
+  },
+
   onGoAuth: function () {
     wx.navigateTo({ url: '/pages/auth/auth' })
   },

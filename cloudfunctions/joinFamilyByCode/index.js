@@ -56,6 +56,7 @@ exports.main = async (event, context) => {
     const fam = await db.collection('families').where({ inviteCode: codeNorm }).get()
     if (!fam.data || !fam.data.length) return { success: false, message: '邀请码无效' }
     const family = fam.data[0]
+    if (family.isDeleted) return { success: false, message: '该家庭已删除' }
     if (family.inviteCodeExpireAt && new Date(family.inviteCodeExpireAt).getTime() < Date.now()) {
       return { success: false, message: '邀请码已过期，请让管理员重新生成' }
     }
