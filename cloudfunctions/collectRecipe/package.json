@@ -1,0 +1,9 @@
+{
+  "name": "collectRecipe",
+  "version": "1.0.0",
+  "description": "收藏菜友圈公开菜谱为自家独立菜谱",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
