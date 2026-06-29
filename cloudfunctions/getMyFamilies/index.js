@@ -20,6 +20,7 @@ exports.main = async () => {
       try { f = await db.collection('families').doc(fid).get() } catch (e) { continue }
       if (!f || !f.data) continue
       const fam = f.data
+      if (fam.isDeleted) continue // 已删除的家庭不展示
       const members = fam.members || []
       const mine = members.find(function (m) { return m.openid === openid })
       if (!mine) continue // 已不在该家庭(数据自愈，不展示)

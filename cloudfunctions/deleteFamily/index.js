@@ -33,24 +33,31 @@ exports.main = async (event, context) => {
     const others = members.filter(function (m) { return m.openid !== openid })
     if (others.length > 0) return { success: false, message: '该家庭还有其他成员，请先让他们退出后再删除' }
 
-    // 软删除家庭文档(清空 members，使任何残留引用也查不到自己)
+    // 软删除家庭文档：清空 members + 失效邀请码(防止用旧码把已删家庭「复活」成僵尸家庭)
     await db.collection('families').doc(targetId).update({
-      data: { isDeleted: true, deletedAt: new Date(), members: [] }
+      data: { isDeleted: true, deletedAt: new Date(), members: [], inviteCode: '', inviteCodeExpireAt: new Date(0) }
     })
 
-    // 从我的 familyIds 移除；若删的是当前家庭则切换到剩余的某个
+    // 从我的 familyIds 移除；若删的是当前家庭，挑一个「存在、未软删、我仍是成员」的家庭作为当前
     ids = ids.filter(function (id) { return id !== targetId })
     let newActive = me.familyId
     let newRole = me.familyRole || 'member'
     if (me.familyId === targetId) {
-      newActive = ids[0]
-      try {
-        const nf = await db.collection('families').doc(newActive).get()
-        const nm = ((nf.data && nf.data.members) || []).find(function (m) { return m.openid === openid })
-        newRole = (nm && nm.role) || 'member'
-      } catch (e) { newRole = 'member' }
+      newActive = ''
+      for (let i = 0; i < ids.length; i++) {
+        try {
+          const nf = await db.collection('families').doc(ids[i]).get()
+          const fdat = nf && nf.data
+          if (!fdat || fdat.isDeleted) continue
+          const nm = (fdat.members || []).find(function (m) { return m.openid === openid })
+          if (!nm) continue
+          newActive = ids[i]
+          newRole = nm.role || 'member'
+          break
+        } catch (e) { /* 跳过无效家庭 */ }
+      }
     }
-    if (!newActive) return { success: false, message: '无法切换到其它家庭' }
+    if (!newActive) return { success: false, message: '没有可切换的有效家庭' }
 
     await db.collection('users').doc(me._id).update({
       data: { familyId: newActive, familyIds: ids, familyRole: newRole }

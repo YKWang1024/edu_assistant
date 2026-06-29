@@ -160,7 +160,7 @@ Page({
     var name = e.currentTarget.dataset.name || '该家庭'
     wx.showModal({
       title: '删除家庭',
-      content: '将永久删除「' + name + '」及其菜谱、错题、打卡等数据，且无法在小程序内恢复。确定删除吗？',
+      content: '将删除「' + name + '」，你会立即看不到它及其菜谱、错题、打卡等共享数据（数据保留在后台、不在小程序内恢复）。确定删除吗？',
       confirmText: '删除',
       confirmColor: '#e5484d',
       success: function (m) {
