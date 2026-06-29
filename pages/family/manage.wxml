@@ -19,9 +19,11 @@
           <view wx:if="{{item.isActive && isAdmin}}" class="fam-btn rename" bindtap="onRenameFamily">改名</view>
           <view wx:if="{{!item.isActive}}" class="fam-btn switch" data-id="{{item.familyId}}" data-active="{{item.isActive}}" bindtap="onSwitchFamily">切换</view>
           <view wx:if="{{myFamilies.length > 1}}" class="fam-btn leave" data-id="{{item.familyId}}" data-name="{{item.name}}" bindtap="onLeaveFamily">退出</view>
+          <view wx:if="{{item.role === 'admin' && item.memberCount <= 1 && myFamilies.length > 1}}" class="fam-btn delete" data-id="{{item.familyId}}" data-name="{{item.name}}" bindtap="onDeleteFamily">删除</view>
         </view>
       </view>
-      <view class="card-hint">可加入多个家庭，在此切换「当前家庭」；当前家庭决定你看到的菜谱、错题等共享数据。</view>
+      <view class="fam-create" bindtap="onCreateFamily">＋ 新建家庭</view>
+      <view class="card-hint">可加入或新建多个家庭，在此切换「当前家庭」；当前家庭决定你看到的菜谱、错题等共享数据。「删除」仅对你独有(无其他成员)的家庭可用。</view>
     </view>
 
     <view class="card">

@@ -91,3 +91,12 @@
 /* 小孩头像(REQ-012) */
 .child-avatar { width: 56rpx; height: 56rpx; border-radius: 50%; margin-right: 14rpx; }
 .child-avatar-ph { width: 56rpx; height: 56rpx; border-radius: 50%; margin-right: 14rpx; background: #eaeef5; text-align: center; line-height: 56rpx; font-size: 32rpx; }
+
+/* 删除家庭 / 新建家庭 */
+.fam-btn.delete { color: #e5484d; border-color: #f3c0c2; }
+.fam-create {
+  margin-top: 18rpx; text-align: center; padding: 18rpx 0;
+  border: 2rpx dashed #c9cede; border-radius: 16rpx;
+  color: #5b6ff0; font-size: 27rpx; font-weight: 600;
+}
+.fam-create:active { background: #f3f5fb; }
