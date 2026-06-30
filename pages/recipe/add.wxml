@@ -90,7 +90,7 @@
     <view class="form-group">
       <text class="form-label">建议餐次（可多选，可不选）</text>
       <view class="meal-chips">
-        <view class="meal-chip {{mealTimes.indexOf(item) >= 0 ? 'on' : ''}}" wx:for="{{mealOptions}}" wx:key="*this" data-meal="{{item}}" bindtap="onToggleMeal">{{item}}</view>
+        <view class="meal-chip {{item.on ? 'on' : ''}}" wx:for="{{mealChips}}" wx:key="label" data-meal="{{item.label}}" bindtap="onToggleMeal">{{item.label}}</view>
       </view>
     </view>
 

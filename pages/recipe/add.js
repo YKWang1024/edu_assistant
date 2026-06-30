@@ -27,8 +27,8 @@ Page({
     category: '',
     categories: recipeUtil.CATEGORIES,
     categoryIndex: 0,
-    mealOptions: ['早餐', '中餐', '晚餐'], // 建议餐次(REQ-020)
-    mealTimes: [],                          // 已选餐次
+    // 建议餐次(REQ-020)。chip 的选中态在 JS 预算(WXML 不支持方法调用)
+    mealChips: [{ label: '早餐', on: false }, { label: '中餐', on: false }, { label: '晚餐', on: false }],
     tags: '',
     nutrition: '',
     images: [], // 压缩后的本地临时路径
@@ -63,12 +63,14 @@ Page({
       var ci = that.data.categories.indexOf(r.category)
       if (ci < 0) ci = that.data.categories.length - 1
       var imgs = (r.images && r.images.length) ? r.images : (r.imageUrl ? [r.imageUrl] : [])
+      var selected = Array.isArray(r.mealTimes) ? r.mealTimes : []
+      var chips = that.data.mealChips.map(function (c) { return { label: c.label, on: selected.indexOf(c.label) >= 0 } })
       that.setData({
         name: r.name || '',
         ingredients: r.ingredients || '',
         steps: r.steps || '',
         categoryIndex: ci,
-        mealTimes: Array.isArray(r.mealTimes) ? r.mealTimes : [],
+        mealChips: chips,
         tags: r.tags || '',
         nutrition: r.nutrition || '',
         existingImages: imgs,
@@ -84,11 +86,15 @@ Page({
   // 勾选/取消「建议餐次」(可多选可空) REQ-020
   onToggleMeal: function (e) {
     var meal = e.currentTarget.dataset.meal
-    var list = this.data.mealTimes.slice()
-    var idx = list.indexOf(meal)
-    if (idx >= 0) list.splice(idx, 1)
-    else list.push(meal)
-    this.setData({ mealTimes: list })
+    var chips = this.data.mealChips.map(function (c) {
+      return { label: c.label, on: c.label === meal ? !c.on : c.on }
+    })
+    this.setData({ mealChips: chips })
+  },
+
+  // 取当前选中的餐次数组(保存用)
+  selectedMeals: function () {
+    return this.data.mealChips.filter(function (c) { return c.on }).map(function (c) { return c.label })
   },
 
   onPreviewExisting: function (e) {
@@ -239,7 +245,7 @@ Page({
         ingredients: that.data.ingredients.trim(),
         steps: that.data.steps.trim(),
         category: that.data.categories[that.data.categoryIndex],
-        mealTimes: that.data.mealTimes,
+        mealTimes: that.selectedMeals(),
         tags: that.data.tags.trim(),
         nutrition: that.data.nutrition.trim(),
         referenceLink: that.data.referenceLink.trim(),
@@ -268,7 +274,7 @@ Page({
         ingredients: that.data.ingredients.trim(),
         steps: that.data.steps.trim(),
         category: that.data.categories[that.data.categoryIndex],
-        mealTimes: that.data.mealTimes,
+        mealTimes: that.selectedMeals(),
         tags: that.data.tags.trim(),
         nutrition: that.data.nutrition.trim(),
         images: fileIDs,

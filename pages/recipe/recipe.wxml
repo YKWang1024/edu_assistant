@@ -68,6 +68,9 @@
   <view class="empty-tip" wx:if="{{recipes.length === 0}}">
     还没有菜谱，快去添加吧！
   </view>
+  <view class="empty-tip" wx:elif="{{displayRecipes.length === 0}}">
+    没有符合当前筛选条件的菜谱～
+  </view>
 
   <view class="recipe-list">
     <view class="recipe-item card" wx:for="{{displayRecipes}}" wx:key="id" bindtap="onViewDetail" data-id="{{item.id}}">
