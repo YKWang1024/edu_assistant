@@ -1,6 +1,7 @@
 var app = getApp()
 var recipeUtil = require('../../utils/recipe.js')
 var imageUtil = require('../../utils/image.js')
+var SUPER_OPENID = 'oSnsZ7e4ja7cq2Eq5_u3hQKx3HMo' // 超级用户(系统菜谱) REQ-022
 
 function extractUrl(text) {
   if (!text) return ''
@@ -48,7 +49,16 @@ Page({
   onLoad: function (options) {
     options = options || {}
     var sysMode = options.sys === '1'
-    if (sysMode) this.setData({ sysMode: true })
+    if (sysMode) {
+      // 系统菜谱管理仅超级用户(服务端也硬校验；此处拦住非超级用户的伪编辑界面)
+      var ui = app.globalData.userInfo || {}
+      if (ui.openid !== SUPER_OPENID) {
+        wx.showToast({ title: '无系统菜谱管理权限', icon: 'none' })
+        setTimeout(function () { wx.navigateBack() }, 1000)
+        return
+      }
+      this.setData({ sysMode: true })
+    }
     if (options.id) {
       this.setData({ editMode: true, editId: options.id })
       wx.setNavigationBarTitle({ title: sysMode ? '编辑系统菜谱' : '编辑菜谱' })
