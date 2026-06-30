@@ -176,3 +176,7 @@
   z-index: 100;
 }
 .fab-btn:active { transform: scale(0.94); }
+
+/* 列表卡片上的建议餐次小标签(REQ-020) */
+.recipe-meals { display: flex; gap: 8rpx; margin-top: 6rpx; flex-wrap: wrap; }
+.meal-tag-sm { font-size: 20rpx; color: #4ca85f; background: #e8f5e6; border-radius: 999rpx; padding: 2rpx 14rpx; }

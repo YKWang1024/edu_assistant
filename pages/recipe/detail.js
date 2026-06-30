@@ -88,6 +88,11 @@ Page({
     wx.navigateTo({ url: '/pages/recipe/rate?id=' + this.data.recipeId })
   },
 
+  // 编辑这道菜(REQ-021) → 复用新增页的编辑模式
+  onEditRecipe: function () {
+    wx.navigateTo({ url: '/pages/recipe/add?id=' + this.data.recipeId })
+  },
+
   onEditRating: function (e) {
     var id = e.currentTarget.dataset.id
     wx.navigateTo({ url: '/pages/recipe/rate?id=' + this.data.recipeId + '&ratingId=' + id })

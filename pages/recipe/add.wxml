@@ -7,20 +7,32 @@
 
     <view class="form-group">
       <text class="form-label">成品照片</text>
-      <view class="image-list">
-        <view class="image-item" wx:for="{{images}}" wx:key="*this">
-          <image class="image-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
-          <view class="remove-img" data-index="{{index}}" catchtap="onRemoveImage">✕</view>
+      <!-- 编辑模式：原图只读预览(本版编辑暂不支持换图) -->
+      <block wx:if="{{editMode}}">
+        <view class="image-list" wx:if="{{existingImages.length > 0}}">
+          <view class="image-item" wx:for="{{existingImages}}" wx:key="*this">
+            <image class="image-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewExisting" data-src="{{item}}" />
+          </view>
         </view>
-        <view class="image-add" bindtap="onChooseImage" wx:if="{{images.length < 2}}">
-          <text class="add-icon">+</text>
-          <text class="add-text">{{images.length}}/2</text>
+        <view class="img-edit-hint">本版编辑暂不换图，图片保持不变</view>
+      </block>
+      <!-- 新增模式：选图 + 智能识别 -->
+      <block wx:else>
+        <view class="image-list">
+          <view class="image-item" wx:for="{{images}}" wx:key="*this">
+            <image class="image-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
+            <view class="remove-img" data-index="{{index}}" catchtap="onRemoveImage">✕</view>
+          </view>
+          <view class="image-add" bindtap="onChooseImage" wx:if="{{images.length < 2}}">
+            <text class="add-icon">+</text>
+            <text class="add-text">{{images.length}}/2</text>
+          </view>
         </view>
-      </view>
-      <input class="input-field desc-input" placeholder="一句话描述这道菜，识别更准（如：番茄炒蛋，偏甜口）" value="{{desc}}" bindinput="onDescInput" wx:if="{{images.length > 0}}" />
-      <button class="btn-secondary analyze-btn" bindtap="onAIRecognize" loading="{{recognizing}}" disabled="{{recognizing}}" wx:if="{{images.length > 0}}">
-        🤖 智能识别菜谱（自动填写）
-      </button>
+        <input class="input-field desc-input" placeholder="一句话描述这道菜，识别更准（如：番茄炒蛋，偏甜口）" value="{{desc}}" bindinput="onDescInput" wx:if="{{images.length > 0}}" />
+        <button class="btn-secondary analyze-btn" bindtap="onAIRecognize" loading="{{recognizing}}" disabled="{{recognizing}}" wx:if="{{images.length > 0}}">
+          🤖 智能识别菜谱（自动填写）
+        </button>
+      </block>
     </view>
 
     <view class="calories-card card" wx:if="{{calories}}">
@@ -76,6 +88,13 @@
     </view>
 
     <view class="form-group">
+      <text class="form-label">建议餐次（可多选，可不选）</text>
+      <view class="meal-chips">
+        <view class="meal-chip {{mealTimes.indexOf(item) >= 0 ? 'on' : ''}}" wx:for="{{mealOptions}}" wx:key="*this" data-meal="{{item}}" bindtap="onToggleMeal">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="form-group">
       <text class="form-label">标签</text>
       <input class="input-field" placeholder="例如: 下饭, 简单, 快手菜" value="{{tags}}" bindinput="onTagsInput" />
     </view>
@@ -94,7 +113,7 @@
       <view class="nutrition-text">{{nutrition}}</view>
     </view>
 
-    <button class="btn-primary save-btn" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">保存菜谱</button>
+    <button class="btn-primary save-btn" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">{{editMode ? '保存修改' : '保存菜谱'}}</button>
   </view>
 
   <!-- 离屏 canvas：用于压缩图片 -->

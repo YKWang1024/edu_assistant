@@ -52,6 +52,19 @@
     </view>
   </view>
 
+  <!-- 按建议餐次筛选(REQ-020) -->
+  <view class="filter-bar">
+    <view
+      class="filter-item {{mealFilter === item ? 'active' : ''}}"
+      wx:for="{{mealFilterOptions}}"
+      wx:key="*this"
+      data-meal="{{item}}"
+      bindtap="onMealFilterChange"
+    >
+      {{item === 'all' ? '全部餐次' : item}}
+    </view>
+  </view>
+
   <view class="empty-tip" wx:if="{{recipes.length === 0}}">
     还没有菜谱，快去添加吧！
   </view>
@@ -74,6 +87,9 @@
         </view>
         <view class="recipe-meta">
           <text class="recipe-ingredients">{{item.ingredients}}</text>
+        </view>
+        <view class="recipe-meals" wx:if="{{item.mealTimes.length > 0}}">
+          <text class="meal-tag-sm" wx:for="{{item.mealTimes}}" wx:for-item="m" wx:key="*this">{{m}}</text>
         </view>
         <view class="recipe-actions">
           <view class="action-btn rate-btn" catchtap="onRateRecipe" data-id="{{item.id}}">打分</view>
