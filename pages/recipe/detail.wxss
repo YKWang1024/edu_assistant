@@ -116,3 +116,10 @@
 
 .btn-group { margin-top: 22rpx; display: flex; flex-direction: column; gap: 16rpx; padding-bottom: 40rpx; }
 .btn-group button { width: 100% !important; }
+
+/* 建议餐次标签(REQ-020) */
+.detail-meals { display: flex; gap: 12rpx; margin-top: 12rpx; flex-wrap: wrap; }
+.meal-tag {
+  font-size: 22rpx; color: #4ca85f; background: #e3f4e0;
+  border-radius: 999rpx; padding: 6rpx 20rpx;
+}

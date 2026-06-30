@@ -27,9 +27,14 @@ Page({
     category: '',
     categories: recipeUtil.CATEGORIES,
     categoryIndex: 0,
+    // 建议餐次(REQ-020)。chip 的选中态在 JS 预算(WXML 不支持方法调用)
+    mealChips: [{ label: '早餐', on: false }, { label: '中餐', on: false }, { label: '晚餐', on: false }],
     tags: '',
     nutrition: '',
     images: [], // 压缩后的本地临时路径
+    editMode: false,    // 编辑已有菜谱(REQ-021)
+    editId: '',
+    existingImages: [], // 编辑时原有图片(临时链接，只读预览，保存时保留原图不变)
     referenceInput: '', // 输入框原始文本(避免受控输入把输入清空)
     referenceLink: '',
     referenceType: '',
@@ -37,6 +42,64 @@ Page({
     calories: null,
     recognizing: false,
     saving: false
+  },
+
+  onLoad: function (options) {
+    if (options && options.id) {
+      this.setData({ editMode: true, editId: options.id })
+      wx.setNavigationBarTitle({ title: '编辑菜谱' })
+      this.loadForEdit(options.id)
+    }
+  },
+
+  // 载入待编辑菜谱(REQ-021)
+  loadForEdit: function (id) {
+    var that = this
+    if (!app.globalData.cloudReady) { wx.showToast({ title: '请联网后再编辑', icon: 'none' }); return }
+    app.callCloudFunction('listRecipes', {}, function (res) {
+      if (!res || !res.success) { wx.showToast({ title: '加载失败', icon: 'none' }); return }
+      var r = (res.data || []).filter(function (x) { return x._id === id })[0]
+      if (!r) { wx.showToast({ title: '菜谱不存在', icon: 'none' }); return }
+      var ci = that.data.categories.indexOf(r.category)
+      if (ci < 0) ci = that.data.categories.length - 1
+      var imgs = (r.images && r.images.length) ? r.images : (r.imageUrl ? [r.imageUrl] : [])
+      var selected = Array.isArray(r.mealTimes) ? r.mealTimes : []
+      var chips = that.data.mealChips.map(function (c) { return { label: c.label, on: selected.indexOf(c.label) >= 0 } })
+      that.setData({
+        name: r.name || '',
+        ingredients: r.ingredients || '',
+        steps: r.steps || '',
+        categoryIndex: ci,
+        mealChips: chips,
+        tags: r.tags || '',
+        nutrition: r.nutrition || '',
+        existingImages: imgs,
+        referenceInput: r.referenceLink || '',
+        referenceLink: r.referenceLink || '',
+        referenceType: r.referenceType || '',
+        referenceLabel: r.referenceLabel || '',
+        calories: r.calories || null
+      })
+    })
+  },
+
+  // 勾选/取消「建议餐次」(可多选可空) REQ-020
+  onToggleMeal: function (e) {
+    var meal = e.currentTarget.dataset.meal
+    var chips = this.data.mealChips.map(function (c) {
+      return { label: c.label, on: c.label === meal ? !c.on : c.on }
+    })
+    this.setData({ mealChips: chips })
+  },
+
+  // 取当前选中的餐次数组(保存用)
+  selectedMeals: function () {
+    return this.data.mealChips.filter(function (c) { return c.on }).map(function (c) { return c.label })
+  },
+
+  onPreviewExisting: function (e) {
+    var current = e.currentTarget.dataset.src
+    wx.previewImage({ current: current, urls: this.data.existingImages })
   },
 
   onNameInput: function (e) { this.setData({ name: e.detail.value }) },
@@ -171,6 +234,35 @@ Page({
     var name = this.data.name.trim()
     if (!name) { wx.showToast({ title: '请输入菜名', icon: 'none' }); return }
     if (!app.globalData.cloudReady) { wx.showToast({ title: '请联网后再保存', icon: 'none' }); return }
+    if (this.data.saving) return
+
+    // 编辑模式(REQ-021)：只改文本字段 + 建议餐次，图片保留原样(不重传)
+    if (this.data.editMode) {
+      this.setData({ saving: true })
+      app.callCloudFunction('updateRecipe', {
+        recipeId: that.data.editId,
+        name: name,
+        ingredients: that.data.ingredients.trim(),
+        steps: that.data.steps.trim(),
+        category: that.data.categories[that.data.categoryIndex],
+        mealTimes: that.selectedMeals(),
+        tags: that.data.tags.trim(),
+        nutrition: that.data.nutrition.trim(),
+        referenceLink: that.data.referenceLink.trim(),
+        referenceType: that.data.referenceType,
+        referenceLabel: that.data.referenceLabel,
+        calories: that.data.calories
+      }, function (res) {
+        that.setData({ saving: false })
+        if (res && res.success) {
+          wx.showToast({ title: '已保存', icon: 'success' })
+          setTimeout(function () { wx.navigateBack() }, 1200)
+        } else {
+          wx.showToast({ title: (res && res.message) || '保存失败', icon: 'none' })
+        }
+      })
+      return
+    }
 
     this.setData({ saving: true })
     var imgs = this.data.images.slice()
@@ -182,6 +274,7 @@ Page({
         ingredients: that.data.ingredients.trim(),
         steps: that.data.steps.trim(),
         category: that.data.categories[that.data.categoryIndex],
+        mealTimes: that.selectedMeals(),
         tags: that.data.tags.trim(),
         nutrition: that.data.nutrition.trim(),
         images: fileIDs,

@@ -10,6 +10,9 @@
     </view>
     <view class="detail-name">{{recipe.name}}</view>
     <view class="detail-category">{{recipe.category}}</view>
+    <view class="detail-meals" wx:if="{{recipe.mealTimes.length > 0}}">
+      <text class="meal-tag" wx:for="{{recipe.mealTimes}}" wx:key="*this">{{item}}</text>
+    </view>
     <view class="detail-score" wx:if="{{recipe.avgScore > 0}}">
       ⭐ 综合评分: {{recipe.avgScore}} 分
     </view>
@@ -111,6 +114,7 @@
 
   <view class="btn-group">
     <button class="btn-primary" bindtap="onRateRecipe">给这道菜打分</button>
+    <button class="btn-secondary" wx:if="{{recipe.userId === myOpenid || isAdmin}}" bindtap="onEditRecipe">编辑菜谱</button>
     <button class="btn-secondary" bindtap="onShareToCircle">分享到菜友圈</button>
     <button class="btn-danger" bindtap="onDeleteRecipe">删除菜谱</button>
   </view>

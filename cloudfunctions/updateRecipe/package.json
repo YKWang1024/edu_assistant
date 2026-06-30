@@ -1,0 +1,9 @@
+{
+  "name": "updateRecipe",
+  "version": "1.0.0",
+  "description": "编辑修改已有菜谱(本家庭、本人或管理员)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

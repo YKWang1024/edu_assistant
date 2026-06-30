@@ -10,6 +10,8 @@ Page({
     nutritionAnalysis: null,
     activeFilter: 'all',
     filterOptions: ['all', '蛋白质', '蔬菜', '碳水', '水果'],
+    mealFilter: 'all', // 按建议餐次筛选(REQ-020)
+    mealFilterOptions: ['all', '早餐', '中餐', '晚餐'],
     loading: true,
     offline: false
   },
@@ -111,7 +113,7 @@ Page({
 
     this.setData({
       recipes: recipes,
-      displayRecipes: this.getFilteredRecipes(recipes, this.data.activeFilter),
+      displayRecipes: this.getFilteredRecipes(recipes, this.data.activeFilter, this.data.mealFilter),
       topRecipes: topRecipes,
       recommendations: recommendations,
       nutritionAnalysis: analysis
@@ -120,7 +122,13 @@ Page({
 
   onFilterChange: function (e) {
     var filter = e.currentTarget.dataset.filter
-    this.setData({ activeFilter: filter, displayRecipes: this.getFilteredRecipes(this.data.recipes, filter) })
+    this.setData({ activeFilter: filter, displayRecipes: this.getFilteredRecipes(this.data.recipes, filter, this.data.mealFilter) })
+  },
+
+  // 按建议餐次筛选(REQ-020)
+  onMealFilterChange: function (e) {
+    var meal = e.currentTarget.dataset.meal
+    this.setData({ mealFilter: meal, displayRecipes: this.getFilteredRecipes(this.data.recipes, this.data.activeFilter, meal) })
   },
 
   onAddRecipe: function () {
@@ -158,22 +166,32 @@ Page({
     })
   },
 
-  getFilteredRecipes: function (recipes, filter) {
+  getFilteredRecipes: function (recipes, filter, mealFilter) {
     recipes = recipes || []
-    if (filter === 'all') return recipes
 
-    var categories = {
-      '蛋白质': ['鸡', '鱼', '虾', '牛肉', '猪肉', '蛋', '豆腐', '鸭', '排骨', '羊肉'],
-      '蔬菜': ['白菜', '菠菜', '西兰花', '胡萝卜', '土豆', '番茄', '黄瓜', '豆角', '茄子', '青椒', '生菜', '芹菜'],
-      '碳水': ['米饭', '面条', '馒头', '包子', '饺子', '粥', '红薯', '玉米'],
-      '水果': ['苹果', '香蕉', '橙子', '葡萄', '西瓜', '草莓', '梨', '桃']
+    // 先按营养类别(食材关键词)筛
+    if (filter && filter !== 'all') {
+      var categories = {
+        '蛋白质': ['鸡', '鱼', '虾', '牛肉', '猪肉', '蛋', '豆腐', '鸭', '排骨', '羊肉'],
+        '蔬菜': ['白菜', '菠菜', '西兰花', '胡萝卜', '土豆', '番茄', '黄瓜', '豆角', '茄子', '青椒', '生菜', '芹菜'],
+        '碳水': ['米饭', '面条', '馒头', '包子', '饺子', '粥', '红薯', '玉米'],
+        '水果': ['苹果', '香蕉', '橙子', '葡萄', '西瓜', '草莓', '梨', '桃']
+      }
+      var keywords = categories[filter] || []
+      recipes = recipes.filter(function (r) {
+        return keywords.some(function (kw) {
+          return r.name.indexOf(kw) >= 0 || (r.ingredients && r.ingredients.indexOf(kw) >= 0)
+        })
+      })
     }
 
-    var keywords = categories[filter] || []
-    return recipes.filter(function (r) {
-      return keywords.some(function (kw) {
-        return r.name.indexOf(kw) >= 0 || (r.ingredients && r.ingredients.indexOf(kw) >= 0)
+    // 再按建议餐次筛(REQ-020)
+    if (mealFilter && mealFilter !== 'all') {
+      recipes = recipes.filter(function (r) {
+        return Array.isArray(r.mealTimes) && r.mealTimes.indexOf(mealFilter) >= 0
       })
-    })
+    }
+
+    return recipes
   }
 })

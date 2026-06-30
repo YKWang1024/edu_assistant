@@ -98,3 +98,13 @@
 .link-type-icon { font-size: 24rpx; margin-right: 8rpx; }
 .link-type-text { font-size: 24rpx; font-weight: 700; color: #6b6b7a; }
 .save-btn { width: 100%; margin-top: 20rpx; }
+
+/* 建议餐次 chips(REQ-020) + 编辑图片提示(REQ-021) */
+.meal-chips { display: flex; gap: 16rpx; }
+.meal-chip {
+  padding: 14rpx 34rpx; border-radius: 999rpx;
+  background: #f3f5fb; border: 2rpx solid #e6e9f0;
+  font-size: 27rpx; color: #6a6a78;
+}
+.meal-chip.on { background: #4ca85f; border-color: #4ca85f; color: #fff; font-weight: 600; }
+.img-edit-hint { font-size: 23rpx; color: #a0a0ad; margin-top: 8rpx; }
