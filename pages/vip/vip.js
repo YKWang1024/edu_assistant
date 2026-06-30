@@ -1,4 +1,5 @@
 var app = getApp()
+var SUPER_OPENID = 'oSnsZ7e4ja7cq2Eq5_u3hQKx3HMo' // 超级用户(系统菜谱管理) REQ-022
 
 Page({
   data: {
@@ -6,20 +7,28 @@ Page({
     version: '1.0.0',
     childName: '宝贝',
     level: 1,
-    gameMinutes: 0
+    gameMinutes: 0,
+    isSuper: false
   },
 
   onShow: function () {
     var that = this
     var cached = app.globalData.gameMinutes || 0
+    var ui = app.globalData.userInfo || {}
     this.setData({
       childName: app.getCurrentChild(),
       gameMinutes: cached,
-      level: Math.max(1, Math.floor(cached / 50) + 1)
+      level: Math.max(1, Math.floor(cached / 50) + 1),
+      isSuper: ui.openid === SUPER_OPENID
     })
     app.refreshGameTime(function (balance) {
       that.setData({ gameMinutes: balance, level: Math.max(1, Math.floor((balance || 0) / 50) + 1) })
     })
+  },
+
+  // 系统菜谱管理(仅超级用户) REQ-022
+  onGoSysRecipes: function () {
+    wx.navigateTo({ url: '/pages/recipe/sysrecipes?mode=manage' })
   },
 
   onViewWrong: function () {
