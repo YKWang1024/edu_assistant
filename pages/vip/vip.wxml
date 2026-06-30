@@ -28,6 +28,13 @@
       <view class="menu-left"><view class="menu-ic ic-orange">🍽️</view><text class="menu-name">我的菜谱</text></view>
       <text class="menu-arrow">›</text>
     </view>
+    <block wx:if="{{isSuper}}">
+      <view class="menu-sep"></view>
+      <view class="menu-item" bindtap="onGoSysRecipes">
+        <view class="menu-left"><view class="menu-ic ic-blue">📚</view><text class="menu-name">系统菜谱管理</text></view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </block>
     <view class="menu-sep"></view>
     <view class="menu-item" bindtap="onClearData">
       <view class="menu-left"><view class="menu-ic ic-red">🗑️</view><text class="menu-name danger-text">清除数据</text></view>

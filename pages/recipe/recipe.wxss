@@ -180,3 +180,8 @@
 /* 列表卡片上的建议餐次小标签(REQ-020) */
 .recipe-meals { display: flex; gap: 8rpx; margin-top: 6rpx; flex-wrap: wrap; }
 .meal-tag-sm { font-size: 20rpx; color: #4ca85f; background: #e8f5e6; border-radius: 999rpx; padding: 2rpx 14rpx; }
+
+/* 空菜谱页：从系统菜谱导入入口(REQ-022) */
+.empty-state { text-align: center; padding: 60rpx 30rpx; }
+.empty-cta { margin: 24rpx auto 0; max-width: 460rpx; }
+.empty-or { margin-top: 22rpx; font-size: 25rpx; color: #5b6ff0; }

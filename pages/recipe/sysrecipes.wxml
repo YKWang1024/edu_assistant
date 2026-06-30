@@ -1,0 +1,40 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+
+  <block wx:else>
+    <view wx:if="{{mode === 'manage' && isSuper}}" class="sys-add" bindtap="onAddSys">＋ 新建系统菜谱</view>
+    <view wx:if="{{mode === 'manage' && !isSuper}}" class="empty-tip">你没有系统菜谱管理权限</view>
+
+    <view wx:if="{{mode === 'import'}}" class="sys-hint">勾选要加入自己家庭的菜谱，点底部「导入所选」。已导入过的会自动跳过。</view>
+
+    <view wx:if="{{recipes.length === 0}}" class="empty-tip">
+      系统菜谱库还是空的{{mode === 'manage' ? '，点上方「新建系统菜谱」添加' : '，可联系管理员添加'}}
+    </view>
+
+    <view class="sys-list">
+      <view
+        class="sys-item card {{mode === 'import' && selected[item._id] ? 'sel' : ''}}"
+        wx:for="{{recipes}}" wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggleSelect"
+      >
+        <image wx:if="{{item.images[0] || item.imageUrl}}" class="sys-thumb" src="{{item.images[0] || item.imageUrl}}" mode="aspectFill" />
+        <view wx:else class="sys-thumb sys-thumb-ph">🍽️</view>
+        <view class="sys-body">
+          <view class="sys-name">{{item.name}}</view>
+          <view class="sys-cat">{{item.category}}<text wx:if="{{item.mealTimes.length}}"> · {{item.mealTimes}}</text></view>
+          <view class="sys-ing">{{item.ingredients}}</view>
+        </view>
+        <view wx:if="{{mode === 'import'}}" class="sys-check {{selected[item._id] ? 'on' : ''}}">{{selected[item._id] ? '✓' : ''}}</view>
+        <view wx:if="{{mode === 'manage' && isSuper}}" class="sys-ops">
+          <text class="sys-op" data-id="{{item._id}}" catchtap="onEditSys">编辑</text>
+          <text class="sys-op danger" data-id="{{item._id}}" catchtap="onDeleteSys">删除</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{mode === 'import' && recipes.length > 0}}" class="sys-import-bar">
+      <button class="btn-primary" bindtap="onImport" loading="{{importing}}" disabled="{{importing}}">导入所选</button>
+    </view>
+  </block>
+</view>
