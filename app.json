@@ -13,6 +13,7 @@
     "pages/recipe/add",
     "pages/recipe/detail",
     "pages/recipe/rate",
+    "pages/recipe/sysrecipes",
     "pages/account/account",
     "pages/wrong/wrong",
     "pages/exam/exam",

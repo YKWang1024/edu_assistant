@@ -1,6 +1,7 @@
 var app = getApp()
 var recipeUtil = require('../../utils/recipe.js')
 var imageUtil = require('../../utils/image.js')
+var SUPER_OPENID = 'oSnsZ7e4ja7cq2Eq5_u3hQKx3HMo' // 超级用户(系统菜谱) REQ-022
 
 function extractUrl(text) {
   if (!text) return ''
@@ -34,6 +35,7 @@ Page({
     images: [], // 压缩后的本地临时路径
     editMode: false,    // 编辑已有菜谱(REQ-021)
     editId: '',
+    sysMode: false,     // 系统菜谱(超级用户) REQ-022
     existingImages: [], // 编辑时原有图片(临时链接，只读预览，保存时保留原图不变)
     referenceInput: '', // 输入框原始文本(避免受控输入把输入清空)
     referenceLink: '',
@@ -45,18 +47,33 @@ Page({
   },
 
   onLoad: function (options) {
-    if (options && options.id) {
+    options = options || {}
+    var sysMode = options.sys === '1'
+    if (sysMode) {
+      // 系统菜谱管理仅超级用户(服务端也硬校验；此处拦住非超级用户的伪编辑界面)
+      var ui = app.globalData.userInfo || {}
+      if (ui.openid !== SUPER_OPENID) {
+        wx.showToast({ title: '无系统菜谱管理权限', icon: 'none' })
+        setTimeout(function () { wx.navigateBack() }, 1000)
+        return
+      }
+      this.setData({ sysMode: true })
+    }
+    if (options.id) {
       this.setData({ editMode: true, editId: options.id })
-      wx.setNavigationBarTitle({ title: '编辑菜谱' })
-      this.loadForEdit(options.id)
+      wx.setNavigationBarTitle({ title: sysMode ? '编辑系统菜谱' : '编辑菜谱' })
+      this.loadForEdit(options.id, sysMode)
+    } else if (sysMode) {
+      wx.setNavigationBarTitle({ title: '新建系统菜谱' })
     }
   },
 
-  // 载入待编辑菜谱(REQ-021)
-  loadForEdit: function (id) {
+  // 载入待编辑菜谱(REQ-021；sys=系统菜谱 REQ-022)
+  loadForEdit: function (id, sysMode) {
     var that = this
     if (!app.globalData.cloudReady) { wx.showToast({ title: '请联网后再编辑', icon: 'none' }); return }
-    app.callCloudFunction('listRecipes', {}, function (res) {
+    var fn = sysMode ? 'listSystemRecipes' : 'listRecipes'
+    app.callCloudFunction(fn, {}, function (res) {
       if (!res || !res.success) { wx.showToast({ title: '加载失败', icon: 'none' }); return }
       var r = (res.data || []).filter(function (x) { return x._id === id })[0]
       if (!r) { wx.showToast({ title: '菜谱不存在', icon: 'none' }); return }
@@ -236,10 +253,12 @@ Page({
     if (!app.globalData.cloudReady) { wx.showToast({ title: '请联网后再保存', icon: 'none' }); return }
     if (this.data.saving) return
 
-    // 编辑模式(REQ-021)：只改文本字段 + 建议餐次，图片保留原样(不重传)
+    // 编辑模式：只改文本字段 + 建议餐次，图片保留原样(不重传)。
+    // 系统菜谱(sysMode)走 saveSystemRecipe(带 recipeId)，普通菜谱走 updateRecipe(REQ-021)。
     if (this.data.editMode) {
       this.setData({ saving: true })
-      app.callCloudFunction('updateRecipe', {
+      var editFn = this.data.sysMode ? 'saveSystemRecipe' : 'updateRecipe'
+      app.callCloudFunction(editFn, {
         recipeId: that.data.editId,
         name: name,
         ingredients: that.data.ingredients.trim(),
@@ -269,7 +288,9 @@ Page({
     var fileIDs = []
 
     function doSave() {
-      app.callCloudFunction('saveRecipe', {
+      // 新建：系统菜谱走 saveSystemRecipe(REQ-022)，普通菜谱走 saveRecipe
+      var saveFn = that.data.sysMode ? 'saveSystemRecipe' : 'saveRecipe'
+      app.callCloudFunction(saveFn, {
         name: name,
         ingredients: that.data.ingredients.trim(),
         steps: that.data.steps.trim(),

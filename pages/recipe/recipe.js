@@ -135,6 +135,11 @@ Page({
     wx.navigateTo({ url: '/pages/recipe/add' })
   },
 
+  // 菜谱为空时，从系统菜谱库按需导入(REQ-022)
+  onImportSystem: function () {
+    wx.navigateTo({ url: '/pages/recipe/sysrecipes' })
+  },
+
   onViewDetail: function (e) {
     var id = e.currentTarget.dataset.id
     wx.navigateTo({ url: '/pages/recipe/detail?id=' + id })
