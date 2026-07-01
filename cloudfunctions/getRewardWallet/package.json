@@ -1,0 +1,9 @@
+{
+  "name": "getRewardWallet",
+  "version": "1.0.0",
+  "description": "习惯自定义+多类型奖励+积分商城(REQ-023/024/025)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

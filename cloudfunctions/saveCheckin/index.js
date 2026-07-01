@@ -24,7 +24,8 @@ exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID
 
   try {
-    const { type, actualTime, targetTime, reward, diff, isEarly, isLate, date, time, childName } = event
+    const { type, actualTime, targetTime, reward, diff, isEarly, isLate, date, time, childName,
+      habitId, habitName, habitIcon, rewardType } = event
     if (!type) return { success: false, message: '缺少打卡类型' }
 
     const ctx = await resolveFamily(openid)
@@ -40,7 +41,12 @@ exports.main = async (event, context) => {
       isEarly: !!isEarly,
       isLate: !!isLate,
       time: time || timeStrUTC8(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      // REQ-023/024：自定义习惯打卡快照(habitId 指向 habitDefs；即使习惯后续被改名/删除，历史记录仍可读)
+      habitId: habitId || '',
+      habitName: habitName || '',
+      habitIcon: habitIcon || '',
+      rewardType: rewardType || 'time'
     }
 
     const where = familyId

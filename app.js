@@ -331,6 +331,22 @@ App({
     return this.globalData.gameMinutes
   },
 
+  // ============ 金钱/积分奖励钱包(REQ-024)：与游戏时间(gameTime)同构，独立集合 rewardWallet ============
+  // 读取余额。cb(balance)
+  getRewardWallet: function (type, childName, cb) {
+    if (!this.globalData.cloudReady) { if (cb) cb(0); return }
+    this.callCloudFunction('getRewardWallet', { type: type, childName: childName || this.getCurrentChild() }, function (res) {
+      if (cb) cb(res && res.success ? res.data.balance : 0)
+    })
+  },
+  // 增减余额(delta 可负)。离线时不生效(金钱/积分记账需要云端权威，不做本地兜底以免家庭成员间对不上账)。cb(balance)
+  addRewardWallet: function (type, delta, childName, cb) {
+    if (!this.globalData.cloudReady) { if (cb) cb(null); return }
+    this.callCloudFunction('addRewardWallet', { type: type, delta: delta, childName: childName || this.getCurrentChild() }, function (res) {
+      if (cb) cb(res && res.success ? res.data.balance : null)
+    })
+  },
+
   // ============ 离线写入队列：联网后自动回传云端 ============
   // 适用「幂等」写操作(可安全重放)，如打卡 saveCheckin(按 日期+类型+孩子 upsert)。
   // ⚠️ 增量/追加型(addGameTime/rateRecipe/saveUsageStat 等)不要走本队列——重放会重复计数；

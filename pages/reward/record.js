@@ -1,20 +1,25 @@
 var util = require('../../utils/util.js')
 var app = getApp()
 
+// 旧版硬编码习惯的图标/名称(兼容 REQ-023 改造前的历史记录，那些记录没有 habitIcon/habitName 快照)
+var LEGACY_ICONS = { school: '🏫', homework: '📚', sleep: '🌙' }
+var LEGACY_NAMES = { school: '到校', homework: '作业', sleep: '睡觉' }
+var REWARD_UNIT = { time: '分钟', money: '元', points: '积分' }
+
+function decorate(records) {
+  return (records || []).map(function (r) {
+    return Object.assign({}, r, {
+      displayIcon: r.habitIcon || LEGACY_ICONS[r.type] || '⭐',
+      displayName: r.habitName || LEGACY_NAMES[r.type] || r.type,
+      unit: REWARD_UNIT[r.rewardType] || '分钟'
+    })
+  })
+}
+
 Page({
   data: {
     records: [],
-    offline: false,
-    typeNames: {
-      school: '到校',
-      homework: '作业',
-      sleep: '睡觉'
-    },
-    typeIcons: {
-      school: '🏫',
-      homework: '📚',
-      sleep: '🌙'
-    }
+    offline: false
   },
 
   onShow: function () {
@@ -24,15 +29,15 @@ Page({
   loadRecords: function () {
     var that = this
     if (!app.globalData.cloudReady) {
-      this.setData({ records: util.getRecords('rewardRecords'), offline: true })
+      this.setData({ records: decorate(util.getRecords('rewardRecords')), offline: true })
       return
     }
     this.maybeMigrate(function () {
       app.callCloudFunction('listCheckins', {}, function (res) {
         if (res && res.success) {
-          that.setData({ records: res.data || [], offline: false })
+          that.setData({ records: decorate(res.data || []), offline: false })
         } else {
-          that.setData({ records: util.getRecords('rewardRecords'), offline: true })
+          that.setData({ records: decorate(util.getRecords('rewardRecords')), offline: true })
         }
       })
     })

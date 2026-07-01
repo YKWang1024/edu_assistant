@@ -108,6 +108,31 @@ function calculateReward(type, actualTimeStr) {
   }
 }
 
+// 通用版打卡奖励计算(REQ-023/024 自定义习惯)：habit 来自 habitDefs，按 mode 分两种算法。
+// mode='targetTime'：早/晚打卡，按与目标时间的差值算奖励(逻辑同旧版 calculateReward，只是参数从习惯定义读)。
+// mode='fixed'：打卡即得固定数值，不需要 actualTimeStr。
+function calculateHabitReward(habit, actualTimeStr) {
+  if (!habit || habit.mode !== 'targetTime') {
+    // fixed 模式没有"早/晚"的概念，isEarly/isLate/isOnTime 恒为 false，用独立的 hasReward
+    // 表达"是否有奖励"，避免调用方把它误当早晚语义使用(REQ-023/024 审查发现)。
+    var fixed = (habit && Number(habit.fixedReward)) || 0
+    return { diff: 0, reward: fixed, isEarly: false, isLate: false, isOnTime: false, hasReward: fixed > 0 }
+  }
+  var parts = (actualTimeStr || '00:00').split(':')
+  var actualMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1])
+  var tparts = (habit.targetTime || '00:00').split(':')
+  var targetMinutes = parseInt(tparts[0]) * 60 + parseInt(tparts[1])
+  var maxReward = (habit.maxReward != null) ? habit.maxReward : 999
+  var deductOnLate = !!habit.deductOnLate
+
+  var diff = targetMinutes - actualMinutes
+  var reward = 0
+  if (diff > 0) reward = Math.min(diff, maxReward)
+  else if (diff < 0 && deductOnLate) reward = diff
+
+  return { diff: diff, reward: reward, isEarly: diff > 0, isLate: diff < 0, isOnTime: diff === 0, hasReward: reward > 0 }
+}
+
 function formatDate(date) {
   var y = date.getFullYear()
   var m = date.getMonth() + 1
@@ -319,6 +344,7 @@ function getRecipeRecommendations(recipes, mealType) {
 module.exports = {
   generateMathQuestions: generateMathQuestions,
   calculateReward: calculateReward,
+  calculateHabitReward: calculateHabitReward,
   formatDate: formatDate,
   formatTime: formatTime,
   getTodayStr: getTodayStr,

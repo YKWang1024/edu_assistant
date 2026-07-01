@@ -68,3 +68,6 @@
 .usage-day:last-child { border-bottom: none; }
 .usage-date { font-size: 26rpx; color: #2b2b33; font-weight: 600; }
 .usage-meta { font-size: 24rpx; color: #8a8a97; }
+
+/* 积分入口(REQ-024/025) */
+.mall-entry:active { opacity: 0.7; }

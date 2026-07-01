@@ -1,94 +1,102 @@
 <view class="container">
-  <view class="tab-bar">
-    <view
-      class="tab-item {{activeTab === 'school' ? 'active' : ''}}"
-      data-key="school"
-      bindtap="onSwitchTab"
-    >
-      <text class="tab-icon">🏫</text>
-      <text class="tab-name">到校</text>
-    </view>
-    <view
-      class="tab-item {{activeTab === 'homework' ? 'active' : ''}}"
-      data-key="homework"
-      bindtap="onSwitchTab"
-    >
-      <text class="tab-icon">📚</text>
-      <text class="tab-name">作业</text>
-    </view>
-    <view
-      class="tab-item {{activeTab === 'sleep' ? 'active' : ''}}"
-      data-key="sleep"
-      bindtap="onSwitchTab"
-    >
-      <text class="tab-icon">🌙</text>
-      <text class="tab-name">睡觉</text>
-    </view>
-  </view>
+  <view class="loading-tip" wx:if="{{loading}}">加载中…</view>
 
-  <view class="rule-card card" wx:if="{{currentTab}}">
-    <view class="card-title">
-      <text class="icon">{{currentTab.icon}}</text>
-      <text>{{currentTab.name}}时间规则</text>
+  <block wx:else>
+    <view class="empty-tip" wx:if="{{habits.length === 0}}">
+      还没有学习习惯，去添加一个吧！
+      <view class="manage-link" bindtap="onManageHabits">＋ 添加习惯</view>
     </view>
-    <view class="target-time">
-      目标时间: <text class="highlight">{{currentTab.target}}</text>
-    </view>
-    <view class="rule-text">{{currentTab.rule}}</view>
-  </view>
 
-  <view class="checkin-card card" wx:if="{{!todayRecord}}">
-    <view class="card-title">
-      <text class="icon">⏰</text>
-      <text>今日打卡</text>
-    </view>
-    <view class="form-group">
-      <text class="form-label">实际{{currentTab.name}}时间</text>
-      <picker mode="time" value="{{timeValue}}" bindchange="onTimeChange">
-        <view class="time-picker">
-          {{timeValue || '请选择时间'}}
-          <text class="picker-arrow">▼</text>
+    <block wx:else>
+      <view class="tab-bar">
+        <view
+          class="tab-item {{activeHabitId === item._id ? 'active' : ''}}"
+          wx:for="{{habits}}" wx:key="_id"
+          data-id="{{item._id}}"
+          bindtap="onSwitchTab"
+        >
+          <text class="tab-icon">{{item.icon}}</text>
+          <text class="tab-name">{{item.name}}</text>
         </view>
-      </picker>
-    </view>
-    <button class="btn-primary checkin-btn" bindtap="onCheckIn">
-      打卡
-    </button>
-  </view>
-
-  <view class="done-card card" wx:if="{{todayRecord}}">
-    <view class="card-title">
-      <text class="icon">✅</text>
-      <text>今日已打卡</text>
-    </view>
-    <view class="done-info">
-      <view class="done-row flex-between">
-        <text class="done-label">实际时间</text>
-        <text class="done-value">{{todayRecord.actualTime}}</text>
+        <view class="tab-item tab-manage" bindtap="onManageHabits">
+          <text class="tab-icon">⚙️</text>
+          <text class="tab-name">管理</text>
+        </view>
       </view>
-      <view class="done-row flex-between">
-        <text class="done-label">目标时间</text>
-        <text class="done-value">{{todayRecord.targetTime}}</text>
-      </view>
-      <view class="done-row flex-between">
-        <text class="done-label">奖励时间</text>
-        <text class="done-value {{todayRecord.reward > 0 ? 'positive' : todayRecord.reward < 0 ? 'negative' : ''}}">
-          {{todayRecord.reward > 0 ? '+' : ''}}{{todayRecord.reward}} 分钟
-        </text>
-      </view>
-    </view>
-  </view>
 
-  <view class="result-card card" wx:if="{{rewardResult}}">
-    <view class="result-msg {{rewardResult.isEarly ? 'early' : rewardResult.isLate ? 'late' : 'ontime'}}">
-      {{rewardResult.msg}}
-    </view>
-    <view class="result-total">
-      当前游戏时间: <text class="highlight">{{rewardResult.totalMinutes}}</text> 分钟
-    </view>
-  </view>
+      <view class="rule-card card" wx:if="{{currentHabit}}">
+        <view class="card-title">
+          <text class="icon">{{currentHabit.icon}}</text>
+          <text>{{currentHabit.name}}规则</text>
+        </view>
+        <block wx:if="{{currentHabit.mode === 'targetTime'}}">
+          <view class="target-time">
+            目标时间: <text class="highlight">{{currentHabit.targetTime}}</text>
+          </view>
+          <view class="rule-text">
+            提前打卡最多得 {{currentHabit.maxReward}} {{rewardUnit}}
+            <block wx:if="{{currentHabit.deductOnLate}}">，超时按分钟数扣{{rewardUnit}}</block>
+            <block wx:else>，超时不扣</block>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="rule-text">打卡即得 {{currentHabit.fixedReward}} {{rewardUnit}}</view>
+        </block>
+        <view class="rule-text" wx:if="{{currentHabit.reminder}}">提醒：{{currentHabit.reminder}}</view>
+      </view>
 
-  <view class="record-link" bindtap="onViewRecords">
-    <text>📋 查看历史打卡记录</text>
-  </view>
+      <view class="checkin-card card" wx:if="{{currentHabit && !todayRecord}}">
+        <view class="card-title">
+          <text class="icon">⏰</text>
+          <text>今日打卡</text>
+        </view>
+        <view class="form-group" wx:if="{{currentHabit.mode === 'targetTime'}}">
+          <text class="form-label">实际{{currentHabit.name}}时间</text>
+          <picker mode="time" value="{{timeValue}}" bindchange="onTimeChange">
+            <view class="time-picker">
+              {{timeValue || '请选择时间'}}
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <button class="btn-primary checkin-btn" bindtap="onCheckIn">打卡</button>
+      </view>
+
+      <view class="done-card card" wx:if="{{todayRecord}}">
+        <view class="card-title">
+          <text class="icon">✅</text>
+          <text>今日已打卡</text>
+        </view>
+        <view class="done-info">
+          <view class="done-row flex-between" wx:if="{{todayRecord.actualTime}}">
+            <text class="done-label">实际时间</text>
+            <text class="done-value">{{todayRecord.actualTime}}</text>
+          </view>
+          <view class="done-row flex-between" wx:if="{{todayRecord.targetTime}}">
+            <text class="done-label">目标时间</text>
+            <text class="done-value">{{todayRecord.targetTime}}</text>
+          </view>
+          <view class="done-row flex-between">
+            <text class="done-label">获得奖励</text>
+            <text class="done-value {{todayRecord.reward > 0 ? 'positive' : todayRecord.reward < 0 ? 'negative' : ''}}">
+              {{todayRecord.reward > 0 ? '+' : ''}}{{todayRecord.reward}} {{rewardUnit}}
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <view class="result-card card" wx:if="{{rewardResult}}">
+        <view class="result-msg {{rewardResult.resultClass}}">
+          {{rewardResult.msg}}
+        </view>
+        <view class="result-total">
+          当前余额: <text class="highlight">{{rewardResult.totalMinutes}}</text> {{rewardResult.unit}}
+        </view>
+      </view>
+
+      <view class="record-link" bindtap="onViewRecords">
+        <text>📋 查看历史打卡记录</text>
+      </view>
+    </block>
+  </block>
 </view>

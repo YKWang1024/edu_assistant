@@ -30,7 +30,7 @@
     <view class="energy" wx:if="{{viewRole !== 'parent'}}">
       <view class="energy-top">
         <text class="energy-label">今日任务能量</text>
-        <text class="energy-val">{{doneCount}}/3</text>
+        <text class="energy-val">{{doneCount}}/{{habitTiles.length}}</text>
       </view>
       <view class="energy-bar"><view class="energy-fill" style="width:{{progressPct}}%"></view></view>
       <view class="energy-tip">今日在线学习 {{studyMinutes}} 分钟 · 完成打卡与小测点亮能量 ⚡</view>
@@ -48,7 +48,7 @@
     <view class="p-stats">
       <view class="p-stat"><view class="p-val">{{gameMinutes}}</view><view class="p-lab">游戏时间(分)</view></view>
       <view class="p-stat"><view class="p-val">{{wrongMastered}}/{{wrongTotal}}</view><view class="p-lab">错题已巩固</view></view>
-      <view class="p-stat"><view class="p-val">{{doneCount}}/3</view><view class="p-lab">今日打卡</view></view>
+      <view class="p-stat"><view class="p-val">{{doneCount}}/{{habitTiles.length}}</view><view class="p-lab">今日打卡</view></view>
     </view>
 
     <view class="section-title">管控</view>
@@ -175,23 +175,13 @@
     </view>
   </view>
 
-  <!-- 习惯打卡：彩色软块网格 -->
+  <!-- 习惯打卡：彩色软块网格(REQ-023 动态习惯，不再硬编码) -->
   <view class="section-title">习惯打卡</view>
   <view class="habit-grid">
-    <view class="habit-tile {{todayChecked.school ? 'done' : ''}}" bindtap="onTapReward">
-      <view class="habit-tile-icon">🏫</view>
-      <view class="habit-tile-name">到校</view>
-      <view class="habit-tile-check">{{todayChecked.school ? '✓' : ''}}</view>
-    </view>
-    <view class="habit-tile {{todayChecked.homework ? 'done' : ''}}" bindtap="onTapReward">
-      <view class="habit-tile-icon">📚</view>
-      <view class="habit-tile-name">作业</view>
-      <view class="habit-tile-check">{{todayChecked.homework ? '✓' : ''}}</view>
-    </view>
-    <view class="habit-tile {{todayChecked.sleep ? 'done' : ''}}" bindtap="onTapReward">
-      <view class="habit-tile-icon">🌙</view>
-      <view class="habit-tile-name">睡觉</view>
-      <view class="habit-tile-check">{{todayChecked.sleep ? '✓' : ''}}</view>
+    <view class="habit-tile {{item.done ? 'done' : ''}}" wx:for="{{habitTiles}}" wx:key="_id" bindtap="onTapReward">
+      <view class="habit-tile-icon">{{item.icon}}</view>
+      <view class="habit-tile-name">{{item.name}}</view>
+      <view class="habit-tile-check">{{item.done ? '✓' : ''}}</view>
     </view>
   </view>
   </block>

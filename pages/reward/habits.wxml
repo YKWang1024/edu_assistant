@@ -1,0 +1,31 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+
+  <block wx:else>
+    <view wx:if="{{isAdmin}}" class="add-btn" bindtap="onAdd">＋ 新建习惯</view>
+    <view wx:else class="hint-tip">只有家长(管理员)可增/改/删习惯与奖励规则</view>
+
+    <view wx:if="{{habits.length === 0}}" class="empty-tip">还没有习惯，{{isAdmin ? '点上方新建一个' : '等家长添加'}}</view>
+
+    <view class="habit-list">
+      <view class="habit-item card" wx:for="{{habits}}" wx:key="_id">
+        <view class="habit-top">
+          <text class="habit-icon">{{item.icon}}</text>
+          <view class="habit-info">
+            <view class="habit-name">{{item.name}}</view>
+            <view class="habit-sub">{{item.modeLabel}} · {{item.cycle === 'weekly' ? '每周' : '每天'}}</view>
+          </view>
+        </view>
+        <view class="habit-detail">
+          <text wx:if="{{item.mode === 'targetTime'}}">目标 {{item.targetTime}} · {{item.rewardTypeLabel}} {{item.rewardValueLabel}}{{item.deductOnLate ? '（超时扣）' : '（超时不扣）'}}</text>
+          <text wx:else>{{item.rewardTypeLabel}} {{item.rewardValueLabel}}</text>
+        </view>
+        <view class="habit-detail" wx:if="{{item.reminder}}">提醒：{{item.reminder}}</view>
+        <view class="habit-ops" wx:if="{{isAdmin}}">
+          <text class="habit-op" data-id="{{item._id}}" bindtap="onEdit">编辑</text>
+          <text class="habit-op danger" data-id="{{item._id}}" data-name="{{item.name}}" bindtap="onDelete">删除</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

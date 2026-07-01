@@ -1,0 +1,65 @@
+<view class="page" wx:if="{{isAdmin}}">
+  <view class="form-card card">
+    <view class="form-group">
+      <text class="form-label">图标(emoji)</text>
+      <input class="input-field" value="{{icon}}" bindinput="onIconInput" maxlength="4" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">习惯名称 *</text>
+      <input class="input-field" placeholder="例如：阅读、到校、练琴" value="{{name}}" bindinput="onNameInput" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">打卡方式</text>
+      <picker range="{{modeOptions}}" range-key="label" value="{{modeIndex}}" bindchange="onModeChange">
+        <view class="time-picker">{{modeOptions[modeIndex].label}}<text class="picker-arrow">▼</text></view>
+      </picker>
+    </view>
+
+    <block wx:if="{{modeOptions[modeIndex].key === 'targetTime'}}">
+      <view class="form-group">
+        <text class="form-label">目标时间</text>
+        <picker mode="time" value="{{targetTime}}" bindchange="onTargetTimeChange">
+          <view class="time-picker">{{targetTime}}<text class="picker-arrow">▼</text></view>
+        </picker>
+      </view>
+      <view class="form-group">
+        <text class="form-label">提前打卡最多奖励</text>
+        <input class="input-field" type="number" value="{{maxReward}}" bindinput="onMaxRewardInput" />
+      </view>
+      <view class="form-group flex-between">
+        <text class="form-label">超时是否扣减</text>
+        <switch checked="{{deductOnLate}}" bindchange="onToggleDeduct" color="#4ca85f" />
+      </view>
+    </block>
+    <block wx:else>
+      <view class="form-group">
+        <text class="form-label">打卡即得(固定数值)</text>
+        <input class="input-field" type="number" value="{{fixedReward}}" bindinput="onFixedRewardInput" />
+      </view>
+    </block>
+
+    <view class="form-group">
+      <text class="form-label">奖励类型</text>
+      <picker range="{{rewardTypeOptions}}" range-key="label" value="{{rewardTypeIndex}}" bindchange="onRewardTypeChange">
+        <view class="time-picker">{{rewardTypeOptions[rewardTypeIndex].label}}<text class="picker-arrow">▼</text></view>
+      </picker>
+    </view>
+
+    <view class="form-group flex-between">
+      <text class="form-label">打卡周期</text>
+      <view class="cycle-switch">
+        <text class="{{!cycleWeekly ? 'on' : ''}}">每天</text>
+        <switch checked="{{cycleWeekly}}" bindchange="onToggleWeekly" color="#4ca85f" />
+        <text class="{{cycleWeekly ? 'on' : ''}}">每周</text>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">提醒说明(可选)</text>
+      <input class="input-field" placeholder="如：晚饭后提醒孩子阅读" value="{{reminder}}" bindinput="onReminderInput" />
+    </view>
+
+    <button class="btn-primary save-btn" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">保存</button>
+  </view>
+</view>

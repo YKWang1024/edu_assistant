@@ -23,6 +23,18 @@
     </view>
   </view>
 
+  <!-- REQ-024 多类型奖励：零花钱 + 积分(可去积分商城兑换) -->
+  <view class="stats-row">
+    <view class="stat-item card">
+      <view class="stat-value">{{moneyBalance}}</view>
+      <view class="stat-label">零花钱(元)</view>
+    </view>
+    <view class="stat-item card mall-entry" bindtap="onGoMall">
+      <view class="stat-value">{{pointsBalance}}</view>
+      <view class="stat-label">积分 · 去兑换 ›</view>
+    </view>
+  </view>
+
   <!-- REQ-003 学习互动统计：仅采集与展示，不做挂机判定 -->
   <view class="section-title">学习互动 · 练习时长</view>
   <view class="stats-row">
@@ -51,15 +63,15 @@
     <view class="record-item card" wx:for="{{recentRecords}}" wx:key="index">
       <view class="record-header flex-between">
         <view class="flex-row">
-          <text class="record-icon">{{typeIcons[item.type]}}</text>
-          <text class="record-type">{{typeNames[item.type]}}</text>
+          <text class="record-icon">{{item.displayIcon}}</text>
+          <text class="record-type">{{item.displayName}}</text>
         </view>
         <text class="record-date">{{item.date}} {{item.time}}</text>
       </view>
       <view class="record-detail">
-        <text class="detail-text">实际 {{item.actualTime}} / 目标 {{item.targetTime}}</text>
+        <text class="detail-text" wx:if="{{item.actualTime || item.targetTime}}">实际 {{item.actualTime}} / 目标 {{item.targetTime}}</text>
         <text class="detail-reward {{item.reward > 0 ? 'positive' : item.reward < 0 ? 'negative' : 'neutral'}}">
-          {{item.reward > 0 ? '+' : ''}}{{item.reward}} 分钟
+          {{item.reward > 0 ? '+' : ''}}{{item.reward}} {{item.unit}}
         </text>
       </view>
     </view>
