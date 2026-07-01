@@ -46,26 +46,26 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home-active.png"
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
       },
       {
         "pagePath": "pages/circle/circle",
         "text": "菜友圈",
-        "iconPath": "images/circle.png",
-        "selectedIconPath": "images/circle-active.png"
+        "iconPath": "images/tab-circle.png",
+        "selectedIconPath": "images/tab-circle-active.png"
       },
       {
         "pagePath": "pages/recipe/recipe",
         "text": "菜谱",
-        "iconPath": "images/recipe.png",
-        "selectedIconPath": "images/recipe-active.png"
+        "iconPath": "images/tab-recipe.png",
+        "selectedIconPath": "images/tab-recipe-active.png"
       },
       {
         "pagePath": "pages/vip/vip",
         "text": "设置",
-        "iconPath": "images/user.png",
-        "selectedIconPath": "images/user-active.png"
+        "iconPath": "images/tab-setting.png",
+        "selectedIconPath": "images/tab-setting-active.png"
       }
     ]
   },
