@@ -227,10 +227,20 @@ Page({
   onDeleteOne: function (e) {
     var idx = e.currentTarget.dataset.index
     var that = this
-    var wrongList = this.data.wrongList.slice()
-    var item = wrongList[idx]
-    this.removeFromWrongList(item)
-    wrongList.splice(idx, 1)
-    this.setData({ wrongList: wrongList })
+    app.requireParentPassword(function () {
+      wx.showModal({
+        title: '删除错题',
+        content: '确定删除这道题吗？',
+        confirmColor: '#ba1a1a',
+        success: function (m) {
+          if (!m.confirm) return
+          var wrongList = that.data.wrongList.slice()
+          var item = wrongList[idx]
+          that.removeFromWrongList(item)
+          wrongList.splice(idx, 1)
+          that.setData({ wrongList: wrongList })
+        }
+      })
+    })
   }
 })

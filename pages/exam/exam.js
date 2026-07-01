@@ -307,23 +307,25 @@ Page({
     var id = e.currentTarget.dataset.id
     var source = e.currentTarget.dataset.source
     var that = this
-    wx.showModal({
-      title: '删除错题',
-      content: '确定删除这道题吗？',
-      confirmColor: '#ba1a1a',
-      success: function (m) {
-        if (!m.confirm) return
-        var fn = source === 'quiz' ? 'deleteQuizWrong' : 'deleteExamQuestion'
-        var payload = source === 'quiz' ? { id: id } : { questionId: id }
-        app.callCloudFunction(fn, payload, function (res) {
-          if (res && res.success) {
-            wx.showToast({ title: '已删除', icon: 'success' })
-            that.loadList()
-          } else {
-            wx.showToast({ title: (res && res.message) || '删除失败', icon: 'none' })
-          }
-        })
-      }
+    this.requirePassword(function () {
+      wx.showModal({
+        title: '删除错题',
+        content: '确定删除这道题吗？',
+        confirmColor: '#ba1a1a',
+        success: function (m) {
+          if (!m.confirm) return
+          var fn = source === 'quiz' ? 'deleteQuizWrong' : 'deleteExamQuestion'
+          var payload = source === 'quiz' ? { id: id } : { questionId: id }
+          app.callCloudFunction(fn, payload, function (res) {
+            if (res && res.success) {
+              wx.showToast({ title: '已删除', icon: 'success' })
+              that.loadList()
+            } else {
+              wx.showToast({ title: (res && res.message) || '删除失败', icon: 'none' })
+            }
+          })
+        }
+      })
     })
   },
 
