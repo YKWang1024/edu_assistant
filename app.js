@@ -314,6 +314,48 @@ App({
   markParentVerified: function () { this.globalData.parentVerifiedAt = Date.now() },
   clearParentVerified: function () { this.globalData.parentVerifiedAt = 0 },
 
+  // 家长密码校验闸门：编辑/删除等敏感操作前调用，仅在校验通过后执行 cb。
+  // 已验证(本会话内)直接放行；未设置则引导设置；已设置则要求输入并云端校验。
+  // 离线不拦截(只影响本地数据，与错题编辑一致)。
+  requireParentPassword: function (cb) {
+    var that = this
+    if (!this.globalData.cloudReady) { cb(); return }
+    if (this.isParentVerified()) { cb(); return }
+    this.callCloudFunction('editPassword', { action: 'status' }, function (res) {
+      if (!res || !res.success) { wx.showToast({ title: '网络异常，请重试', icon: 'none' }); return }
+      if (res.data && res.data.hasPassword) that._promptVerifyParentPwd(cb)
+      else that._promptSetParentPwd(cb)
+    })
+  },
+  _promptVerifyParentPwd: function (cb) {
+    var that = this
+    wx.showModal({
+      title: '家长验证', editable: true, placeholderText: '请输入家长密码',
+      success: function (m) {
+        if (!m.confirm) return
+        that.callCloudFunction('editPassword', { action: 'verify', password: (m.content || '').trim() }, function (r) {
+          if (r && r.success && r.data && r.data.match) { that.markParentVerified(); cb() }
+          else wx.showToast({ title: '密码不正确', icon: 'none' })
+        })
+      }
+    })
+  },
+  _promptSetParentPwd: function (cb) {
+    var that = this
+    wx.showModal({
+      title: '设置家长密码', editable: true, placeholderText: '首次使用请设置(至少4位)',
+      success: function (m) {
+        if (!m.confirm) return
+        var pwd = (m.content || '').trim()
+        if (pwd.length < 4) { wx.showToast({ title: '密码至少 4 位', icon: 'none' }); return }
+        that.callCloudFunction('editPassword', { action: 'set', password: pwd }, function (r) {
+          if (r && r.success) { that.markParentVerified(); wx.showToast({ title: '已设置', icon: 'success' }); cb() }
+          else wx.showToast({ title: (r && r.message) || '设置失败', icon: 'none' })
+        })
+      }
+    })
+  },
+
   // 增减游戏时间（云端权威；离线兜底本地）。cb(balance)
   addGameMinutes: function (minutes, cb) {
     var that = this
