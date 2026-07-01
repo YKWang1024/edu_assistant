@@ -134,14 +134,20 @@ Page({
     this.setData({ todayRecord: record })
     wx.showToast({ title: msg, icon: 'none', duration: 2500 })
 
+    // 展示用的着色：targetTime 模式按早/晚三态；fixed 模式没有"早晚"概念，
+    // 只按"是否有奖励"分两态，不复用 isEarly/isLate(避免语义错配、审查发现)。
+    var resultClass = habit.mode === 'targetTime'
+      ? (result.isEarly ? 'early' : result.isLate ? 'late' : 'ontime')
+      : (result.hasReward ? 'early' : 'ontime')
+
     // 按奖励类型入对应钱包：time 沿用既有游戏时间钱包；money/points 走新的 rewardWallet
     if (habit.rewardType === 'time') {
       app.addGameMinutes(result.reward, function (totalMinutes) {
-        that.setData({ rewardResult: { reward: result.reward, unit: unit, totalMinutes: totalMinutes, msg: msg, isEarly: result.isEarly, isLate: result.isLate } })
+        that.setData({ rewardResult: { reward: result.reward, unit: unit, totalMinutes: totalMinutes, msg: msg, resultClass: resultClass } })
       })
     } else {
       app.addRewardWallet(habit.rewardType, result.reward, childName, function (balance) {
-        that.setData({ rewardResult: { reward: result.reward, unit: unit, totalMinutes: balance, msg: msg, isEarly: result.isEarly, isLate: result.isLate } })
+        that.setData({ rewardResult: { reward: result.reward, unit: unit, totalMinutes: balance, msg: msg, resultClass: resultClass } })
       })
     }
 

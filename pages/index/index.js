@@ -203,22 +203,39 @@ Page({
     })
   },
 
-  // 旧版硬编码习惯(离线/无习惯定义时的兜底展示)
+  // 旧版硬编码习惯(仅用于「从未成功联网同步过习惯定义」时的最后兜底；_id 是字面量，
+  // 不会匹配任何真实 habitDefs 文档，所以一旦有过真实数据就不再用它)
   LEGACY_HABITS: [
     { _id: 'school', icon: '🏫', name: '到校' },
     { _id: 'homework', icon: '📚', name: '作业' },
     { _id: 'sleep', icon: '🌙', name: '睡觉' }
   ],
 
+  // 离线/习惯定义拉取失败时的兜底列表：优先用最近一次成功拉取并缓存的「真实」habitDefs
+  // (_id 与 saveCheckin 写入的 type 一致，能正确判断今日是否已打卡)；从未同步成功过才退回字面量兜底。
+  fallbackHabits: function () {
+    try {
+      var cached = wx.getStorageSync('habitDefsCache')
+      if (cached && cached.length) return cached
+    } catch (e) {}
+    return this.LEGACY_HABITS
+  },
+
   checkTodayStatus: function () {
     var that = this
     function applyLocal() {
       var records = util.getRecords('rewardRecords')
-      that.applyChecked(that.LEGACY_HABITS, records)
+      that.applyChecked(that.fallbackHabits(), records)
     }
     if (!app.globalData.cloudReady) { applyLocal(); return }
     app.callCloudFunction('listHabitDefs', {}, function (hres) {
-      var habits = (hres && hres.success && hres.data && hres.data.length) ? hres.data : that.LEGACY_HABITS
+      var habits
+      if (hres && hres.success && hres.data && hres.data.length) {
+        habits = hres.data
+        try { wx.setStorageSync('habitDefsCache', habits) } catch (e) {} // 缓存真实习惯定义，供离线/失败兜底用
+      } else {
+        habits = that.fallbackHabits()
+      }
       app.callCloudFunction('listCheckins', {}, function (res) {
         if (res && res.success) that.applyChecked(habits, res.data || [])
         else applyLocal()

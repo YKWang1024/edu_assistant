@@ -33,6 +33,10 @@ Page({
     })
   },
 
+  // 同一个奖励在「尚未拿到成功结果」前重复兑换请求复用同一个 requestId(幂等键)，
+  // 避免网络超时后用户重试导致被服务端重复扣分；一旦成功或本次会话结束就清掉。
+  _pendingRedeemIds: {},
+
   onRedeem: function (e) {
     var that = this
     var item = e.currentTarget.dataset.item
@@ -46,10 +50,15 @@ Page({
       content: '确定用 ' + item.pointsCost + ' 积分兑换「' + item.name + '」吗？',
       success: function (m) {
         if (!m.confirm) return
+        if (!that._pendingRedeemIds[item._id]) {
+          that._pendingRedeemIds[item._id] = 'rq_' + Date.now() + '_' + Math.floor(Math.random() * 1e6)
+        }
+        var requestId = that._pendingRedeemIds[item._id]
         that.setData({ redeeming: true })
-        app.callCloudFunction('redeemReward', { itemId: item._id, childName: app.getCurrentChild() }, function (res) {
+        app.callCloudFunction('redeemReward', { itemId: item._id, childName: app.getCurrentChild(), clientRequestId: requestId }, function (res) {
           that.setData({ redeeming: false })
           if (res && res.success) {
+            delete that._pendingRedeemIds[item._id]
             wx.showToast({ title: '兑换成功', icon: 'success' })
             that.load()
           } else {

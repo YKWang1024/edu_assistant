@@ -113,8 +113,10 @@ function calculateReward(type, actualTimeStr) {
 // mode='fixed'：打卡即得固定数值，不需要 actualTimeStr。
 function calculateHabitReward(habit, actualTimeStr) {
   if (!habit || habit.mode !== 'targetTime') {
+    // fixed 模式没有"早/晚"的概念，isEarly/isLate/isOnTime 恒为 false，用独立的 hasReward
+    // 表达"是否有奖励"，避免调用方把它误当早晚语义使用(REQ-023/024 审查发现)。
     var fixed = (habit && Number(habit.fixedReward)) || 0
-    return { diff: 0, reward: fixed, isEarly: fixed > 0, isLate: false, isOnTime: fixed === 0 }
+    return { diff: 0, reward: fixed, isEarly: false, isLate: false, isOnTime: false, hasReward: fixed > 0 }
   }
   var parts = (actualTimeStr || '00:00').split(':')
   var actualMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1])
@@ -128,7 +130,7 @@ function calculateHabitReward(habit, actualTimeStr) {
   if (diff > 0) reward = Math.min(diff, maxReward)
   else if (diff < 0 && deductOnLate) reward = diff
 
-  return { diff: diff, reward: reward, isEarly: diff > 0, isLate: diff < 0, isOnTime: diff === 0 }
+  return { diff: diff, reward: reward, isEarly: diff > 0, isLate: diff < 0, isOnTime: diff === 0, hasReward: reward > 0 }
 }
 
 function formatDate(date) {

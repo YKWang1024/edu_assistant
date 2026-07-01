@@ -28,12 +28,20 @@ exports.main = async (event, context) => {
     let all = (await db.collection('habitDefs').where({ familyId: familyId }).orderBy('order', 'asc').limit(200).get()).data || []
 
     if (!all.length) {
-      // 懒惰播种：整个家庭从未有过任何习惯定义(含软删的)才播种，避免家长删光后又被种回来
-      const now = new Date()
-      for (let i = 0; i < DEFAULT_HABITS.length; i++) {
-        await db.collection('habitDefs').add({
-          data: Object.assign({ familyId: familyId, isDeleted: false, createdAt: now, updatedAt: now }, DEFAULT_HABITS[i])
-        })
+      // 懒惰播种：用 families.habitsSeeded 做一次性互斥标记(条件更新，只有第一个到达的调用能
+      // 把它从「非true」翻成 true)，防止同一家庭并发多次调用把默认习惯播种成多份重复的。
+      // 抢到标记的这次负责真正写入；没抢到的直接跳过插入，重新查询即可(可能读到空，下次刷新会看到)。
+      const claim = await db.collection('families')
+        .where({ _id: familyId, habitsSeeded: db.command.neq(true) })
+        .update({ data: { habitsSeeded: true } })
+      const won = claim && claim.stats && claim.stats.updated === 1
+      if (won) {
+        const now = new Date()
+        for (let i = 0; i < DEFAULT_HABITS.length; i++) {
+          await db.collection('habitDefs').add({
+            data: Object.assign({ familyId: familyId, isDeleted: false, createdAt: now, updatedAt: now }, DEFAULT_HABITS[i])
+          })
+        }
       }
       all = (await db.collection('habitDefs').where({ familyId: familyId }).orderBy('order', 'asc').limit(200).get()).data || []
     }

@@ -86,7 +86,7 @@
       </view>
 
       <view class="result-card card" wx:if="{{rewardResult}}">
-        <view class="result-msg {{rewardResult.isEarly ? 'early' : rewardResult.isLate ? 'late' : 'ontime'}}">
+        <view class="result-msg {{rewardResult.resultClass}}">
           {{rewardResult.msg}}
         </view>
         <view class="result-total">
