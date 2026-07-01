@@ -22,11 +22,7 @@ Page({
     viewRole: 'child',
     usageTodayTaps: 0,
     usageTodayDwellMin: 0,
-    todayChecked: {
-      school: false,
-      homework: false,
-      sleep: false
-    }
+    habitTiles: [] // REQ-023 动态习惯格子(不再硬编码到校/作业/睡觉)：[{_id,icon,name,done}]
   },
 
   onShow: function () {
@@ -190,35 +186,43 @@ Page({
     return Math.max(1, Math.floor((val || 0) / 50) + 1)
   },
 
-  applyChecked: function (checked, records) {
-    var done = (checked.school ? 1 : 0) + (checked.homework ? 1 : 0) + (checked.sleep ? 1 : 0)
+  // habits: [{_id,icon,name}]；records: 全部打卡记录(算连续天数与今日完成)
+  applyChecked: function (habits, records) {
+    var today = util.getTodayStr()
+    var doneIds = {}
+    ;(records || []).forEach(function (r) { if (r.date === today) doneIds[r.type] = true })
+    var tiles = habits.map(function (h) {
+      return { _id: h._id, icon: h.icon || '⭐', name: h.name, done: !!doneIds[h._id] }
+    })
+    var done = tiles.filter(function (t) { return t.done }).length
     this.setData({
-      todayChecked: checked,
+      habitTiles: tiles,
       doneCount: done,
-      progressPct: Math.round(done / 3 * 100),
+      progressPct: tiles.length ? Math.round(done / tiles.length * 100) : 0,
       streak: util.calculateStreak(records || [])
     })
   },
 
+  // 旧版硬编码习惯(离线/无习惯定义时的兜底展示)
+  LEGACY_HABITS: [
+    { _id: 'school', icon: '🏫', name: '到校' },
+    { _id: 'homework', icon: '📚', name: '作业' },
+    { _id: 'sleep', icon: '🌙', name: '睡觉' }
+  ],
+
   checkTodayStatus: function () {
     var that = this
-    var today = util.getTodayStr()
     function applyLocal() {
       var records = util.getRecords('rewardRecords')
-      var checked = { school: false, homework: false, sleep: false }
-      records.forEach(function (r) { if (r.date === today) checked[r.type] = true })
-      that.applyChecked(checked, records)
+      that.applyChecked(that.LEGACY_HABITS, records)
     }
     if (!app.globalData.cloudReady) { applyLocal(); return }
-    app.callCloudFunction('listCheckins', {}, function (res) {
-      if (res && res.success) {
-        var records = res.data || []
-        var checked = { school: false, homework: false, sleep: false }
-        records.forEach(function (r) { if (r.date === today) checked[r.type] = true })
-        that.applyChecked(checked, records)
-      } else {
-        applyLocal()
-      }
+    app.callCloudFunction('listHabitDefs', {}, function (hres) {
+      var habits = (hres && hres.success && hres.data && hres.data.length) ? hres.data : that.LEGACY_HABITS
+      app.callCloudFunction('listCheckins', {}, function (res) {
+        if (res && res.success) that.applyChecked(habits, res.data || [])
+        else applyLocal()
+      })
     })
   },
 

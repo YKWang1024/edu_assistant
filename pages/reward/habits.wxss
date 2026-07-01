@@ -1,0 +1,22 @@
+.page { min-height: 100vh; background: #f3f6fb; padding: 24rpx; box-sizing: border-box; }
+.empty-tip { text-align: center; color: #a0a0ad; font-size: 26rpx; padding: 60rpx 20rpx; line-height: 1.6; }
+.hint-tip { text-align: center; color: #a0a0ad; font-size: 24rpx; padding: 12rpx 0 20rpx; }
+
+.add-btn {
+  text-align: center; padding: 22rpx 0; margin-bottom: 20rpx;
+  border: 2rpx dashed #c9cede; border-radius: 18rpx;
+  color: #5b6ff0; font-size: 28rpx; font-weight: 600;
+}
+.add-btn:active { background: #f3f5fb; }
+
+.habit-list { display: flex; flex-direction: column; gap: 16rpx; }
+.habit-item { padding: 22rpx; }
+.habit-top { display: flex; align-items: center; gap: 16rpx; }
+.habit-icon { font-size: 44rpx; }
+.habit-info { flex: 1; }
+.habit-name { font-size: 29rpx; font-weight: 700; color: #2b2b33; }
+.habit-sub { font-size: 22rpx; color: #a0a0ad; margin-top: 4rpx; }
+.habit-detail { font-size: 24rpx; color: #6a6a78; margin-top: 12rpx; }
+.habit-ops { display: flex; gap: 24rpx; margin-top: 16rpx; }
+.habit-op { font-size: 25rpx; color: #5b6ff0; }
+.habit-op.danger { color: #e5484d; }
