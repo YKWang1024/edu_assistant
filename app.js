@@ -433,6 +433,7 @@ App({
           that.refreshFamily()
           that.flushSync() // 登录成功(云已就绪)后回传离线积压
           console.log('微信自动登录成功')
+          console.log('=== DEBUG: openid ===', res.result.userInfo.openid || '未获取到')
         } else {
           console.log('自动登录失败:', res.result && res.result.message)
         }
